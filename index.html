@@ -202,7 +202,7 @@ const CONFIG = {
   clientId: 'c6bcbc9c-c266-46e4-a307-0fb902b6306c',
   tenantId: '68c8479a-6d32-4a07-92aa-9165f551c776',
   siteHostname: 'escalarasesorias.sharepoint.com',
-  sitePath: '/',
+  sitePath: '/sites/Escalar',
   driveFolder: 'Escalar',
   fileName: 'Registro_Tareas_Teams.xlsx',
   tableName: 'TblTareas',
@@ -282,7 +282,7 @@ async function cargarDatos() {
       { headers: { Authorization: 'Bearer ' + accessToken } }
     );
     const drivesData = await drivesResp.json();
-    const drive = drivesData.value.find(d => d.name === 'Documentos' || d.name === 'Documents') || drivesData.value[0];
+    const drive = drivesData.value.find(d => d.name === 'Documentos compartidos' || d.name === 'Shared Documents' || d.name === 'Documentos' || d.name === 'Documents') || drivesData.value[0];
     const driveId = drive.id;
 
     const fileResp = await fetch(
