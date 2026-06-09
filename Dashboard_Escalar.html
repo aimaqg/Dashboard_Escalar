@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Dashboard Escalar — Gestor de Tareas</title>
+<script src="https://unpkg.com/@azure/msal-browser@3.10.0/lib/msal-browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#1a1a2e}
+.login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1a2e}
+.login-card{background:#16213e;border:1px solid #C9A84C33;border-radius:16px;padding:48px 40px;text-align:center;max-width:400px;width:90%}
+.logo-hex{width:64px;height:64px;background:#C9A84C;clip-path:polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
+.logo-inner{width:30px;height:30px;background:#1a1a2e;clip-path:polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%)}
+.login-title{color:#C9A84C;font-size:22px;font-weight:500;letter-spacing:2px;margin-bottom:4px}
+.login-sub{color:#C9A84C66;font-size:12px;letter-spacing:3px;margin-bottom:32px}
+.login-desc{color:#aaa;font-size:14px;line-height:1.6;margin-bottom:32px}
+.btn-login{background:#C9A84C;color:#1a1a2e;border:none;padding:14px 32px;border-radius:8px;font-size:15px;font-weight:600;cursor:pointer;width:100%;letter-spacing:0.5px;transition:background 0.2s}
+.btn-login:hover{background:#E8C97A}
+.btn-login:disabled{background:#C9A84C44;color:#C9A84C88;cursor:not-allowed}
+.login-error{color:#EF9A9A;font-size:13px;margin-top:16px;display:none}
+.loading-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1a2e;flex-direction:column;gap:16px}
+.spinner{width:40px;height:40px;border:3px solid #C9A84C22;border-top:3px solid #C9A84C;border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-txt{color:#C9A84C88;font-size:14px}
+.dash{background:#1a1a2e;min-height:100vh;padding:0 0 2rem;display:none}
+.topbar{background:#16213e;border-bottom:1px solid #C9A84C33;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.brand{display:flex;align-items:center;gap:12px}
+.logo-sm{width:36px;height:36px;background:#C9A84C;clip-path:polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);flex-shrink:0}
+.brand-text{color:#C9A84C;font-size:17px;font-weight:500;letter-spacing:1px}
+.brand-sub{color:#C9A84C66;font-size:10px;letter-spacing:2px}
+.topbar-right{display:flex;align-items:center;gap:16px}
+.user-info{color:#C9A84C88;font-size:12px;text-align:right}
+.user-name{color:#C9A84C;font-size:13px;font-weight:500}
+.btn-refresh{background:#C9A84C22;border:1px solid #C9A84C44;color:#C9A84C;padding:6px 14px;border-radius:6px;font-size:12px;cursor:pointer;transition:all 0.2s}
+.btn-refresh:hover{background:#C9A84C33}
+.btn-logout{background:none;border:1px solid #C9A84C22;color:#C9A84C66;padding:6px 12px;border-radius:6px;font-size:11px;cursor:pointer}
+.btn-logout:hover{border-color:#C9A84C44;color:#C9A84C88}
+.filters{background:#16213e;border-bottom:1px solid #C9A84C22;padding:10px 24px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.filters label{color:#C9A84C88;font-size:11px;letter-spacing:0.5px}
+.filters select{background:#1a1a2e;border:1px solid #C9A84C33;color:#C9A84C;font-size:12px;padding:5px 10px;border-radius:6px;cursor:pointer;outline:none}
+.filters select:hover{border-color:#C9A84C}
+.btn-clear{background:none;border:1px solid #C9A84C33;color:#C9A84C66;font-size:11px;padding:5px 12px;border-radius:6px;cursor:pointer}
+.btn-clear:hover{border-color:#C9A84C;color:#C9A84C}
+.content{padding:20px 24px}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
+.kpi{background:#16213e;border:1px solid #C9A84C22;border-radius:10px;padding:16px;border-top:3px solid}
+.kpi.gold{border-top-color:#C9A84C}
+.kpi.green{border-top-color:#4CAF50}
+.kpi.red{border-top-color:#E53935}
+.kpi.blue{border-top-color:#42A5F5}
+.kpi.orange{border-top-color:#FFA726}
+.kpi-label{color:#C9A84C88;font-size:11px;letter-spacing:0.5px;margin-bottom:6px}
+.kpi-value{color:#fff;font-size:28px;font-weight:500}
+.kpi-sub{font-size:11px;margin-top:4px}
+.progress-bar{height:5px;background:#ffffff11;border-radius:3px;overflow:hidden;margin-top:6px}
+.progress-fill{height:100%;border-radius:3px;background:#C9A84C;transition:width 0.8s ease}
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
+.card{background:#16213e;border:1px solid #C9A84C22;border-radius:10px;padding:16px}
+.card-title{color:#C9A84C;font-size:13px;font-weight:500;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.legend-item{display:flex;align-items:center;gap:4px;font-size:11px;color:#C9A84C88}
+.legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
+.assignee-bar{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.assignee-name{color:#e0e0e0;font-size:12px;min-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.assignee-track{flex:1;background:#ffffff0d;border-radius:3px;height:8px;overflow:hidden}
+.assignee-fill{height:100%;border-radius:3px;background:#C9A84C;transition:width 0.6s ease}
+.assignee-count{color:#C9A84C;font-size:12px;font-weight:500;min-width:24px;text-align:right}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead tr{border-bottom:1px solid #C9A84C33}
+thead th{color:#C9A84C88;font-weight:500;padding:8px 10px;text-align:left;font-size:11px;letter-spacing:0.5px;white-space:nowrap}
+tbody tr{border-bottom:1px solid #C9A84C0d;transition:background 0.15s;cursor:default}
+tbody tr:hover{background:#C9A84C08}
+tbody td{padding:9px 10px;color:#ddd;font-size:12px}
+.badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap}
+.b-green{background:#4CAF5022;color:#81C784}
+.b-red{background:#E5393522;color:#EF9A9A}
+.b-orange{background:#FFA72622;color:#FFB74D}
+.b-blue{background:#42A5F522;color:#90CAF9}
+.b-gray{background:#ffffff11;color:#aaa}
+.b-gold{background:#C9A84C22;color:#C9A84C}
+.sem{width:9px;height:9px;border-radius:50%;display:inline-block;flex-shrink:0}
+.sem-g{background:#4CAF50}
+.sem-o{background:#FFA726}
+.sem-r{background:#E53935}
+.sem-x{background:#555}
+.empty-state{color:#C9A84C44;text-align:center;padding:24px;font-size:13px}
+.sync-bar{background:#C9A84C11;border-bottom:1px solid #C9A84C22;padding:6px 24px;font-size:11px;color:#C9A84C88;display:none;align-items:center;gap:8px}
+.sync-dot{width:6px;height:6px;border-radius:50%;background:#4CAF50;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
+@media(max-width:640px){.charts-row{grid-template-columns:1fr}.topbar{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <div class="logo-hex"><div class="logo-inner"></div></div>
+    <div class="login-title">ESCALAR</div>
+    <div class="login-sub">GESTOR DE TAREAS</div>
+    <p class="login-desc">Accede con tu cuenta corporativa de Microsoft para ver el dashboard de tareas en tiempo real.</p>
+    <button class="btn-login" id="btnLogin" onclick="iniciarLogin()">
+      Ingresar con cuenta Microsoft
+    </button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<!-- LOADING -->
+<div class="loading-screen" id="loadingScreen" style="display:none">
+  <div class="spinner"></div>
+  <div class="loading-txt" id="loadingTxt">Autenticando...</div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dash" id="dashboard">
+
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo-sm"></div>
+      <div>
+        <div class="brand-text">ESCALAR</div>
+        <div class="brand-sub">GESTOR DE TAREAS</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="user-info">
+        <div class="user-name" id="userName"></div>
+        <div id="lastUpdate" style="font-size:11px"></div>
+      </div>
+      <button class="btn-refresh" onclick="cargarDatos()">&#8635; Actualizar</button>
+      <button class="btn-logout" onclick="cerrarSesion()">Salir</button>
+    </div>
+  </div>
+
+  <div class="sync-bar" id="syncBar">
+    <span class="sync-dot"></span>
+    Conectado a Excel · escalarasesorias.sharepoint.com
+  </div>
+
+  <div class="filters">
+    <label>Filtrar:</label>
+    <select id="fAsignado" onchange="aplicarFiltros()"><option value="">Todos los asignados</option></select>
+    <select id="fBucket" onchange="aplicarFiltros()"><option value="">Todos los buckets</option></select>
+    <select id="fEstado" onchange="aplicarFiltros()">
+      <option value="">Todos los estados</option>
+      <option value="0">Sin iniciar</option>
+      <option value="50">En progreso</option>
+      <option value="100">Completadas</option>
+    </select>
+    <select id="fPrioridad" onchange="aplicarFiltros()"><option value="">Todas las prioridades</option></select>
+    <button class="btn-clear" onclick="limpiarFiltros()">&#10005; Limpiar</button>
+  </div>
+
+  <div class="content">
+    <div class="kpi-grid" id="kpis"></div>
+    <div class="charts-row">
+      <div class="card">
+        <div class="card-title">&#128100; Tareas por asignado</div>
+        <div id="chartAsignados"></div>
+      </div>
+      <div class="card">
+        <div class="card-title">&#9685; Distribución por estado</div>
+        <div class="legend" id="legendEstado"></div>
+        <div style="position:relative;height:200px"><canvas id="chartEstado" role="img" aria-label="Distribución de tareas por estado"></canvas></div>
+      </div>
+    </div>
+    <div class="charts-row">
+      <div class="card">
+        <div class="card-title">&#9632; Tareas por bucket</div>
+        <div class="legend" id="legendBucket"></div>
+        <div style="position:relative;height:220px"><canvas id="chartBucket" role="img" aria-label="Tareas por bucket"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-title">&#9873; Distribución por prioridad</div>
+        <div class="legend" id="legendPrioridad"></div>
+        <div style="position:relative;height:220px"><canvas id="chartPrioridad" role="img" aria-label="Distribución por prioridad"></canvas></div>
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-title">&#9888; Tareas vencidas o próximas a vencer</div>
+      <div class="table-wrap">
+        <table><thead><tr><th></th><th>Tarea</th><th>Asignado</th><th>Bucket</th><th>Vencimiento</th><th>Días</th><th>Prioridad</th><th>Estado</th></tr></thead>
+        <tbody id="tbodyVencidas"></tbody></table>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">&#9776; Todas las tareas <span id="contadorTareas" style="color:#C9A84C66;font-size:12px;font-weight:400;margin-left:6px"></span></div>
+      <div class="table-wrap">
+        <table><thead><tr><th></th><th>Tarea</th><th>Asignado</th><th>Bucket</th><th>Estado</th><th>Prioridad</th><th>Vencimiento</th><th>Canal</th></tr></thead>
+        <tbody id="tbodyTodas"></tbody></table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const CONFIG = {
+  clientId: 'c6bcbc9c-c266-46e4-a307-0fb902b6306c',
+  tenantId: '68c8479a-6d32-4a07-92aa-9165f551c776',
+  siteHostname: 'escalarasesorias.sharepoint.com',
+  sitePath: '/',
+  driveFolder: 'Escalar',
+  fileName: 'Registro_Tareas_Teams.xlsx',
+  tableName: 'TblTareas',
+  redirectUri: window.location.href.split('?')[0].split('#')[0]
+};
+
+const msalConfig = {
+  auth: {
+    clientId: CONFIG.clientId,
+    authority: 'https://login.microsoftonline.com/' + CONFIG.tenantId,
+    redirectUri: CONFIG.redirectUri
+  },
+  cache: { cacheLocation: 'sessionStorage' }
+};
+
+const msalInstance = new msal.PublicClientApplication(msalConfig);
+const scopes = ['https://graph.microsoft.com/Files.Read.All','https://graph.microsoft.com/Sites.Read.All','https://graph.microsoft.com/User.Read'];
+
+let accessToken = null;
+let todosLosDatos = [];
+let datosFiltrados = [];
+let chartEstadoInst = null, chartBucketInst = null, chartPrioridadInst = null;
+
+const PALETA = ['#C9A84C','#E8C97A','#A07830','#42A5F5','#81C784','#EF9A9A','#FFB74D','#CE93D8','#80DEEA','#F48FB1','#FFCC80','#B0BEC5','#80CBC4'];
+
+async function iniciarLogin() {
+  document.getElementById('btnLogin').disabled = true;
+  document.getElementById('btnLogin').textContent = 'Conectando...';
+  document.getElementById('loginError').style.display = 'none';
+  try {
+    await msalInstance.initialize();
+    const resp = await msalInstance.loginPopup({ scopes });
+    msalInstance.setActiveAccount(resp.account);
+    mostrarCargando('Obteniendo datos de Excel...');
+    await cargarDatos();
+  } catch(e) {
+    document.getElementById('btnLogin').disabled = false;
+    document.getElementById('btnLogin').textContent = 'Ingresar con cuenta Microsoft';
+    const err = document.getElementById('loginError');
+    err.textContent = 'Error al iniciar sesión: ' + (e.message || 'Intenta de nuevo');
+    err.style.display = 'block';
+  }
+}
+
+function mostrarCargando(txt) {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('loadingScreen').style.display = 'flex';
+  document.getElementById('loadingTxt').textContent = txt || 'Cargando...';
+}
+
+async function getToken() {
+  const account = msalInstance.getActiveAccount();
+  if (!account) throw new Error('No hay sesión activa');
+  const result = await msalInstance.acquireTokenSilent({ scopes, account });
+  return result.accessToken;
+}
+
+async function cargarDatos() {
+  try {
+    mostrarCargando('Conectando con SharePoint...');
+    accessToken = await getToken();
+
+    const account = msalInstance.getActiveAccount();
+    document.getElementById('userName').textContent = account.name || account.username;
+
+    mostrarCargando('Buscando archivo Excel...');
+    const siteResp = await fetch(
+      `https://graph.microsoft.com/v1.0/sites/${CONFIG.siteHostname}:${CONFIG.sitePath}`,
+      { headers: { Authorization: 'Bearer ' + accessToken } }
+    );
+    const siteData = await siteResp.json();
+    if (!siteData.id) throw new Error('No se encontró el sitio de SharePoint');
+    const siteId = siteData.id;
+
+    const drivesResp = await fetch(
+      `https://graph.microsoft.com/v1.0/sites/${siteId}/drives`,
+      { headers: { Authorization: 'Bearer ' + accessToken } }
+    );
+    const drivesData = await drivesResp.json();
+    const drive = drivesData.value.find(d => d.name === 'Documentos' || d.name === 'Documents') || drivesData.value[0];
+    const driveId = drive.id;
+
+    const fileResp = await fetch(
+      `https://graph.microsoft.com/v1.0/drives/${driveId}/root:/${CONFIG.driveFolder}/${CONFIG.fileName}`,
+      { headers: { Authorization: 'Bearer ' + accessToken } }
+    );
+    const fileData = await fileResp.json();
+    if (!fileData.id) throw new Error('No se encontró el archivo Excel');
+    const fileId = fileData.id;
+
+    mostrarCargando('Leyendo tabla de tareas...');
+    const tableResp = await fetch(
+      `https://graph.microsoft.com/v1.0/drives/${driveId}/items/${fileId}/workbook/tables/${CONFIG.tableName}/rows`,
+      { headers: { Authorization: 'Bearer ' + accessToken } }
+    );
+    const tableData = await tableResp.json();
+    if (!tableData.value) throw new Error('No se pudo leer la tabla ' + CONFIG.tableName);
+
+    const headerResp = await fetch(
+      `https://graph.microsoft.com/v1.0/drives/${driveId}/items/${fileId}/workbook/tables/${CONFIG.tableName}/columns`,
+      { headers: { Authorization: 'Bearer ' + accessToken } }
+    );
+    const headerData = await headerResp.json();
+    const columnas = headerData.value.map(c => c.name);
+
+    todosLosDatos = tableData.value.map(row => {
+      const vals = row.values[0];
+      const obj = {};
+      columnas.forEach((col, i) => { obj[col] = vals[i] !== null && vals[i] !== undefined ? vals[i] : ''; });
+      return obj;
+    }).filter(r => r.Titulo_Tarea || r.ID_Tarea);
+
+    datosFiltrados = [...todosLosDatos];
+    poblarFiltros();
+    renderTodo();
+
+    document.getElementById('loadingScreen').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    const sb = document.getElementById('syncBar');
+    sb.style.display = 'flex';
+    document.getElementById('lastUpdate').textContent = 'Actualizado: ' + new Date().toLocaleTimeString('es-CO');
+
+  } catch(e) {
+    document.getElementById('loadingScreen').style.display = 'none';
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('btnLogin').disabled = false;
+    document.getElementById('btnLogin').textContent = 'Ingresar con cuenta Microsoft';
+    const err = document.getElementById('loginError');
+    err.textContent = 'Error: ' + (e.message || 'No se pudo cargar la información');
+    err.style.display = 'block';
+  }
+}
+
+function cerrarSesion() {
+  msalInstance.logoutPopup();
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('btnLogin').disabled = false;
+  document.getElementById('btnLogin').textContent = 'Ingresar con cuenta Microsoft';
+}
+
+function parsearEstado(v) {
+  const n = parseInt(v);
+  if (n === 100) return 100;
+  if (n === 50) return 50;
+  return 0;
+}
+
+function diasRestantes(fecha) {
+  if (!fecha) return null;
+  const d = new Date(fecha); d.setHours(0,0,0,0);
+  const h = new Date(); h.setHours(0,0,0,0);
+  return Math.round((d - h) / (1000*60*60*24));
+}
+
+function semaforo(dias, estado) {
+  if (estado === 100) return 'x';
+  if (dias === null) return 'x';
+  if (dias < 0) return 'r';
+  if (dias <= 3) return 'o';
+  return 'g';
+}
+
+function estadoLabel(v) {
+  if (v === 100) return {txt:'Completada', cls:'b-green'};
+  if (v === 50) return {txt:'En progreso', cls:'b-blue'};
+  return {txt:'Sin iniciar', cls:'b-gray'};
+}
+
+function prioridadBadge(p) {
+  const m = {Urgente:'b-red', Importante:'b-orange', Media:'b-blue', Baja:'b-gray', urgente:'b-red', importante:'b-orange', media:'b-blue', baja:'b-gray'};
+  return m[p] || 'b-gray';
+}
+
+function formatFecha(f) {
+  if (!f) return '—';
+  try {
+    const d = new Date(f);
+    if (isNaN(d)) return String(f).slice(0,10);
+    return d.toLocaleDateString('es-CO', {day:'2-digit', month:'short', year:'numeric'});
+  } catch(e) { return String(f).slice(0,10); }
+}
+
+function poblarFiltros() {
+  const asignados = [...new Set(todosLosDatos.map(t => t.Asignado_Nombre).filter(Boolean))].sort();
+  const buckets = [...new Set(todosLosDatos.map(t => t.Bucket).filter(Boolean))].sort();
+  const prioridades = [...new Set(todosLosDatos.map(t => t.Prioridad).filter(Boolean))];
+  const selA = document.getElementById('fAsignado');
+  const selB = document.getElementById('fBucket');
+  const selP = document.getElementById('fPrioridad');
+  selA.innerHTML = '<option value="">Todos los asignados</option>';
+  selB.innerHTML = '<option value="">Todos los buckets</option>';
+  selP.innerHTML = '<option value="">Todas las prioridades</option>';
+  asignados.forEach(a => { const o = document.createElement('option'); o.value = a; o.textContent = a; selA.appendChild(o); });
+  buckets.forEach(b => { const o = document.createElement('option'); o.value = b; o.textContent = b; selB.appendChild(o); });
+  prioridades.forEach(p => { const o = document.createElement('option'); o.value = p; o.textContent = p; selP.appendChild(o); });
+}
+
+function aplicarFiltros() {
+  const a = document.getElementById('fAsignado').value;
+  const b = document.getElementById('fBucket').value;
+  const e = document.getElementById('fEstado').value;
+  const p = document.getElementById('fPrioridad').value;
+  datosFiltrados = todosLosDatos.filter(t =>
+    (!a || t.Asignado_Nombre === a) &&
+    (!b || t.Bucket === b) &&
+    (!e || String(parsearEstado(t.Estado)) === e) &&
+    (!p || t.Prioridad === p)
+  );
+  renderTodo();
+}
+
+function limpiarFiltros() {
+  ['fAsignado','fBucket','fEstado','fPrioridad'].forEach(id => document.getElementById(id).value = '');
+  datosFiltrados = [...todosLosDatos];
+  renderTodo();
+}
+
+function renderKPIs() {
+  const total = datosFiltrados.length;
+  const completadas = datosFiltrados.filter(t => parsearEstado(t.Estado) === 100).length;
+  const enProgreso = datosFiltrados.filter(t => parsearEstado(t.Estado) === 50).length;
+  const sinIniciar = datosFiltrados.filter(t => parsearEstado(t.Estado) === 0).length;
+  const vencidas = datosFiltrados.filter(t => parsearEstado(t.Estado) !== 100 && diasRestantes(t.Fecha_vencimiento) !== null && diasRestantes(t.Fecha_vencimiento) < 0).length;
+  const pct = total ? Math.round(completadas / total * 100) : 0;
+  document.getElementById('kpis').innerHTML = `
+    <div class="kpi gold">
+      <div class="kpi-label">TOTAL TAREAS</div>
+      <div class="kpi-value">${total}</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div class="kpi-sub" style="color:#C9A84C88">${pct}% completado</div>
+    </div>
+    <div class="kpi green">
+      <div class="kpi-label">COMPLETADAS</div>
+      <div class="kpi-value" style="color:#81C784">${completadas}</div>
+      <div class="kpi-sub" style="color:#4CAF5066">${total ? Math.round(completadas/total*100) : 0}% del total</div>
+    </div>
+    <div class="kpi blue">
+      <div class="kpi-label">EN PROGRESO</div>
+      <div class="kpi-value" style="color:#90CAF9">${enProgreso}</div>
+      <div class="kpi-sub" style="color:#42A5F566">${total ? Math.round(enProgreso/total*100) : 0}% del total</div>
+    </div>
+    <div class="kpi orange">
+      <div class="kpi-label">SIN INICIAR</div>
+      <div class="kpi-value" style="color:#FFB74D">${sinIniciar}</div>
+      <div class="kpi-sub" style="color:#FFA72666">${total ? Math.round(sinIniciar/total*100) : 0}% del total</div>
+    </div>
+    <div class="kpi red">
+      <div class="kpi-label">VENCIDAS</div>
+      <div class="kpi-value" style="color:#EF9A9A">${vencidas}</div>
+      <div class="kpi-sub" style="color:#E5393566">requieren atención</div>
+    </div>`;
+}
+
+function renderAsignados() {
+  const conteo = {};
+  datosFiltrados.forEach(t => { if(t.Asignado_Nombre) conteo[t.Asignado_Nombre] = (conteo[t.Asignado_Nombre]||0)+1; });
+  const sorted = Object.entries(conteo).sort((a,b) => b[1]-a[1]);
+  const max = sorted[0] ? sorted[0][1] : 1;
+  document.getElementById('chartAsignados').innerHTML = sorted.length
+    ? sorted.map(([n,c]) => `
+      <div class="assignee-bar">
+        <div class="assignee-name">${n.split(' ').slice(0,2).join(' ')}</div>
+        <div class="assignee-track"><div class="assignee-fill" style="width:${Math.round(c/max*100)}%"></div></div>
+        <div class="assignee-count">${c}</div>
+      </div>`).join('')
+    : '<div class="empty-state">Sin datos</div>';
+}
+
+function renderChartEstado() {
+  const conteo = {0:0, 50:0, 100:0};
+  datosFiltrados.forEach(t => { const e = parsearEstado(t.Estado); conteo[e] = (conteo[e]||0)+1; });
+  const labels = ['Sin iniciar','En progreso','Completada'];
+  const data = [conteo[0], conteo[50], conteo[100]];
+  const colors = ['#666','#42A5F5','#4CAF50'];
+  document.getElementById('legendEstado').innerHTML = labels.map((l,i) =>
+    `<span class="legend-item"><span class="legend-dot" style="background:${colors[i]}"></span>${l} (${data[i]})</span>`).join('');
+  if (chartEstadoInst) chartEstadoInst.destroy();
+  chartEstadoInst = new Chart(document.getElementById('chartEstado'), {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data, backgroundColor: colors, borderColor: '#16213e', borderWidth: 3 }] },
+    options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false} } }
+  });
+}
+
+function renderChartBucket() {
+  const conteo = {};
+  datosFiltrados.forEach(t => { if(t.Bucket) conteo[t.Bucket] = (conteo[t.Bucket]||0)+1; });
+  const sorted = Object.entries(conteo).sort((a,b) => b[1]-a[1]);
+  const labels = sorted.map(e => e[0]);
+  const data = sorted.map(e => e[1]);
+  document.getElementById('legendBucket').innerHTML = labels.map((l,i) =>
+    `<span class="legend-item"><span class="legend-dot" style="background:${PALETA[i%PALETA.length]}"></span>${l}</span>`).join('');
+  if (chartBucketInst) chartBucketInst.destroy();
+  chartBucketInst = new Chart(document.getElementById('chartBucket'), {
+    type: 'bar',
+    data: { labels, datasets: [{ data, backgroundColor: labels.map((_,i) => PALETA[i%PALETA.length]), borderRadius:4, borderSkipped:false }] },
+    options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
+      scales: { x:{ticks:{color:'#C9A84C88',font:{size:11},maxRotation:45},grid:{color:'#ffffff08'}},
+                y:{ticks:{color:'#C9A84C88',font:{size:11},stepSize:1},grid:{color:'#ffffff08'}} } }
+  });
+}
+
+function renderChartPrioridad() {
+  const orden = ['Urgente','Importante','Media','Baja'];
+  const conteo = {};
+  datosFiltrados.forEach(t => { if(t.Prioridad) conteo[t.Prioridad] = (conteo[t.Prioridad]||0)+1; });
+  const labels = [...new Set([...orden.filter(p => conteo[p]), ...Object.keys(conteo)])];
+  const data = labels.map(p => conteo[p]||0);
+  const colors = {Urgente:'#E53935',Importante:'#FFA726',Media:'#42A5F5',Baja:'#78909C'};
+  document.getElementById('legendPrioridad').innerHTML = labels.map((l,i) =>
+    `<span class="legend-item"><span class="legend-dot" style="background:${colors[l]||PALETA[i]}"></span>${l} (${data[i]})</span>`).join('');
+  if (chartPrioridadInst) chartPrioridadInst.destroy();
+  chartPrioridadInst = new Chart(document.getElementById('chartPrioridad'), {
+    type: 'doughnut',
+    data: { labels, datasets: [{ data, backgroundColor: labels.map(l => colors[l]||'#888'), borderColor:'#16213e', borderWidth:3 }] },
+    options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}} }
+  });
+}
+
+function renderTablaVencidas() {
+  const lista = datosFiltrados
+    .filter(t => parsearEstado(t.Estado) !== 100 && diasRestantes(t.Fecha_vencimiento) !== null && diasRestantes(t.Fecha_vencimiento) <= 5)
+    .sort((a,b) => diasRestantes(a.Fecha_vencimiento) - diasRestantes(b.Fecha_vencimiento));
+  const tbody = document.getElementById('tbodyVencidas');
+  if (!lista.length) { tbody.innerHTML = '<tr><td colspan="8" class="empty-state">Sin tareas urgentes — todo bajo control</td></tr>'; return; }
+  tbody.innerHTML = lista.map(t => {
+    const dias = diasRestantes(t.Fecha_vencimiento);
+    const sem = semaforo(dias, parsearEstado(t.Estado));
+    const diasTxt = dias < 0
+      ? `<span style="color:#EF9A9A">${Math.abs(dias)}d vencida</span>`
+      : dias === 0 ? `<span style="color:#FFA726">Hoy</span>`
+      : `<span style="color:#FFB74D">${dias}d</span>`;
+    const est = estadoLabel(parsearEstado(t.Estado));
+    return `<tr>
+      <td><span class="sem sem-${sem}"></span></td>
+      <td style="color:#fff;font-weight:500;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.Titulo_Tarea||'—'}</td>
+      <td>${(t.Asignado_Nombre||'—').split(' ').slice(0,2).join(' ')}</td>
+      <td><span class="badge b-gray">${t.Bucket||'—'}</span></td>
+      <td>${formatFecha(t.Fecha_vencimiento)}</td>
+      <td>${diasTxt}</td>
+      <td><span class="badge ${prioridadBadge(t.Prioridad)}">${t.Prioridad||'—'}</span></td>
+      <td><span class="badge ${est.cls}">${est.txt}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function renderTablaTodas() {
+  document.getElementById('contadorTareas').textContent = `(${datosFiltrados.length})`;
+  const tbody = document.getElementById('tbodyTodas');
+  if (!datosFiltrados.length) { tbody.innerHTML = '<tr><td colspan="8" class="empty-state">Sin resultados con los filtros aplicados</td></tr>'; return; }
+  tbody.innerHTML = datosFiltrados.map(t => {
+    const dias = diasRestantes(t.Fecha_vencimiento);
+    const est = estadoLabel(parsearEstado(t.Estado));
+    const sem = semaforo(dias, parsearEstado(t.Estado));
+    return `<tr>
+      <td><span class="sem sem-${sem}"></span></td>
+      <td style="color:#fff;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.Titulo_Tarea||'—'}</td>
+      <td>${(t.Asignado_Nombre||'—').split(' ').slice(0,2).join(' ')}</td>
+      <td><span class="badge b-gray">${t.Bucket||'—'}</span></td>
+      <td><span class="badge ${est.cls}">${est.txt}</span></td>
+      <td><span class="badge ${prioridadBadge(t.Prioridad)}">${t.Prioridad||'—'}</span></td>
+      <td style="color:${dias!==null&&dias<0?'#EF9A9A':dias!==null&&dias<=3?'#FFB74D':'#aaa'}">${formatFecha(t.Fecha_vencimiento)}</td>
+      <td style="color:#C9A84C66">${t.Canal_teams||'—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+function renderTodo() {
+  renderKPIs();
+  renderAsignados();
+  renderChartEstado();
+  renderChartBucket();
+  renderChartPrioridad();
+  renderTablaVencidas();
+  renderTablaTodas();
+}
+
+(async function init() {
+  await msalInstance.initialize();
+  const result = await msalInstance.handleRedirectPromise();
+  if (result) {
+    msalInstance.setActiveAccount(result.account);
+    mostrarCargando('Cargando datos...');
+    await cargarDatos();
+    return;
+  }
+  const accounts = msalInstance.getAllAccounts();
+  if (accounts.length > 0) {
+    msalInstance.setActiveAccount(accounts[0]);
+    mostrarCargando('Restaurando sesión...');
+    await cargarDatos();
+  }
+})();
+</script>
+</body>
+</html>
