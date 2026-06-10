@@ -9,6 +9,7 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#1a1a2e}
+/* ── LOGIN ── */
 .login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1a2e}
 .login-card{background:#16213e;border:1px solid #C9A84C33;border-radius:16px;padding:48px 40px;text-align:center;max-width:400px;width:90%}
 .logo-hex{width:64px;height:64px;background:#C9A84C;clip-path:polygon(50% 0%,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);display:flex;align-items:center;justify-content:center;margin:0 auto 20px}
@@ -20,10 +21,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .btn-login:hover{background:#E8C97A}
 .btn-login:disabled{background:#C9A84C44;color:#C9A84C88;cursor:not-allowed}
 .login-error{color:#EF9A9A;font-size:13px;margin-top:16px;display:none}
+/* ── LOADING ── */
 .loading-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:#1a1a2e;flex-direction:column;gap:16px}
 .spinner{width:40px;height:40px;border:3px solid #C9A84C22;border-top:3px solid #C9A84C;border-radius:50%;animation:spin 0.8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading-txt{color:#C9A84C88;font-size:14px}
+/* ── DASH SHELL ── */
 .dash{background:#1a1a2e;min-height:100vh;padding:0 0 2rem;display:none}
 .topbar{background:#16213e;border-bottom:1px solid #C9A84C33;padding:14px 24px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
 .brand{display:flex;align-items:center;gap:12px}
@@ -37,6 +40,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .btn-refresh:hover{background:#C9A84C33}
 .btn-logout{background:none;border:1px solid #C9A84C22;color:#C9A84C66;padding:6px 12px;border-radius:6px;font-size:11px;cursor:pointer}
 .btn-logout:hover{border-color:#C9A84C44;color:#C9A84C88}
+/* ── TABS ── */
+.tabs-bar{background:#16213e;border-bottom:1px solid #C9A84C22;padding:0 24px;display:flex;gap:0}
+.tab-btn{background:none;border:none;border-bottom:3px solid transparent;color:#C9A84C66;font-size:13px;font-family:inherit;padding:12px 20px;cursor:pointer;letter-spacing:0.3px;transition:all 0.15s;white-space:nowrap}
+.tab-btn:hover{color:#C9A84C99;border-bottom-color:#C9A84C33}
+.tab-btn.active{color:#C9A84C;border-bottom-color:#C9A84C;font-weight:500}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+/* ── FILTERS ── */
 .filters{background:#16213e;border-bottom:1px solid #C9A84C22;padding:10px 24px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .filters label{color:#C9A84C88;font-size:11px;white-space:nowrap}
 .filters select{background:#1a1a2e;border:1px solid #C9A84C33;color:#C9A84C;font-size:12px;padding:5px 10px;border-radius:6px;cursor:pointer;outline:none}
@@ -48,6 +59,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .filter-group{display:flex;align-items:center;gap:6px}
 .btn-clear{background:none;border:1px solid #C9A84C33;color:#C9A84C66;font-size:11px;padding:5px 12px;border-radius:6px;cursor:pointer}
 .btn-clear:hover{border-color:#C9A84C;color:#C9A84C}
+.active-filters-bar{background:#C9A84C0a;border-bottom:1px solid #C9A84C11;padding:5px 24px;font-size:11px;color:#C9A84C88;display:none;align-items:center;gap:6px;flex-wrap:wrap}
+.active-filter-tag{background:#C9A84C22;color:#C9A84C;padding:2px 8px;border-radius:10px;font-size:10px}
+/* ── CONTENT ── */
 .content{padding:20px 24px}
 .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-bottom:20px}
 .kpi{background:#16213e;border:1px solid #C9A84C22;border-radius:10px;padding:16px;border-top:3px solid}
@@ -72,6 +86,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .assignee-track{flex:1;background:#ffffff0d;border-radius:3px;height:8px;overflow:hidden}
 .assignee-fill{height:100%;border-radius:3px;background:#C9A84C}
 .assignee-count{color:#C9A84C;font-size:12px;font-weight:500;min-width:24px;text-align:right}
+/* ── TABLES ── */
 .table-wrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:12px}
 thead tr{border-bottom:1px solid #C9A84C33}
@@ -91,16 +106,45 @@ tbody td{padding:9px 10px;color:#ddd;font-size:12px}
 .sem-r{background:#E53935}
 .sem-x{background:#444}
 .empty-state{color:#C9A84C44;text-align:center;padding:24px;font-size:13px}
+/* ── NDS TAB ── */
+.nds-hero{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px}
+.nds-hero-card{background:#16213e;border:1px solid #C9A84C22;border-radius:10px;padding:20px;text-align:center}
+.nds-hero-value{font-size:48px;font-weight:600;line-height:1}
+.nds-hero-label{color:#C9A84C88;font-size:12px;margin-top:6px;letter-spacing:0.5px}
+.nds-hero-sub{font-size:11px;margin-top:4px}
+.nds-meta-line{display:flex;align-items:center;gap:8px;margin-top:10px;font-size:11px;color:#C9A84C88}
+.nds-meta-tick{font-size:14px}
+.nds-table-wrap{overflow-x:auto}
+.nds-asignado-row{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid #C9A84C0d;transition:background 0.15s}
+.nds-asignado-row:hover{background:#C9A84C08}
+.nds-asignado-row:last-child{border-bottom:none}
+.nds-rank{color:#C9A84C44;font-size:12px;font-weight:500;min-width:20px;text-align:center}
+.nds-avatar{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#1a1a2e;flex-shrink:0}
+.nds-info{flex:1;min-width:0}
+.nds-nombre{color:#e0e0e0;font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nds-detalle{color:#C9A84C66;font-size:11px;margin-top:2px}
+.nds-bar-wrap{flex:1;min-width:80px;max-width:220px}
+.nds-bar-track{background:#ffffff0d;border-radius:4px;height:10px;overflow:hidden;position:relative}
+.nds-bar-fill{height:100%;border-radius:4px;transition:width 0.8s ease}
+.nds-bar-meta{display:flex;justify-content:space-between;margin-top:3px;font-size:10px;color:#C9A84C44}
+.nds-pct{font-size:22px;font-weight:600;min-width:56px;text-align:right}
+.nds-badges{display:flex;flex-direction:column;gap:4px;align-items:flex-end;min-width:90px}
+.nds-section-title{color:#C9A84C;font-size:13px;font-weight:500;padding:16px 0 10px;letter-spacing:0.3px}
+.nds-pendientes-card{background:#16213e;border:1px solid #C9A84C22;border-radius:10px;margin-bottom:16px;overflow:hidden}
+.nds-pendientes-header{padding:14px 16px;border-bottom:1px solid #C9A84C11;display:flex;align-items:center;gap:10px}
+.nds-pendientes-nombre{color:#e0e0e0;font-size:13px;font-weight:500}
+.nds-pendientes-stats{color:#C9A84C66;font-size:11px}
+.nds-chart-wrap{position:relative;height:260px}
+/* ── SYNC BAR ── */
 .sync-bar{background:#C9A84C11;border-bottom:1px solid #C9A84C22;padding:6px 24px;font-size:11px;color:#C9A84C88;display:none;align-items:center;gap:8px}
 .sync-dot{width:6px;height:6px;border-radius:50%;background:#4CAF50;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
-.active-filters-bar{background:#C9A84C0a;border-bottom:1px solid #C9A84C11;padding:5px 24px;font-size:11px;color:#C9A84C88;display:none;align-items:center;gap:6px;flex-wrap:wrap}
-.active-filter-tag{background:#C9A84C22;color:#C9A84C;padding:2px 8px;border-radius:10px;font-size:10px}
-@media(max-width:640px){.charts-row{grid-template-columns:1fr}.filters{gap:6px}}
+@media(max-width:640px){.charts-row{grid-template-columns:1fr}.filters{gap:6px}.nds-bar-wrap{display:none}}
 </style>
 </head>
 <body>
 
+<!-- LOGIN -->
 <div class="login-screen" id="loginScreen">
   <div class="login-card">
     <div class="logo-hex"><div class="logo-inner"></div></div>
@@ -112,12 +156,16 @@ tbody td{padding:9px 10px;color:#ddd;font-size:12px}
   </div>
 </div>
 
+<!-- LOADING -->
 <div class="loading-screen" id="loadingScreen" style="display:none">
   <div class="spinner"></div>
   <div class="loading-txt" id="loadingTxt">Autenticando...</div>
 </div>
 
+<!-- DASHBOARD -->
 <div class="dash" id="dashboard">
+
+  <!-- TOPBAR -->
   <div class="topbar">
     <div class="brand">
       <div class="logo-sm"></div>
@@ -136,29 +184,31 @@ tbody td{padding:9px 10px;color:#ddd;font-size:12px}
     </div>
   </div>
 
+  <!-- SYNC -->
   <div class="sync-bar" id="syncBar">
     <span class="sync-dot"></span>
     Conectado a Excel · escalarasesorias.sharepoint.com
   </div>
 
-  <!-- FILTROS -->
+  <!-- TABS -->
+  <div class="tabs-bar">
+    <button class="tab-btn active" onclick="cambiarTab('dashboard')">&#9783; Dashboard</button>
+    <button class="tab-btn" onclick="cambiarTab('nds')">&#9650; NDS por asignado</button>
+  </div>
+
+  <!-- FILTROS (compartidos entre tabs) -->
   <div class="filters">
     <label>Filtrar:</label>
-
     <div class="filter-group">
       <label>Asignado</label>
       <select id="fAsignado" onchange="aplicarFiltros()"><option value="">Todos</option></select>
     </div>
-
     <div class="filter-sep"></div>
-
     <div class="filter-group">
       <label>Bucket</label>
       <select id="fBucket" onchange="aplicarFiltros()"><option value="">Todos</option></select>
     </div>
-
     <div class="filter-sep"></div>
-
     <div class="filter-group">
       <label>Estado</label>
       <select id="fEstado" onchange="aplicarFiltros()">
@@ -168,89 +218,108 @@ tbody td{padding:9px 10px;color:#ddd;font-size:12px}
         <option value="100">Completadas</option>
       </select>
     </div>
-
     <div class="filter-sep"></div>
-
     <div class="filter-group">
       <label>Prioridad</label>
       <select id="fPrioridad" onchange="aplicarFiltros()"><option value="">Todas</option></select>
     </div>
-
     <div class="filter-sep"></div>
-
     <div class="filter-group">
       <label>Vencimiento desde</label>
-      <input type="date" id="fFechaDesde" onchange="aplicarFiltros()" title="Filtrar por fecha de vencimiento desde"/>
+      <input type="date" id="fFechaDesde" onchange="aplicarFiltros()"/>
     </div>
-
     <div class="filter-group">
       <label>hasta</label>
-      <input type="date" id="fFechaHasta" onchange="aplicarFiltros()" title="Filtrar por fecha de vencimiento hasta"/>
+      <input type="date" id="fFechaHasta" onchange="aplicarFiltros()"/>
     </div>
-
     <div class="filter-sep"></div>
-
     <div class="filter-group">
       <label>Creación desde</label>
-      <input type="date" id="fCreacionDesde" onchange="aplicarFiltros()" title="Filtrar por fecha de creación desde"/>
+      <input type="date" id="fCreacionDesde" onchange="aplicarFiltros()"/>
     </div>
-
     <div class="filter-group">
       <label>hasta</label>
-      <input type="date" id="fCreacionHasta" onchange="aplicarFiltros()" title="Filtrar por fecha de creación hasta"/>
+      <input type="date" id="fCreacionHasta" onchange="aplicarFiltros()"/>
     </div>
-
-    <button class="btn-clear" onclick="limpiarFiltros()">&#10005; Limpiar filtros</button>
+    <button class="btn-clear" onclick="limpiarFiltros()">&#10005; Limpiar</button>
   </div>
-
-  <!-- BARRA DE FILTROS ACTIVOS -->
   <div class="active-filters-bar" id="activeFiltersBar"></div>
 
-  <div class="content">
-    <div class="kpi-grid" id="kpis"></div>
-    <div class="charts-row">
-      <div class="card">
-        <div class="card-title">&#128100; Tareas por asignado</div>
-        <div id="chartAsignados"></div>
+  <!-- ══ TAB: DASHBOARD ══ -->
+  <div class="tab-panel active" id="panel-dashboard">
+    <div class="content">
+      <div class="kpi-grid" id="kpis"></div>
+      <div class="charts-row">
+        <div class="card">
+          <div class="card-title">&#128100; Tareas por asignado</div>
+          <div id="chartAsignados"></div>
+        </div>
+        <div class="card">
+          <div class="card-title">&#9685; Distribución por estado</div>
+          <div class="legend" id="legendEstado"></div>
+          <div style="position:relative;height:200px"><canvas id="chartEstado"></canvas></div>
+        </div>
+      </div>
+      <div class="charts-row">
+        <div class="card">
+          <div class="card-title">&#9632; Tareas por bucket</div>
+          <div class="legend" id="legendBucket"></div>
+          <div style="position:relative;height:220px"><canvas id="chartBucket"></canvas></div>
+        </div>
+        <div class="card">
+          <div class="card-title">&#9873; Distribución por prioridad</div>
+          <div class="legend" id="legendPrioridad"></div>
+          <div style="position:relative;height:220px"><canvas id="chartPrioridad"></canvas></div>
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-title">&#9888; Tareas vencidas o próximas a vencer</div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th></th><th>Tarea</th><th>Asignado</th><th>Bucket</th><th>Vencimiento</th><th>Días</th><th>Prioridad</th><th>Estado</th></tr></thead>
+            <tbody id="tbodyVencidas"></tbody>
+          </table>
+        </div>
       </div>
       <div class="card">
-        <div class="card-title">&#9685; Distribución por estado</div>
-        <div class="legend" id="legendEstado"></div>
-        <div style="position:relative;height:200px"><canvas id="chartEstado" role="img" aria-label="Estado de tareas"></canvas></div>
-      </div>
-    </div>
-    <div class="charts-row">
-      <div class="card">
-        <div class="card-title">&#9632; Tareas por bucket</div>
-        <div class="legend" id="legendBucket"></div>
-        <div style="position:relative;height:220px"><canvas id="chartBucket" role="img" aria-label="Tareas por bucket"></canvas></div>
-      </div>
-      <div class="card">
-        <div class="card-title">&#9873; Distribución por prioridad</div>
-        <div class="legend" id="legendPrioridad"></div>
-        <div style="position:relative;height:220px"><canvas id="chartPrioridad" role="img" aria-label="Prioridad de tareas"></canvas></div>
-      </div>
-    </div>
-    <div class="card" style="margin-bottom:16px">
-      <div class="card-title">&#9888; Tareas vencidas o próximas a vencer</div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th></th><th>Tarea</th><th>Asignado</th><th>Bucket</th><th>Vencimiento</th><th>Días</th><th>Prioridad</th><th>Estado</th></tr></thead>
-          <tbody id="tbodyVencidas"></tbody>
-        </table>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">&#9776; Todas las tareas <span id="contadorTareas" style="color:#C9A84C66;font-size:12px;font-weight:400;margin-left:6px"></span></div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th></th><th>Tarea</th><th>Asignado</th><th>Bucket</th><th>Estado</th><th>Prioridad</th><th>Vencimiento</th><th>Completada</th><th>NDS</th></tr></thead>
-          <tbody id="tbodyTodas"></tbody>
-        </table>
+        <div class="card-title">&#9776; Todas las tareas <span id="contadorTareas" style="color:#C9A84C66;font-size:12px;font-weight:400;margin-left:6px"></span></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th></th><th>Tarea</th><th>Asignado</th><th>Bucket</th><th>Estado</th><th>Prioridad</th><th>Vencimiento</th><th>Completada</th><th>NDS</th></tr></thead>
+            <tbody id="tbodyTodas"></tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
-</div>
+
+  <!-- ══ TAB: NDS ══ -->
+  <div class="tab-panel" id="panel-nds">
+    <div class="content">
+
+      <!-- Hero global NDS -->
+      <div class="nds-hero" id="ndsHero"></div>
+
+      <!-- Ranking de asignados -->
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-title">&#9650; NDS por asignado — meta 90% en 72 hrs</div>
+        <div id="ndsRanking"></div>
+      </div>
+
+      <!-- Gráfico de barras NDS -->
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-title">&#9636; Comparativa NDS (% completadas en 72 hrs)</div>
+        <div class="nds-chart-wrap"><canvas id="chartNds"></canvas></div>
+      </div>
+
+      <!-- Tareas pendientes de cada asignado -->
+      <div class="nds-section-title">&#9203; Tareas pendientes por asignado (sin completar)</div>
+      <div id="ndsPendientes"></div>
+
+    </div>
+  </div>
+
+</div><!-- /dash -->
 
 <script>
 var CONFIG = {
@@ -261,613 +330,653 @@ var CONFIG = {
   driveFolder: 'Escalar',
   fileName: 'Registro_Tareas_Teams.xlsx',
   tableName: 'TblTareas',
-  redirectUri: window.location.href.split('?')[0].split('#')[0]
+  redirectUri: window.location.href.split('?')[0].split('#')[0],
+  NDS_META: 90   // ← Meta NDS: 90%
 };
 
 var msalConfig = {
-  auth: {
-    clientId: CONFIG.clientId,
-    authority: 'https://login.microsoftonline.com/' + CONFIG.tenantId,
-    redirectUri: CONFIG.redirectUri
-  },
+  auth: { clientId: CONFIG.clientId, authority: 'https://login.microsoftonline.com/' + CONFIG.tenantId, redirectUri: CONFIG.redirectUri },
   cache: { cacheLocation: 'sessionStorage' }
 };
-
 var msalInstance = new msal.PublicClientApplication(msalConfig);
 var scopes = ['https://graph.microsoft.com/Files.Read.All','https://graph.microsoft.com/Sites.Read.All','https://graph.microsoft.com/User.Read'];
 
 var accessToken = null;
 var todosLosDatos = [];
 var datosFiltrados = [];
-var chartEstadoInst = null, chartBucketInst = null, chartPrioridadInst = null;
+var chartEstadoInst = null, chartBucketInst = null, chartPrioridadInst = null, chartNdsInst = null;
 var PALETA = ['#C9A84C','#E8C97A','#A07830','#42A5F5','#81C784','#EF9A9A','#FFB74D','#CE93D8','#80DEEA','#F48FB1','#FFCC80','#B0BEC5','#80CBC4'];
+var AVATAR_COLORS = ['#C9A84C','#42A5F5','#81C784','#CE93D8','#EF9A9A','#FFB74D','#80DEEA','#F48FB1','#E8C97A','#80CBC4'];
 
-// ─── UTILIDADES DE NOMBRE ────────────────────────────────────────────────────
+// ── TABS ────────────────────────────────────────────────────────────────────
 
-function normalizarNombre(nombre) {
-  return String(nombre || '').trim().replace(/\s+/g, ' ').toLowerCase();
+function cambiarTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(function(b,i){
+    b.classList.toggle('active', (tab==='dashboard'&&i===0)||(tab==='nds'&&i===1));
+  });
+  document.querySelectorAll('.tab-panel').forEach(function(p){
+    p.classList.remove('active');
+  });
+  document.getElementById('panel-' + tab).classList.add('active');
 }
 
-function splitAsignados(nombre) {
-  if (!nombre) return [];
-  return String(nombre).split(';').map(function(n){ return n.trim(); }).filter(Boolean);
-}
+// ── UTILS ────────────────────────────────────────────────────────────────────
 
-// ─── PARSERS ─────────────────────────────────────────────────────────────────
+function normalizarNombre(n){ return String(n||'').trim().replace(/\s+/g,' ').toLowerCase(); }
+function displayNombre(n){ return String(n||'').replace(/ SAS$/i,'').replace(/ S\.A\.S\.?$/i,'').trim(); }
+function splitAsignados(s){ if(!s) return []; return String(s).split(';').map(function(n){return n.trim();}).filter(Boolean); }
+function iniciales(n){ var p=displayNombre(n).split(' '); return (p[0]?p[0][0]:'')+(p[1]?p[1][0]:''); }
 
-function parsearEstado(v) {
-  if (v === null || v === undefined || v === '') return 0;
-  var s = String(v).toLowerCase().trim();
-  if (s === 'completed' || s === 'completada' || s === 'completado' || s === '100') return 100;
-  if (s === 'in progress' || s === 'en progreso' || s === 'inprogress' || s === '50') return 50;
-  if (s === 'not started' || s === 'sin iniciar' || s === '0') return 0;
-  var n = parseInt(v);
-  if (n === 100) return 100;
-  if (n === 50) return 50;
-  if (!isNaN(n) && n > 0 && n < 100) return 50;
+function parsearEstado(v){
+  if(v===null||v===undefined||v==='') return 0;
+  var s=String(v).toLowerCase().trim();
+  if(s==='completed'||s==='completada'||s==='completado'||s==='100') return 100;
+  if(s==='in progress'||s==='en progreso'||s==='inprogress'||s==='50') return 50;
+  if(s==='not started'||s==='sin iniciar'||s==='0') return 0;
+  var n=parseInt(v);
+  if(n===100) return 100; if(n===50) return 50;
+  if(!isNaN(n)&&n>0&&n<100) return 50;
   return 0;
 }
 
-function parsearFecha(f) {
-  if (!f || f === '' || f === 0 || f === '0') return null;
-  try {
-    if (f instanceof Date) return isNaN(f) ? null : f;
-    var num = typeof f === 'number' ? f : parseFloat(String(f).trim());
-    if (!isNaN(num) && num > 1000 && num < 100000) {
-      var d = new Date(Date.UTC(1899, 11, 30) + num * 86400000);
-      return (!isNaN(d) && d.getFullYear() >= 2000 && d.getFullYear() <= 2100) ? d : null;
+function parsearFecha(f){
+  if(!f||f===''||f===0||f==='0') return null;
+  try{
+    if(f instanceof Date) return isNaN(f)?null:f;
+    var num=typeof f==='number'?f:parseFloat(String(f).trim());
+    if(!isNaN(num)&&num>1000&&num<100000){
+      var d=new Date(Date.UTC(1899,11,30)+num*86400000);
+      return(!isNaN(d)&&d.getFullYear()>=2000&&d.getFullYear()<=2100)?d:null;
     }
-    var s = String(f).trim();
-    if (/^[0-9]{4}-[0-9]{2}-[0-9]{2}/.test(s)) {
-      var d = new Date(s);
-      return (!isNaN(d) && d.getFullYear() >= 2000 && d.getFullYear() <= 2100) ? d : null;
-    }
-    if (/^[0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4}/.test(s)) {
-      var parts = s.split('/');
-      var d = new Date(parseInt(parts[2]), parseInt(parts[1])-1, parseInt(parts[0]));
-      return (!isNaN(d) && d.getFullYear() >= 2000 && d.getFullYear() <= 2100) ? d : null;
-    }
-    if (/^[0-9]{1,2}-[0-9]{1,2}-[0-9]{4}/.test(s)) {
-      var parts = s.split('-');
-      if (parseInt(parts[2]) > 2000) {
-        var d = new Date(parseInt(parts[2]), parseInt(parts[1])-1, parseInt(parts[0]));
-        return (!isNaN(d) && d.getFullYear() >= 2000 && d.getFullYear() <= 2100) ? d : null;
-      }
-    }
-    var d = new Date(s);
-    return (!isNaN(d) && d.getFullYear() >= 2000 && d.getFullYear() <= 2100) ? d : null;
-  } catch(e) { return null; }
+    var s=String(f).trim();
+    if(/^[0-9]{4}-[0-9]{2}-[0-9]{2}/.test(s)){var d=new Date(s);return(!isNaN(d)&&d.getFullYear()>=2000&&d.getFullYear()<=2100)?d:null;}
+    if(/^[0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4}/.test(s)){var p=s.split('/');var d=new Date(parseInt(p[2]),parseInt(p[1])-1,parseInt(p[0]));return(!isNaN(d)&&d.getFullYear()>=2000&&d.getFullYear()<=2100)?d:null;}
+    if(/^[0-9]{1,2}-[0-9]{1,2}-[0-9]{4}/.test(s)){var p=s.split('-');if(parseInt(p[2])>2000){var d=new Date(parseInt(p[2]),parseInt(p[1])-1,parseInt(p[0]));return(!isNaN(d)&&d.getFullYear()>=2000&&d.getFullYear()<=2100)?d:null;}}
+    var d=new Date(s);return(!isNaN(d)&&d.getFullYear()>=2000&&d.getFullYear()<=2100)?d:null;
+  }catch(e){return null;}
 }
 
-// Convierte string "YYYY-MM-DD" del input[type=date] a Date local
-function parsearFechaInput(s) {
-  if (!s) return null;
-  var parts = s.split('-');
-  if (parts.length !== 3) return null;
-  return new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]));
+function parsearFechaInput(s){
+  if(!s) return null;
+  var p=s.split('-'); if(p.length!==3) return null;
+  return new Date(parseInt(p[0]),parseInt(p[1])-1,parseInt(p[2]));
 }
 
-function fechaValida(f) { return parsearFecha(f) !== null; }
+function fechaValida(f){return parsearFecha(f)!==null;}
 
-function formatFecha(f) {
-  var d = parsearFecha(f);
-  if (!d) return '—';
-  try {
-    return d.toLocaleDateString('es-CO', {day:'2-digit', month:'short', year:'numeric'});
-  } catch(e) { return '—'; }
+function formatFecha(f){
+  var d=parsearFecha(f); if(!d) return '—';
+  try{return d.toLocaleDateString('es-CO',{day:'2-digit',month:'short',year:'numeric'});}catch(e){return '—';}
 }
 
-function soloFecha(d) {
-  // Devuelve Date sin hora para comparación de rangos
-  var c = new Date(d);
-  c.setHours(0,0,0,0);
-  return c;
+function soloFecha(d){var c=new Date(d);c.setHours(0,0,0,0);return c;}
+
+function diasRestantes(fecha){
+  var d=parsearFecha(fecha); if(!d) return null;
+  try{d.setHours(0,0,0,0);var h=new Date();h.setHours(0,0,0,0);return Math.round((d-h)/(1000*60*60*24));}catch(e){return null;}
 }
 
-function diasRestantes(fecha) {
-  var d = parsearFecha(fecha);
-  if (!d) return null;
-  try {
-    d.setHours(0,0,0,0);
-    var h = new Date(); h.setHours(0,0,0,0);
-    return Math.round((d - h) / (1000*60*60*24));
-  } catch(e) { return null; }
+function calcularHoras(f1,f2){
+  var d1=parsearFecha(f1),d2=parsearFecha(f2);
+  if(!d1||!d2) return null;
+  return(d2-d1)/(1000*60*60);
 }
 
-function calcularHoras(f1, f2) {
-  var d1 = parsearFecha(f1);
-  var d2 = parsearFecha(f2);
-  if (!d1 || !d2) return null;
-  try { return (d2 - d1) / (1000 * 60 * 60); } catch(e) { return null; }
-}
-
-function semaforo(dias, estado) {
-  if (estado === 100) return 'x';
-  if (dias === null) return 'x';
-  if (dias < 0) return 'r';
-  if (dias <= 3) return 'o';
+function semaforo(dias,estado){
+  if(estado===100) return 'x';
+  if(dias===null) return 'x';
+  if(dias<0) return 'r';
+  if(dias<=3) return 'o';
   return 'g';
 }
 
-function estadoLabel(v) {
-  var p = parsearEstado(v);
-  if (p === 100) return {txt:'Completada', cls:'b-green'};
-  if (p === 50) return {txt:'En progreso', cls:'b-blue'};
-  return {txt:'Sin iniciar', cls:'b-gray'};
+function estadoLabel(v){
+  var p=parsearEstado(v);
+  if(p===100) return{txt:'Completada',cls:'b-green'};
+  if(p===50) return{txt:'En progreso',cls:'b-blue'};
+  return{txt:'Sin iniciar',cls:'b-gray'};
 }
 
-function prioridadBadge(p) {
-  var m = {urgente:'b-red', urgent:'b-red', importante:'b-orange', important:'b-orange', media:'b-blue', medium:'b-blue', baja:'b-gray', low:'b-gray'};
-  return m[(p||'').toLowerCase()] || 'b-gray';
+function prioridadBadge(p){
+  var m={urgente:'b-red',urgent:'b-red',importante:'b-orange',important:'b-orange',media:'b-blue',medium:'b-blue',baja:'b-gray',low:'b-gray'};
+  return m[(p||'').toLowerCase()]||'b-gray';
 }
 
-// ─── UI HELPERS ──────────────────────────────────────────────────────────────
-
-function mostrarCargando(txt) {
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('loadingScreen').style.display = 'flex';
-  document.getElementById('loadingTxt').textContent = txt || 'Cargando...';
+function ndsColor(pct){
+  return pct>=CONFIG.NDS_META?'#4CAF50':pct>=70?'#FFA726':'#E53935';
 }
 
-// ─── AUTH ────────────────────────────────────────────────────────────────────
+// ── AUTH ─────────────────────────────────────────────────────────────────────
 
-async function getToken() {
-  var account = msalInstance.getActiveAccount();
-  if (!account) throw new Error('No hay sesión activa');
-  var result = await msalInstance.acquireTokenSilent({ scopes: scopes, account: account });
-  return result.accessToken;
+function mostrarCargando(txt){
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('loadingScreen').style.display='flex';
+  document.getElementById('loadingTxt').textContent=txt||'Cargando...';
 }
 
-async function iniciarLogin() {
-  document.getElementById('btnLogin').disabled = true;
-  document.getElementById('btnLogin').textContent = 'Conectando...';
-  document.getElementById('loginError').style.display = 'none';
-  try {
+async function getToken(){
+  var account=msalInstance.getActiveAccount();
+  if(!account) throw new Error('No hay sesión activa');
+  var r=await msalInstance.acquireTokenSilent({scopes:scopes,account:account});
+  return r.accessToken;
+}
+
+async function iniciarLogin(){
+  document.getElementById('btnLogin').disabled=true;
+  document.getElementById('btnLogin').textContent='Conectando...';
+  document.getElementById('loginError').style.display='none';
+  try{
     await msalInstance.initialize();
-    var resp = await msalInstance.loginPopup({ scopes: scopes });
+    var resp=await msalInstance.loginPopup({scopes:scopes});
     msalInstance.setActiveAccount(resp.account);
     mostrarCargando('Obteniendo datos de Excel...');
     await cargarDatos();
-  } catch(e) {
-    document.getElementById('btnLogin').disabled = false;
-    document.getElementById('btnLogin').textContent = 'Ingresar con cuenta Microsoft';
-    var err = document.getElementById('loginError');
-    err.textContent = 'Error: ' + (e.message || 'Intenta de nuevo');
-    err.style.display = 'block';
+  }catch(e){
+    document.getElementById('btnLogin').disabled=false;
+    document.getElementById('btnLogin').textContent='Ingresar con cuenta Microsoft';
+    var err=document.getElementById('loginError');
+    err.textContent='Error: '+(e.message||'Intenta de nuevo');
+    err.style.display='block';
   }
 }
 
-async function cargarDatos() {
-  try {
+async function cargarDatos(){
+  try{
     mostrarCargando('Conectando con SharePoint...');
-    accessToken = await getToken();
-    var account = msalInstance.getActiveAccount();
-    document.getElementById('userName').textContent = account.name || account.username;
+    accessToken=await getToken();
+    var account=msalInstance.getActiveAccount();
+    document.getElementById('userName').textContent=account.name||account.username;
 
     mostrarCargando('Buscando sitio SharePoint...');
-    var siteResp = await fetch('https://graph.microsoft.com/v1.0/sites/' + CONFIG.siteHostname + ':' + CONFIG.sitePath, { headers: { Authorization: 'Bearer ' + accessToken } });
-    var siteData = await siteResp.json();
-    if (!siteData.id) throw new Error('No se encontró el sitio de SharePoint');
-    var siteId = siteData.id;
+    var siteResp=await fetch('https://graph.microsoft.com/v1.0/sites/'+CONFIG.siteHostname+':'+CONFIG.sitePath,{headers:{Authorization:'Bearer '+accessToken}});
+    var siteData=await siteResp.json();
+    if(!siteData.id) throw new Error('No se encontró el sitio de SharePoint');
+    var siteId=siteData.id;
 
-    var drivesResp = await fetch('https://graph.microsoft.com/v1.0/sites/' + siteId + '/drives', { headers: { Authorization: 'Bearer ' + accessToken } });
-    var drivesData = await drivesResp.json();
-    var drive = drivesData.value.find(function(d){ return d.name === 'Documentos compartidos' || d.name === 'Shared Documents' || d.name === 'Documentos' || d.name === 'Documents'; }) || drivesData.value[0];
-    var driveId = drive.id;
+    var drivesResp=await fetch('https://graph.microsoft.com/v1.0/sites/'+siteId+'/drives',{headers:{Authorization:'Bearer '+accessToken}});
+    var drivesData=await drivesResp.json();
+    var drive=drivesData.value.find(function(d){return d.name==='Documentos compartidos'||d.name==='Shared Documents'||d.name==='Documentos'||d.name==='Documents';})||drivesData.value[0];
+    var driveId=drive.id;
 
     mostrarCargando('Buscando archivo Excel...');
-    var fileResp = await fetch('https://graph.microsoft.com/v1.0/drives/' + driveId + '/root:/' + CONFIG.driveFolder + '/' + CONFIG.fileName, { headers: { Authorization: 'Bearer ' + accessToken } });
-    var fileData = await fileResp.json();
-    if (!fileData.id) throw new Error('No se encontró el archivo Excel');
-    var fileId = fileData.id;
+    var fileResp=await fetch('https://graph.microsoft.com/v1.0/drives/'+driveId+'/root:/'+CONFIG.driveFolder+'/'+CONFIG.fileName,{headers:{Authorization:'Bearer '+accessToken}});
+    var fileData=await fileResp.json();
+    if(!fileData.id) throw new Error('No se encontró el archivo Excel');
+    var fileId=fileData.id;
 
     mostrarCargando('Leyendo tabla de tareas...');
-    var headerResp = await fetch('https://graph.microsoft.com/v1.0/drives/' + driveId + '/items/' + fileId + '/workbook/tables/' + CONFIG.tableName + '/columns', { headers: { Authorization: 'Bearer ' + accessToken } });
-    var headerData = await headerResp.json();
-    var columnas = headerData.value.map(function(c){ return c.name; });
+    var headerResp=await fetch('https://graph.microsoft.com/v1.0/drives/'+driveId+'/items/'+fileId+'/workbook/tables/'+CONFIG.tableName+'/columns',{headers:{Authorization:'Bearer '+accessToken}});
+    var headerData=await headerResp.json();
+    var columnas=headerData.value.map(function(c){return c.name;});
 
-    var tableResp = await fetch('https://graph.microsoft.com/v1.0/drives/' + driveId + '/items/' + fileId + '/workbook/tables/' + CONFIG.tableName + '/rows', { headers: { Authorization: 'Bearer ' + accessToken } });
-    var tableData = await tableResp.json();
-    if (!tableData.value) throw new Error('No se pudo leer la tabla ' + CONFIG.tableName);
+    var tableResp=await fetch('https://graph.microsoft.com/v1.0/drives/'+driveId+'/items/'+fileId+'/workbook/tables/'+CONFIG.tableName+'/rows',{headers:{Authorization:'Bearer '+accessToken}});
+    var tableData=await tableResp.json();
+    if(!tableData.value) throw new Error('No se pudo leer la tabla '+CONFIG.tableName);
 
-    todosLosDatos = tableData.value.map(function(row) {
-      var vals = row.values[0];
-      var obj = {};
-      columnas.forEach(function(col, i){ obj[col] = (vals[i] !== null && vals[i] !== undefined) ? vals[i] : ''; });
+    todosLosDatos=tableData.value.map(function(row){
+      var vals=row.values[0],obj={};
+      columnas.forEach(function(col,i){obj[col]=(vals[i]!==null&&vals[i]!==undefined)?vals[i]:'';});
       return obj;
-    }).filter(function(r){ return r.Titulo_Tarea || r.ID_Tarea; });
+    }).filter(function(r){return r.Titulo_Tarea||r.ID_Tarea;});
 
-    datosFiltrados = todosLosDatos.slice();
+    datosFiltrados=todosLosDatos.slice();
     poblarFiltros();
     renderTodo();
 
-    document.getElementById('loadingScreen').style.display = 'none';
-    document.getElementById('dashboard').style.display = 'block';
-    document.getElementById('syncBar').style.display = 'flex';
-    document.getElementById('lastUpdate').textContent = 'Actualizado: ' + new Date().toLocaleTimeString('es-CO');
-
-  } catch(e) {
-    document.getElementById('loadingScreen').style.display = 'none';
-    document.getElementById('loginScreen').style.display = 'flex';
-    document.getElementById('btnLogin').disabled = false;
-    document.getElementById('btnLogin').textContent = 'Ingresar con cuenta Microsoft';
-    var err = document.getElementById('loginError');
-    err.textContent = 'Error: ' + (e.message || 'No se pudo cargar');
-    err.style.display = 'block';
+    document.getElementById('loadingScreen').style.display='none';
+    document.getElementById('dashboard').style.display='block';
+    document.getElementById('syncBar').style.display='flex';
+    document.getElementById('lastUpdate').textContent='Actualizado: '+new Date().toLocaleTimeString('es-CO');
+  }catch(e){
+    document.getElementById('loadingScreen').style.display='none';
+    document.getElementById('loginScreen').style.display='flex';
+    document.getElementById('btnLogin').disabled=false;
+    document.getElementById('btnLogin').textContent='Ingresar con cuenta Microsoft';
+    var err=document.getElementById('loginError');
+    err.textContent='Error: '+(e.message||'No se pudo cargar');
+    err.style.display='block';
   }
 }
 
-function cerrarSesion() {
+function cerrarSesion(){
   msalInstance.logoutPopup();
-  document.getElementById('dashboard').style.display = 'none';
-  document.getElementById('loginScreen').style.display = 'flex';
-  document.getElementById('btnLogin').disabled = false;
-  document.getElementById('btnLogin').textContent = 'Ingresar con cuenta Microsoft';
+  document.getElementById('dashboard').style.display='none';
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('btnLogin').disabled=false;
+  document.getElementById('btnLogin').textContent='Ingresar con cuenta Microsoft';
 }
 
-// ─── FILTROS ─────────────────────────────────────────────────────────────────
+// ── FILTROS ───────────────────────────────────────────────────────────────────
 
-function poblarFiltros() {
-  // ASIGNADOS: normalizar nombres para evitar duplicados por espacios
-  var asignadosMap = {};
-  todosLosDatos.forEach(function(t) {
-    splitAsignados(t.Asignado_Nombre).forEach(function(n) {
-      var nombre = n.trim().replace(/\s+/g, ' ');
-      if (nombre) asignadosMap[normalizarNombre(nombre)] = nombre; // key=normalizado, val=original limpio
+function poblarFiltros(){
+  var asignadosMap={};
+  todosLosDatos.forEach(function(t){
+    splitAsignados(t.Asignado_Nombre).forEach(function(n){
+      var nombre=n.trim().replace(/\s+/g,' ');
+      if(nombre) asignadosMap[normalizarNombre(nombre)]=nombre;
     });
   });
-  var asignados = Object.values(asignadosMap).sort(function(a,b){ return a.localeCompare(b,'es'); });
+  var asignados=Object.values(asignadosMap).sort(function(a,b){return a.localeCompare(b,'es');});
 
-  var buckets = [];
-  var bucketsSet = {};
-  todosLosDatos.forEach(function(t){ if(t.Bucket && !bucketsSet[t.Bucket]){ bucketsSet[t.Bucket]=1; buckets.push(t.Bucket); } });
+  var bucketsSet={},buckets=[];
+  todosLosDatos.forEach(function(t){if(t.Bucket&&!bucketsSet[t.Bucket]){bucketsSet[t.Bucket]=1;buckets.push(t.Bucket);}});
   buckets.sort();
 
-  var prioridadesSet = {};
-  var prioridades = [];
-  todosLosDatos.forEach(function(t){ if(t.Prioridad && !prioridadesSet[t.Prioridad]){ prioridadesSet[t.Prioridad]=1; prioridades.push(t.Prioridad); } });
+  var prioridadesSet={},prioridades=[];
+  todosLosDatos.forEach(function(t){if(t.Prioridad&&!prioridadesSet[t.Prioridad]){prioridadesSet[t.Prioridad]=1;prioridades.push(t.Prioridad);}});
 
-  var selA = document.getElementById('fAsignado');
-  var selB = document.getElementById('fBucket');
-  var selP = document.getElementById('fPrioridad');
-
-  selA.innerHTML = '<option value="">Todos</option>';
-  selB.innerHTML = '<option value="">Todos</option>';
-  selP.innerHTML = '<option value="">Todas</option>';
-
-  asignados.forEach(function(a){
-    var o = document.createElement('option');
-    o.value = a;
-    o.textContent = a;
-    selA.appendChild(o);
-  });
-  buckets.forEach(function(b){
-    var o = document.createElement('option');
-    o.value = b;
-    o.textContent = b;
-    selB.appendChild(o);
-  });
-  prioridades.forEach(function(p){
-    var o = document.createElement('option');
-    o.value = p;
-    o.textContent = p;
-    selP.appendChild(o);
-  });
+  var selA=document.getElementById('fAsignado'),selB=document.getElementById('fBucket'),selP=document.getElementById('fPrioridad');
+  selA.innerHTML='<option value="">Todos</option>';
+  selB.innerHTML='<option value="">Todos</option>';
+  selP.innerHTML='<option value="">Todas</option>';
+  asignados.forEach(function(a){var o=document.createElement('option');o.value=a;o.textContent=a;selA.appendChild(o);});
+  buckets.forEach(function(b){var o=document.createElement('option');o.value=b;o.textContent=b;selB.appendChild(o);});
+  prioridades.forEach(function(p){var o=document.createElement('option');o.value=p;o.textContent=p;selP.appendChild(o);});
 }
 
-function aplicarFiltros() {
-  var a         = document.getElementById('fAsignado').value;
-  var b         = document.getElementById('fBucket').value;
-  var e         = document.getElementById('fEstado').value;
-  var p         = document.getElementById('fPrioridad').value;
-  var fDesde    = parsearFechaInput(document.getElementById('fFechaDesde').value);
-  var fHasta    = parsearFechaInput(document.getElementById('fFechaHasta').value);
-  var cDesde    = parsearFechaInput(document.getElementById('fCreacionDesde').value);
-  var cHasta    = parsearFechaInput(document.getElementById('fCreacionHasta').value);
+function aplicarFiltros(){
+  var a=document.getElementById('fAsignado').value;
+  var b=document.getElementById('fBucket').value;
+  var e=document.getElementById('fEstado').value;
+  var p=document.getElementById('fPrioridad').value;
+  var fDesde=parsearFechaInput(document.getElementById('fFechaDesde').value);
+  var fHasta=parsearFechaInput(document.getElementById('fFechaHasta').value);
+  var cDesde=parsearFechaInput(document.getElementById('fCreacionDesde').value);
+  var cHasta=parsearFechaInput(document.getElementById('fCreacionHasta').value);
+  if(fHasta) fHasta.setHours(23,59,59,999);
+  if(cHasta) cHasta.setHours(23,59,59,999);
 
-  if (fHasta) fHasta.setHours(23,59,59,999);
-  if (cHasta) cHasta.setHours(23,59,59,999);
-
-  datosFiltrados = todosLosDatos.filter(function(t) {
-    // ── Asignado: comparación normalizada ──
-    var matchA = !a || splitAsignados(t.Asignado_Nombre).some(function(n) {
-      return normalizarNombre(n) === normalizarNombre(a);
-    });
-
-    // ── Bucket ──
-    var matchB = !b || t.Bucket === b;
-
-    // ── Estado ──
-    var matchE = !e || String(parsearEstado(t.Estado)) === e;
-
-    // ── Prioridad ──
-    var matchP = !p || t.Prioridad === p;
-
-    // ── Rango de fecha de vencimiento ──
-    var matchFV = true;
-    if (fDesde || fHasta) {
-      var fv = parsearFecha(t.Fecha_vencimiento);
-      if (!fv) {
-        matchFV = false; // sin fecha no pasa el rango
-      } else {
-        var fvd = soloFecha(fv);
-        if (fDesde && fvd < fDesde) matchFV = false;
-        if (fHasta && fvd > fHasta) matchFV = false;
-      }
-    }
-
-    // ── Rango de fecha de creación ──
-    var matchFC = true;
-    if (cDesde || cHasta) {
-      var fc = parsearFecha(t.Fecha_Creacion);
-      if (!fc) {
-        matchFC = false;
-      } else {
-        var fcd = soloFecha(fc);
-        if (cDesde && fcd < cDesde) matchFC = false;
-        if (cHasta && fcd > cHasta) matchFC = false;
-      }
-    }
-
-    return matchA && matchB && matchE && matchP && matchFV && matchFC;
+  datosFiltrados=todosLosDatos.filter(function(t){
+    var matchA=!a||splitAsignados(t.Asignado_Nombre).some(function(n){return normalizarNombre(n)===normalizarNombre(a);});
+    var matchB=!b||t.Bucket===b;
+    var matchE=!e||String(parsearEstado(t.Estado))===e;
+    var matchP=!p||t.Prioridad===p;
+    var matchFV=true;
+    if(fDesde||fHasta){var fv=parsearFecha(t.Fecha_vencimiento);if(!fv){matchFV=false;}else{var fvd=soloFecha(fv);if(fDesde&&fvd<fDesde)matchFV=false;if(fHasta&&fvd>fHasta)matchFV=false;}}
+    var matchFC=true;
+    if(cDesde||cHasta){var fc=parsearFecha(t.Fecha_Creacion);if(!fc){matchFC=false;}else{var fcd=soloFecha(fc);if(cDesde&&fcd<cDesde)matchFC=false;if(cHasta&&fcd>cHasta)matchFC=false;}}
+    return matchA&&matchB&&matchE&&matchP&&matchFV&&matchFC;
   });
 
-  actualizarBarraFiltrosActivos(a, b, e, p, fDesde, fHasta, cDesde, cHasta);
+  actualizarBarraFiltros(a,b,e,p,fDesde,fHasta,cDesde,cHasta);
   renderTodo();
 }
 
-function actualizarBarraFiltrosActivos(a, b, e, p, fDesde, fHasta, cDesde, cHasta) {
-  var bar = document.getElementById('activeFiltersBar');
-  var tags = [];
-
-  if (a) tags.push('Asignado: ' + a);
-  if (b) tags.push('Bucket: ' + b);
-  if (e === '0') tags.push('Estado: Sin iniciar');
-  else if (e === '50') tags.push('Estado: En progreso');
-  else if (e === '100') tags.push('Estado: Completadas');
-  if (p) tags.push('Prioridad: ' + p);
-
-  var fmtInput = function(d){ return d ? d.toLocaleDateString('es-CO',{day:'2-digit',month:'short',year:'numeric'}) : null; };
-  if (fDesde && fHasta) tags.push('Vence: ' + fmtInput(fDesde) + ' → ' + fmtInput(fHasta));
-  else if (fDesde) tags.push('Vence desde: ' + fmtInput(fDesde));
-  else if (fHasta) tags.push('Vence hasta: ' + fmtInput(fHasta));
-
-  if (cDesde && cHasta) tags.push('Creación: ' + fmtInput(cDesde) + ' → ' + fmtInput(cHasta));
-  else if (cDesde) tags.push('Creación desde: ' + fmtInput(cDesde));
-  else if (cHasta) tags.push('Creación hasta: ' + fmtInput(cHasta));
-
-  if (tags.length) {
-    bar.style.display = 'flex';
-    bar.innerHTML = '<span style="color:#C9A84C88;margin-right:4px">Filtros activos:</span>' +
-      tags.map(function(t){ return '<span class="active-filter-tag">' + t + '</span>'; }).join('') +
-      ' <span style="color:#C9A84C44;margin-left:4px">— ' + datosFiltrados.length + ' resultado(s)</span>';
-  } else {
-    bar.style.display = 'none';
-    bar.innerHTML = '';
-  }
+function actualizarBarraFiltros(a,b,e,p,fDesde,fHasta,cDesde,cHasta){
+  var bar=document.getElementById('activeFiltersBar'),tags=[];
+  if(a) tags.push('Asignado: '+a);
+  if(b) tags.push('Bucket: '+b);
+  if(e==='0') tags.push('Estado: Sin iniciar');
+  else if(e==='50') tags.push('Estado: En progreso');
+  else if(e==='100') tags.push('Estado: Completadas');
+  if(p) tags.push('Prioridad: '+p);
+  var fmt=function(d){return d?d.toLocaleDateString('es-CO',{day:'2-digit',month:'short',year:'numeric'}):null;};
+  if(fDesde&&fHasta) tags.push('Vence: '+fmt(fDesde)+' → '+fmt(fHasta));
+  else if(fDesde) tags.push('Vence desde: '+fmt(fDesde));
+  else if(fHasta) tags.push('Vence hasta: '+fmt(fHasta));
+  if(cDesde&&cHasta) tags.push('Creación: '+fmt(cDesde)+' → '+fmt(cHasta));
+  else if(cDesde) tags.push('Creación desde: '+fmt(cDesde));
+  else if(cHasta) tags.push('Creación hasta: '+fmt(cHasta));
+  if(tags.length){
+    bar.style.display='flex';
+    bar.innerHTML='<span style="color:#C9A84C88;margin-right:4px">Filtros activos:</span>'+
+      tags.map(function(t){return'<span class="active-filter-tag">'+t+'</span>';}).join('')+
+      ' <span style="color:#C9A84C44;margin-left:4px">— '+datosFiltrados.length+' resultado(s)</span>';
+  }else{bar.style.display='none';bar.innerHTML='';}
 }
 
-function limpiarFiltros() {
-  ['fAsignado','fBucket','fEstado','fPrioridad'].forEach(function(id){ document.getElementById(id).value = ''; });
-  ['fFechaDesde','fFechaHasta','fCreacionDesde','fCreacionHasta'].forEach(function(id){ document.getElementById(id).value = ''; });
-  document.getElementById('activeFiltersBar').style.display = 'none';
-  datosFiltrados = todosLosDatos.slice();
+function limpiarFiltros(){
+  ['fAsignado','fBucket','fEstado','fPrioridad'].forEach(function(id){document.getElementById(id).value='';});
+  ['fFechaDesde','fFechaHasta','fCreacionDesde','fCreacionHasta'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('activeFiltersBar').style.display='none';
+  datosFiltrados=todosLosDatos.slice();
   renderTodo();
 }
 
-// ─── RENDER ──────────────────────────────────────────────────────────────────
+// ── RENDER DASHBOARD ─────────────────────────────────────────────────────────
 
-function renderKPIs() {
-  var total = datosFiltrados.length;
-  var completadas = datosFiltrados.filter(function(t){ return parsearEstado(t.Estado) === 100; }).length;
-  var enProgreso  = datosFiltrados.filter(function(t){ return parsearEstado(t.Estado) === 50; }).length;
-  var sinIniciar  = datosFiltrados.filter(function(t){ return parsearEstado(t.Estado) === 0; }).length;
-  var vencidas    = datosFiltrados.filter(function(t){
-    if (parsearEstado(t.Estado) === 100) return false;
-    var dias = diasRestantes(t.Fecha_vencimiento);
-    return dias !== null && dias < 0;
+function renderKPIs(){
+  var total=datosFiltrados.length;
+  var completadas=datosFiltrados.filter(function(t){return parsearEstado(t.Estado)===100;}).length;
+  var enProgreso=datosFiltrados.filter(function(t){return parsearEstado(t.Estado)===50;}).length;
+  var sinIniciar=datosFiltrados.filter(function(t){return parsearEstado(t.Estado)===0;}).length;
+  var vencidas=datosFiltrados.filter(function(t){
+    if(parsearEstado(t.Estado)===100) return false;
+    var dias=diasRestantes(t.Fecha_vencimiento);
+    return dias!==null&&dias<0;
   }).length;
-  var pct = total ? Math.round(completadas / total * 100) : 0;
-
-  var ndsCount = datosFiltrados.filter(function(t) {
-    if (parsearEstado(t.Estado) !== 100) return false;
-    var horas = calcularHoras(t.Fecha_Creacion, t.Completada);
-    return horas !== null && horas <= 72;
+  var pct=total?Math.round(completadas/total*100):0;
+  var ndsCount=datosFiltrados.filter(function(t){
+    if(parsearEstado(t.Estado)!==100) return false;
+    var h=calcularHoras(t.Fecha_Creacion,t.Completada);
+    return h!==null&&h<=72;
   }).length;
-  var nds = total ? Math.round(ndsCount / total * 100) : 0;
-  var ndsColor = nds >= 90 ? '#4CAF50' : nds >= 70 ? '#FFA726' : '#E53935';
+  var nds=total?Math.round(ndsCount/total*100):0;
+  var nc=ndsColor(nds);
 
-  document.getElementById('kpis').innerHTML =
-    '<div class="kpi gold">' +
-      '<div class="kpi-label">TOTAL TAREAS</div>' +
-      '<div class="kpi-value">' + total + '</div>' +
-      '<div class="progress-bar"><div class="progress-fill" style="width:' + pct + '%"></div></div>' +
-      '<div class="kpi-sub" style="color:#C9A84C88">' + pct + '% completado</div>' +
-    '</div>' +
-    '<div class="kpi green">' +
-      '<div class="kpi-label">COMPLETADAS</div>' +
-      '<div class="kpi-value" style="color:#81C784">' + completadas + '</div>' +
-      '<div class="kpi-sub" style="color:#4CAF5066">' + (total ? Math.round(completadas/total*100) : 0) + '% del total</div>' +
-    '</div>' +
-    '<div class="kpi blue">' +
-      '<div class="kpi-label">EN PROGRESO</div>' +
-      '<div class="kpi-value" style="color:#90CAF9">' + enProgreso + '</div>' +
-      '<div class="kpi-sub" style="color:#42A5F566">' + (total ? Math.round(enProgreso/total*100) : 0) + '% del total</div>' +
-    '</div>' +
-    '<div class="kpi orange">' +
-      '<div class="kpi-label">SIN INICIAR</div>' +
-      '<div class="kpi-value" style="color:#FFB74D">' + sinIniciar + '</div>' +
-      '<div class="kpi-sub" style="color:#FFA72666">' + (total ? Math.round(sinIniciar/total*100) : 0) + '% del total</div>' +
-    '</div>' +
-    '<div class="kpi red">' +
-      '<div class="kpi-label">VENCIDAS</div>' +
-      '<div class="kpi-value" style="color:#EF9A9A">' + vencidas + '</div>' +
-      '<div class="kpi-sub" style="color:#E5393566">requieren atención</div>' +
-    '</div>' +
-    '<div class="kpi" style="border-top-color:' + ndsColor + ';grid-column:span 2">' +
-      '<div class="kpi-label">NDS — NIVEL DE SERVICIO (meta: 72 hrs)</div>' +
-      '<div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">' +
-        '<div class="kpi-value" style="color:' + ndsColor + '">' + nds + '%</div>' +
-        '<div style="font-size:13px;color:#aaa">' + ndsCount + ' de ' + total + ' tareas completadas en 72 hrs</div>' +
-      '</div>' +
-      '<div class="progress-bar" style="margin-top:8px;height:8px">' +
-        '<div class="progress-fill" style="width:' + nds + '%;background:' + ndsColor + '"></div>' +
-      '</div>' +
-      '<div style="display:flex;justify-content:space-between;margin-top:4px">' +
-        '<div style="font-size:11px;color:#C9A84C88">0%</div>' +
-        '<div style="font-size:11px;color:#C9A84C88">Meta 100% en 72 hrs</div>' +
-      '</div>' +
-    '</div>';
+  document.getElementById('kpis').innerHTML=
+    '<div class="kpi gold"><div class="kpi-label">TOTAL TAREAS</div><div class="kpi-value">'+total+'</div>'+
+    '<div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%"></div></div>'+
+    '<div class="kpi-sub" style="color:#C9A84C88">'+pct+'% completado</div></div>'+
+    '<div class="kpi green"><div class="kpi-label">COMPLETADAS</div><div class="kpi-value" style="color:#81C784">'+completadas+'</div>'+
+    '<div class="kpi-sub" style="color:#4CAF5066">'+(total?Math.round(completadas/total*100):0)+'% del total</div></div>'+
+    '<div class="kpi blue"><div class="kpi-label">EN PROGRESO</div><div class="kpi-value" style="color:#90CAF9">'+enProgreso+'</div>'+
+    '<div class="kpi-sub" style="color:#42A5F566">'+(total?Math.round(enProgreso/total*100):0)+'% del total</div></div>'+
+    '<div class="kpi orange"><div class="kpi-label">SIN INICIAR</div><div class="kpi-value" style="color:#FFB74D">'+sinIniciar+'</div>'+
+    '<div class="kpi-sub" style="color:#FFA72666">'+(total?Math.round(sinIniciar/total*100):0)+'% del total</div></div>'+
+    '<div class="kpi red"><div class="kpi-label">VENCIDAS</div><div class="kpi-value" style="color:#EF9A9A">'+vencidas+'</div>'+
+    '<div class="kpi-sub" style="color:#E5393566">requieren atención</div></div>'+
+    '<div class="kpi" style="border-top-color:'+nc+';grid-column:span 2">'+
+    '<div class="kpi-label">NDS — NIVEL DE SERVICIO (meta: '+CONFIG.NDS_META+'% en 72 hrs)</div>'+
+    '<div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">'+
+    '<div class="kpi-value" style="color:'+nc+'">'+nds+'%</div>'+
+    '<div style="font-size:13px;color:#aaa">'+ndsCount+' de '+total+' tareas completadas en 72 hrs</div></div>'+
+    '<div class="progress-bar" style="margin-top:8px;height:8px">'+
+    '<div class="progress-fill" style="width:'+nds+'%;background:'+nc+'"></div></div>'+
+    '<div style="display:flex;justify-content:space-between;margin-top:4px">'+
+    '<div style="font-size:11px;color:#C9A84C88">0%</div>'+
+    '<div style="font-size:11px;color:#C9A84C88">Meta '+CONFIG.NDS_META+'% en 72 hrs</div></div></div>';
 }
 
-function renderAsignados() {
-  var conteo = {};
-  datosFiltrados.forEach(function(t) {
-    splitAsignados(t.Asignado_Nombre).forEach(function(n) {
-      var nc = n.trim().replace(/\s+/g,' ');
-      if (nc) conteo[nc] = (conteo[nc] || 0) + 1;
+function renderAsignados(){
+  var conteo={};
+  datosFiltrados.forEach(function(t){
+    splitAsignados(t.Asignado_Nombre).forEach(function(n){
+      var nc=n.trim().replace(/\s+/g,' ');
+      if(nc) conteo[nc]=(conteo[nc]||0)+1;
     });
   });
-  var sorted = Object.keys(conteo).map(function(k){ return [k, conteo[k]]; }).sort(function(a,b){ return b[1]-a[1]; });
-  var max = sorted.length ? sorted[0][1] : 1;
-  document.getElementById('chartAsignados').innerHTML = sorted.length
-    ? sorted.map(function(item) {
-        var displayName = item[0].replace(/ SAS$/i,'').replace(/ S\.A\.S\.?$/i,'').trim();
-        return '<div class="assignee-bar">' +
-          '<div class="assignee-name">' + displayName + '</div>' +
-          '<div class="assignee-track"><div class="assignee-fill" style="width:' + Math.round(item[1]/max*100) + '%"></div></div>' +
-          '<div class="assignee-count">' + item[1] + '</div>' +
-        '</div>';
+  var sorted=Object.keys(conteo).map(function(k){return[k,conteo[k]];}).sort(function(a,b){return b[1]-a[1];});
+  var max=sorted.length?sorted[0][1]:1;
+  document.getElementById('chartAsignados').innerHTML=sorted.length
+    ?sorted.map(function(item){
+        var dn=displayNombre(item[0]);
+        return'<div class="assignee-bar">'+
+          '<div class="assignee-name">'+dn+'</div>'+
+          '<div class="assignee-track"><div class="assignee-fill" style="width:'+Math.round(item[1]/max*100)+'%"></div></div>'+
+          '<div class="assignee-count">'+item[1]+'</div></div>';
       }).join('')
-    : '<div class="empty-state">Sin datos</div>';
+    :'<div class="empty-state">Sin datos</div>';
 }
 
-function renderChartEstado() {
-  var c0=0, c50=0, c100=0;
-  datosFiltrados.forEach(function(t){ var e=parsearEstado(t.Estado); if(e===100)c100++; else if(e===50)c50++; else c0++; });
-  var labels = ['Sin iniciar','En progreso','Completada'];
-  var data   = [c0, c50, c100];
-  var colors = ['#666','#42A5F5','#4CAF50'];
-  document.getElementById('legendEstado').innerHTML = labels.map(function(l,i){
-    return '<span class="legend-item"><span class="legend-dot" style="background:' + colors[i] + '"></span>' + l + ' (' + data[i] + ')</span>';
+function renderChartEstado(){
+  var c0=0,c50=0,c100=0;
+  datosFiltrados.forEach(function(t){var e=parsearEstado(t.Estado);if(e===100)c100++;else if(e===50)c50++;else c0++;});
+  var labels=['Sin iniciar','En progreso','Completada'],data=[c0,c50,c100],colors=['#666','#42A5F5','#4CAF50'];
+  document.getElementById('legendEstado').innerHTML=labels.map(function(l,i){
+    return'<span class="legend-item"><span class="legend-dot" style="background:'+colors[i]+'"></span>'+l+' ('+data[i]+')</span>';
   }).join('');
-  if (chartEstadoInst) chartEstadoInst.destroy();
-  chartEstadoInst = new Chart(document.getElementById('chartEstado'), {
-    type: 'doughnut',
-    data: { labels: labels, datasets: [{ data: data, backgroundColor: colors, borderColor: '#16213e', borderWidth: 3 }] },
-    options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false} } }
+  if(chartEstadoInst) chartEstadoInst.destroy();
+  chartEstadoInst=new Chart(document.getElementById('chartEstado'),{
+    type:'doughnut',data:{labels:labels,datasets:[{data:data,backgroundColor:colors,borderColor:'#16213e',borderWidth:3}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}
   });
 }
 
-function renderChartBucket() {
-  var conteo = {};
-  datosFiltrados.forEach(function(t){ if(t.Bucket) conteo[t.Bucket] = (conteo[t.Bucket]||0)+1; });
-  var sorted = Object.keys(conteo).map(function(k){ return [k,conteo[k]]; }).sort(function(a,b){ return b[1]-a[1]; });
-  var labels = sorted.map(function(e){ return e[0]; });
-  var data   = sorted.map(function(e){ return e[1]; });
-  document.getElementById('legendBucket').innerHTML = labels.map(function(l,i){
-    return '<span class="legend-item"><span class="legend-dot" style="background:' + PALETA[i%PALETA.length] + '"></span>' + l + '</span>';
+function renderChartBucket(){
+  var conteo={};
+  datosFiltrados.forEach(function(t){if(t.Bucket) conteo[t.Bucket]=(conteo[t.Bucket]||0)+1;});
+  var sorted=Object.keys(conteo).map(function(k){return[k,conteo[k]];}).sort(function(a,b){return b[1]-a[1];});
+  var labels=sorted.map(function(e){return e[0];}),data=sorted.map(function(e){return e[1];});
+  document.getElementById('legendBucket').innerHTML=labels.map(function(l,i){
+    return'<span class="legend-item"><span class="legend-dot" style="background:'+PALETA[i%PALETA.length]+'"></span>'+l+'</span>';
   }).join('');
-  if (chartBucketInst) chartBucketInst.destroy();
-  chartBucketInst = new Chart(document.getElementById('chartBucket'), {
-    type: 'bar',
-    data: { labels: labels, datasets: [{ data: data, backgroundColor: labels.map(function(_,i){ return PALETA[i%PALETA.length]; }), borderRadius:4, borderSkipped:false }] },
-    options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
-      scales:{ x:{ticks:{color:'#C9A84C88',font:{size:11},maxRotation:45},grid:{color:'#ffffff08'}}, y:{ticks:{color:'#C9A84C88',font:{size:11},stepSize:1},grid:{color:'#ffffff08'}} } }
+  if(chartBucketInst) chartBucketInst.destroy();
+  chartBucketInst=new Chart(document.getElementById('chartBucket'),{
+    type:'bar',data:{labels:labels,datasets:[{data:data,backgroundColor:labels.map(function(_,i){return PALETA[i%PALETA.length];}),borderRadius:4,borderSkipped:false}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{ticks:{color:'#C9A84C88',font:{size:11},maxRotation:45},grid:{color:'#ffffff08'}},y:{ticks:{color:'#C9A84C88',font:{size:11},stepSize:1},grid:{color:'#ffffff08'}}}}
   });
 }
 
-function renderChartPrioridad() {
-  var conteo = {};
-  datosFiltrados.forEach(function(t){ if(t.Prioridad) conteo[t.Prioridad] = (conteo[t.Prioridad]||0)+1; });
-  var labels = Object.keys(conteo);
-  var data   = labels.map(function(p){ return conteo[p]; });
-  var colors = {urgente:'#E53935',urgent:'#E53935',importante:'#FFA726',important:'#FFA726',media:'#42A5F5',medium:'#42A5F5',baja:'#78909C',low:'#78909C'};
-  document.getElementById('legendPrioridad').innerHTML = labels.map(function(l,i){
-    return '<span class="legend-item"><span class="legend-dot" style="background:' + (colors[l.toLowerCase()]||PALETA[i]) + '"></span>' + l + ' (' + data[i] + ')</span>';
+function renderChartPrioridad(){
+  var conteo={};
+  datosFiltrados.forEach(function(t){if(t.Prioridad) conteo[t.Prioridad]=(conteo[t.Prioridad]||0)+1;});
+  var labels=Object.keys(conteo),data=labels.map(function(p){return conteo[p];});
+  var colors={urgente:'#E53935',urgent:'#E53935',importante:'#FFA726',important:'#FFA726',media:'#42A5F5',medium:'#42A5F5',baja:'#78909C',low:'#78909C'};
+  document.getElementById('legendPrioridad').innerHTML=labels.map(function(l,i){
+    return'<span class="legend-item"><span class="legend-dot" style="background:'+(colors[l.toLowerCase()]||PALETA[i])+'"></span>'+l+' ('+data[i]+')</span>';
   }).join('');
-  if (chartPrioridadInst) chartPrioridadInst.destroy();
-  chartPrioridadInst = new Chart(document.getElementById('chartPrioridad'), {
-    type: 'doughnut',
-    data: { labels: labels, datasets: [{ data: data, backgroundColor: labels.map(function(l){ return colors[l.toLowerCase()]||'#888'; }), borderColor:'#16213e', borderWidth:3 }] },
-    options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}} }
+  if(chartPrioridadInst) chartPrioridadInst.destroy();
+  chartPrioridadInst=new Chart(document.getElementById('chartPrioridad'),{
+    type:'doughnut',data:{labels:labels,datasets:[{data:data,backgroundColor:labels.map(function(l){return colors[l.toLowerCase()]||'#888';}),borderColor:'#16213e',borderWidth:3}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}}}
   });
 }
 
-function renderTablaVencidas() {
-  // Usa datosFiltrados (ya filtrado por asignado/bucket/estado/prioridad/fechas)
-  // y además muestra solo pendientes con vencimiento <= 5 días o ya vencidas
-  var lista = datosFiltrados.filter(function(t){
-    if (parsearEstado(t.Estado) === 100) return false;
-    var dias = diasRestantes(t.Fecha_vencimiento);
-    return dias !== null && dias <= 5;
-  }).sort(function(a,b){ return diasRestantes(a.Fecha_vencimiento) - diasRestantes(b.Fecha_vencimiento); });
-
-  var tbody = document.getElementById('tbodyVencidas');
-  if (!lista.length) { tbody.innerHTML = '<tr><td colspan="8" class="empty-state">Sin tareas urgentes en la selección actual</td></tr>'; return; }
-
-  tbody.innerHTML = lista.map(function(t) {
-    var dias = diasRestantes(t.Fecha_vencimiento);
-    var sem  = semaforo(dias, parsearEstado(t.Estado));
-    var diasTxt = dias < 0
-      ? '<span style="color:#EF9A9A">' + Math.abs(dias) + 'd vencida</span>'
-      : dias === 0 ? '<span style="color:#FFA726">Hoy</span>'
-      : '<span style="color:#FFB74D">' + dias + 'd</span>';
-    var est = estadoLabel(t.Estado);
-    // Mostrar todos los asignados, no solo el primero
-    var asigs = splitAsignados(t.Asignado_Nombre).map(function(n){ return n.replace(/ SAS$/i,'').replace(/ S\.A\.S\.?$/i,'').trim(); }).join(', ') || '—';
-    return '<tr>' +
-      '<td><span class="sem sem-' + sem + '"></span></td>' +
-      '<td style="color:#fff;font-weight:500">' + (t.Titulo_Tarea||'—') + '</td>' +
-      '<td>' + asigs + '</td>' +
-      '<td><span class="badge b-gray">' + (t.Bucket||'—') + '</span></td>' +
-      '<td>' + formatFecha(t.Fecha_vencimiento) + '</td>' +
-      '<td>' + diasTxt + '</td>' +
-      '<td><span class="badge ' + prioridadBadge(t.Prioridad) + '">' + (t.Prioridad||'—') + '</span></td>' +
-      '<td><span class="badge ' + est.cls + '">' + est.txt + '</span></td>' +
+function renderTablaVencidas(){
+  var lista=datosFiltrados.filter(function(t){
+    if(parsearEstado(t.Estado)===100) return false;
+    var dias=diasRestantes(t.Fecha_vencimiento);
+    return dias!==null&&dias<=5;
+  }).sort(function(a,b){return diasRestantes(a.Fecha_vencimiento)-diasRestantes(b.Fecha_vencimiento);});
+  var tbody=document.getElementById('tbodyVencidas');
+  if(!lista.length){tbody.innerHTML='<tr><td colspan="8" class="empty-state">Sin tareas urgentes en la selección actual</td></tr>';return;}
+  tbody.innerHTML=lista.map(function(t){
+    var dias=diasRestantes(t.Fecha_vencimiento),sem=semaforo(dias,parsearEstado(t.Estado));
+    var diasTxt=dias<0?'<span style="color:#EF9A9A">'+Math.abs(dias)+'d vencida</span>':dias===0?'<span style="color:#FFA726">Hoy</span>':'<span style="color:#FFB74D">'+dias+'d</span>';
+    var est=estadoLabel(t.Estado);
+    var asigs=splitAsignados(t.Asignado_Nombre).map(function(n){return displayNombre(n);}).join(', ')||'—';
+    return'<tr>'+
+      '<td><span class="sem sem-'+sem+'"></span></td>'+
+      '<td style="color:#fff;font-weight:500">'+(t.Titulo_Tarea||'—')+'</td>'+
+      '<td>'+asigs+'</td>'+
+      '<td><span class="badge b-gray">'+(t.Bucket||'—')+'</span></td>'+
+      '<td>'+formatFecha(t.Fecha_vencimiento)+'</td>'+
+      '<td>'+diasTxt+'</td>'+
+      '<td><span class="badge '+prioridadBadge(t.Prioridad)+'">'+(t.Prioridad||'—')+'</span></td>'+
+      '<td><span class="badge '+est.cls+'">'+est.txt+'</span></td>'+
     '</tr>';
   }).join('');
 }
 
-function renderTablaTodas() {
-  document.getElementById('contadorTareas').textContent = '(' + datosFiltrados.length + ')';
-  var tbody = document.getElementById('tbodyTodas');
-  if (!datosFiltrados.length) { tbody.innerHTML = '<tr><td colspan="9" class="empty-state">Sin resultados para los filtros aplicados</td></tr>'; return; }
-
-  tbody.innerHTML = datosFiltrados.map(function(t) {
-    var dias = diasRestantes(t.Fecha_vencimiento);
-    var est  = estadoLabel(t.Estado);
-    var sem  = semaforo(dias, parsearEstado(t.Estado));
-    var sinFecha = !fechaValida(t.Fecha_vencimiento);
-    var fechaTxt = sinFecha
-      ? '<span style="color:#C9A84C55;font-style:italic;font-size:11px">Sin fecha</span>'
-      : '<span style="color:' + (dias<0?'#EF9A9A':dias<=3?'#FFB74D':'#aaa') + '">' + formatFecha(t.Fecha_vencimiento) + '</span>';
-    // Mostrar todos los asignados
-    var asigs = splitAsignados(t.Asignado_Nombre).map(function(n){ return n.replace(/ SAS$/i,'').replace(/ S\.A\.S\.?$/i,'').trim(); }).join(', ') || '—';
-    var ndsTxt = '—';
-    if (parsearEstado(t.Estado) === 100) {
-      var horas = calcularHoras(t.Fecha_Creacion, t.Completada);
-      if (horas !== null) {
-        ndsTxt = horas <= 72
-          ? '<span class="badge b-green" style="font-size:10px">&#10003; ' + Math.round(horas) + 'h</span>'
-          : '<span class="badge b-red" style="font-size:10px">+72h (' + Math.round(horas) + 'h)</span>';
-      }
+function renderTablaTodas(){
+  document.getElementById('contadorTareas').textContent='('+datosFiltrados.length+')';
+  var tbody=document.getElementById('tbodyTodas');
+  if(!datosFiltrados.length){tbody.innerHTML='<tr><td colspan="9" class="empty-state">Sin resultados para los filtros aplicados</td></tr>';return;}
+  tbody.innerHTML=datosFiltrados.map(function(t){
+    var dias=diasRestantes(t.Fecha_vencimiento),est=estadoLabel(t.Estado),sem=semaforo(dias,parsearEstado(t.Estado));
+    var fechaTxt=!fechaValida(t.Fecha_vencimiento)
+      ?'<span style="color:#C9A84C55;font-style:italic;font-size:11px">Sin fecha</span>'
+      :'<span style="color:'+(dias<0?'#EF9A9A':dias<=3?'#FFB74D':'#aaa')+'">'+formatFecha(t.Fecha_vencimiento)+'</span>';
+    var asigs=splitAsignados(t.Asignado_Nombre).map(function(n){return displayNombre(n);}).join(', ')||'—';
+    var ndsTxt='—';
+    if(parsearEstado(t.Estado)===100){
+      var horas=calcularHoras(t.Fecha_Creacion,t.Completada);
+      if(horas!==null){ndsTxt=horas<=72?'<span class="badge b-green" style="font-size:10px">&#10003; '+Math.round(horas)+'h</span>':'<span class="badge b-red" style="font-size:10px">+72h ('+Math.round(horas)+'h)</span>';}
     }
-    return '<tr>' +
-      '<td><span class="sem sem-' + sem + '"></span></td>' +
-      '<td style="color:#fff;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + (t.Titulo_Tarea||'—') + '</td>' +
-      '<td>' + asigs + '</td>' +
-      '<td><span class="badge b-gray">' + (t.Bucket||'—') + '</span></td>' +
-      '<td><span class="badge ' + est.cls + '">' + est.txt + '</span></td>' +
-      '<td><span class="badge ' + prioridadBadge(t.Prioridad) + '">' + (t.Prioridad||'—') + '</span></td>' +
-      '<td>' + fechaTxt + '</td>' +
-      '<td style="color:#aaa">' + formatFecha(t.Completada) + '</td>' +
-      '<td>' + ndsTxt + '</td>' +
+    return'<tr>'+
+      '<td><span class="sem sem-'+sem+'"></span></td>'+
+      '<td style="color:#fff;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+(t.Titulo_Tarea||'—')+'</td>'+
+      '<td>'+asigs+'</td>'+
+      '<td><span class="badge b-gray">'+(t.Bucket||'—')+'</span></td>'+
+      '<td><span class="badge '+est.cls+'">'+est.txt+'</span></td>'+
+      '<td><span class="badge '+prioridadBadge(t.Prioridad)+'">'+(t.Prioridad||'—')+'</span></td>'+
+      '<td>'+fechaTxt+'</td>'+
+      '<td style="color:#aaa">'+formatFecha(t.Completada)+'</td>'+
+      '<td>'+ndsTxt+'</td>'+
     '</tr>';
   }).join('');
 }
 
-function renderTodo() {
+// ── RENDER NDS TAB ───────────────────────────────────────────────────────────
+
+function calcularNdsPorAsignado(){
+  // Construir mapa: asignado → { total, enTiempo, pendientes, fuera }
+  var mapa={};
+
+  datosFiltrados.forEach(function(t){
+    splitAsignados(t.Asignado_Nombre).forEach(function(n){
+      var key=normalizarNombre(n);
+      if(!key) return;
+      if(!mapa[key]){mapa[key]={nombre:n.trim().replace(/\s+/g,' '),total:0,completadas:0,enTiempo:0,fuera:0,sinMedir:0,pendientes:[]};}
+      var m=mapa[key];
+      m.total++;
+      var est=parsearEstado(t.Estado);
+      if(est===100){
+        m.completadas++;
+        var horas=calcularHoras(t.Fecha_Creacion,t.Completada);
+        if(horas===null){m.sinMedir++;}
+        else if(horas<=72){m.enTiempo++;}
+        else{m.fuera++;}
+      }else{
+        m.pendientes.push(t);
+      }
+    });
+  });
+
+  return Object.values(mapa).map(function(m){
+    var base=m.completadas; // NDS sobre tareas completadas con fecha medible
+    var medibles=m.enTiempo+m.fuera;
+    m.nds=medibles>0?Math.round(m.enTiempo/medibles*100):null;
+    return m;
+  }).sort(function(a,b){
+    // Ordenar: los que tienen NDS primero, por valor desc
+    if(a.nds===null&&b.nds===null) return a.nombre.localeCompare(b.nombre,'es');
+    if(a.nds===null) return 1;
+    if(b.nds===null) return -1;
+    return b.nds-a.nds;
+  });
+}
+
+function renderNds(){
+  var datos=calcularNdsPorAsignado();
+  var total=datosFiltrados.length;
+  var totalComp=datosFiltrados.filter(function(t){return parsearEstado(t.Estado)===100;}).length;
+  var totalEnTiempo=datosFiltrados.filter(function(t){
+    if(parsearEstado(t.Estado)!==100) return false;
+    var h=calcularHoras(t.Fecha_Creacion,t.Completada);
+    return h!==null&&h<=72;
+  }).length;
+  var totalMedibles=datosFiltrados.filter(function(t){
+    if(parsearEstado(t.Estado)!==100) return false;
+    var h=calcularHoras(t.Fecha_Creacion,t.Completada);
+    return h!==null;
+  }).length;
+  var ndsGlobal=totalMedibles>0?Math.round(totalEnTiempo/totalMedibles*100):0;
+  var nc=ndsColor(ndsGlobal);
+  var cumpleMeta=ndsGlobal>=CONFIG.NDS_META;
+  var pendientesTotal=datosFiltrados.filter(function(t){return parsearEstado(t.Estado)!==100;}).length;
+
+  // ── Hero ──
+  document.getElementById('ndsHero').innerHTML=
+    '<div class="nds-hero-card" style="border-top:3px solid '+nc+'">'+
+      '<div class="nds-hero-value" style="color:'+nc+'">'+ndsGlobal+'%</div>'+
+      '<div class="nds-hero-label">NDS GLOBAL</div>'+
+      '<div class="nds-hero-sub" style="color:'+nc+'">'+(cumpleMeta?'✓ Meta cumplida':'✗ Bajo la meta')+' ('+CONFIG.NDS_META+'%)</div>'+
+      '<div class="progress-bar" style="margin-top:10px;height:8px">'+
+        '<div class="progress-fill" style="width:'+ndsGlobal+'%;background:'+nc+'"></div>'+
+      '</div>'+
+      '<div class="nds-meta-line"><span style="color:#C9A84C44">Meta</span><div style="flex:1;height:1px;background:#C9A84C22;position:relative"><div style="position:absolute;right:0;top:-4px;width:2px;height:9px;background:#C9A84C44"></div></div><span style="color:#C9A84C66">'+CONFIG.NDS_META+'%</span></div>'+
+    '</div>'+
+    '<div class="nds-hero-card" style="border-top:3px solid #81C784">'+
+      '<div class="nds-hero-value" style="color:#81C784">'+totalEnTiempo+'</div>'+
+      '<div class="nds-hero-label">COMPLETADAS EN 72 HRS</div>'+
+      '<div class="nds-hero-sub" style="color:#4CAF5066">de '+totalMedibles+' medibles</div>'+
+    '</div>'+
+    '<div class="nds-hero-card" style="border-top:3px solid #FFA726">'+
+      '<div class="nds-hero-value" style="color:#FFB74D">'+pendientesTotal+'</div>'+
+      '<div class="nds-hero-label">PENDIENTES</div>'+
+      '<div class="nds-hero-sub" style="color:#FFA72666">sin completar aún</div>'+
+    '</div>'+
+    '<div class="nds-hero-card" style="border-top:3px solid #C9A84C">'+
+      '<div class="nds-hero-value" style="color:#C9A84C">'+datos.length+'</div>'+
+      '<div class="nds-hero-label">ASIGNADOS</div>'+
+      '<div class="nds-hero-sub" style="color:#C9A84C66">con tareas en esta vista</div>'+
+    '</div>';
+
+  // ── Ranking ──
+  var rankingHtml=datos.map(function(m,i){
+    var pct=m.nds!==null?m.nds:0;
+    var nc2=m.nds!==null?ndsColor(m.nds):'#555';
+    var avatarColor=AVATAR_COLORS[i%AVATAR_COLORS.length];
+    var cumple=m.nds!==null&&m.nds>=CONFIG.NDS_META;
+    var medibles=m.enTiempo+m.fuera;
+    return'<div class="nds-asignado-row">'+
+      '<div class="nds-rank">'+(i+1)+'</div>'+
+      '<div class="nds-avatar" style="background:'+avatarColor+'">'+iniciales(m.nombre)+'</div>'+
+      '<div class="nds-info">'+
+        '<div class="nds-nombre">'+displayNombre(m.nombre)+'</div>'+
+        '<div class="nds-detalle">'+m.completadas+' completadas · '+m.pendientes.length+' pendientes · '+m.total+' total</div>'+
+      '</div>'+
+      '<div class="nds-bar-wrap">'+
+        '<div class="nds-bar-track">'+
+          '<div class="nds-bar-fill" style="width:'+pct+'%;background:'+nc2+'"></div>'+
+          (CONFIG.NDS_META<100?'<div style="position:absolute;left:'+CONFIG.NDS_META+'%;top:0;width:2px;height:100%;background:#C9A84C55"></div>':'')+
+        '</div>'+
+        '<div class="nds-bar-meta"><span>0%</span><span style="color:#C9A84C55">meta '+CONFIG.NDS_META+'%</span><span>100%</span></div>'+
+      '</div>'+
+      '<div class="nds-pct" style="color:'+nc2+'">'+
+        (m.nds!==null?m.nds+'%':'—')+
+      '</div>'+
+      '<div class="nds-badges">'+
+        (m.nds!==null?'<span class="badge '+(cumple?'b-green':'b-red')+'">'+(cumple?'✓ Meta':'✗ Bajo meta')+'</span>':
+          '<span class="badge b-gray">Sin datos</span>')+
+        (m.enTiempo>0?'<span class="badge b-green" style="font-size:10px">'+m.enTiempo+' en 72h</span>':'')+
+        (m.fuera>0?'<span class="badge b-red" style="font-size:10px">'+m.fuera+' fuera</span>':'')+
+      '</div>'+
+    '</div>';
+  }).join('');
+  document.getElementById('ndsRanking').innerHTML=rankingHtml||'<div class="empty-state">Sin datos</div>';
+
+  // ── Gráfico de barras NDS ──
+  var labelsNds=datos.filter(function(m){return m.nds!==null;}).map(function(m){return displayNombre(m.nombre);});
+  var dataNds=datos.filter(function(m){return m.nds!==null;}).map(function(m){return m.nds;});
+  var bgNds=dataNds.map(function(v){return ndsColor(v);});
+  if(chartNdsInst) chartNdsInst.destroy();
+  chartNdsInst=new Chart(document.getElementById('chartNds'),{
+    type:'bar',
+    data:{labels:labelsNds,datasets:[
+      {label:'NDS %',data:dataNds,backgroundColor:bgNds,borderRadius:5,borderSkipped:false},
+      {label:'Meta',data:labelsNds.map(function(){return CONFIG.NDS_META;}),type:'line',borderColor:'#C9A84C88',borderWidth:2,borderDash:[6,4],pointRadius:0,fill:false,tension:0}
+    ]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{
+      legend:{labels:{color:'#C9A84C88',font:{size:11}}},
+      tooltip:{callbacks:{label:function(ctx){return ctx.dataset.label+': '+ctx.parsed.y+'%';}}}
+    },scales:{
+      x:{ticks:{color:'#C9A84C88',font:{size:11},maxRotation:35},grid:{color:'#ffffff08'}},
+      y:{min:0,max:100,ticks:{color:'#C9A84C88',font:{size:11},callback:function(v){return v+'%';}},grid:{color:'#ffffff08'}}
+    }}
+  });
+
+  // ── Tareas pendientes por asignado ──
+  var pendientesHtml=datos.filter(function(m){return m.pendientes.length>0;}).map(function(m){
+    var nc2=m.nds!==null?ndsColor(m.nds):'#C9A84C';
+    var rows=m.pendientes.map(function(t){
+      var dias=diasRestantes(t.Fecha_vencimiento);
+      var sem=semaforo(dias,parsearEstado(t.Estado));
+      var est=estadoLabel(t.Estado);
+      var diasTxt=dias===null?'<span style="color:#555">Sin fecha</span>':dias<0?'<span style="color:#EF9A9A">'+Math.abs(dias)+'d vencida</span>':dias===0?'<span style="color:#FFA726">Hoy</span>':'<span style="color:'+(dias<=3?'#FFB74D':'#aaa')+'">'+dias+'d</span>';
+      return'<tr>'+
+        '<td><span class="sem sem-'+sem+'"></span></td>'+
+        '<td style="color:#fff">'+(t.Titulo_Tarea||'—')+'</td>'+
+        '<td><span class="badge b-gray">'+(t.Bucket||'—')+'</span></td>'+
+        '<td>'+formatFecha(t.Fecha_vencimiento)+'</td>'+
+        '<td>'+diasTxt+'</td>'+
+        '<td><span class="badge '+prioridadBadge(t.Prioridad)+'">'+(t.Prioridad||'—')+'</span></td>'+
+        '<td><span class="badge '+est.cls+'">'+est.txt+'</span></td>'+
+      '</tr>';
+    }).join('');
+    return'<div class="nds-pendientes-card">'+
+      '<div class="nds-pendientes-header" style="border-left:3px solid '+nc2+'">'+
+        '<div style="width:30px;height:30px;border-radius:50%;background:'+nc2+';display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:#1a1a2e;flex-shrink:0">'+iniciales(m.nombre)+'</div>'+
+        '<div>'+
+          '<div class="nds-pendientes-nombre">'+displayNombre(m.nombre)+'</div>'+
+          '<div class="nds-pendientes-stats">'+m.pendientes.length+' tarea(s) pendiente(s) · NDS: '+(m.nds!==null?m.nds+'%':'sin datos')+'</div>'+
+        '</div>'+
+      '</div>'+
+      '<div class="table-wrap">'+
+        '<table><thead><tr><th></th><th>Tarea</th><th>Bucket</th><th>Vencimiento</th><th>Días</th><th>Prioridad</th><th>Estado</th></tr></thead>'+
+        '<tbody>'+rows+'</tbody></table>'+
+      '</div>'+
+    '</div>';
+  }).join('');
+  document.getElementById('ndsPendientes').innerHTML=pendientesHtml||'<div class="empty-state" style="padding:32px">&#10003; No hay tareas pendientes en la selección actual</div>';
+}
+
+// ── RENDER COMPLETO ──────────────────────────────────────────────────────────
+
+function renderTodo(){
   renderKPIs();
   renderAsignados();
   renderChartEstado();
@@ -875,29 +984,19 @@ function renderTodo() {
   renderChartPrioridad();
   renderTablaVencidas();
   renderTablaTodas();
+  renderNds();
 }
 
-// ─── INIT ─────────────────────────────────────────────────────────────────────
+// ── INIT ─────────────────────────────────────────────────────────────────────
 
-(async function init() {
-  try {
+(async function init(){
+  try{
     await msalInstance.initialize();
-    var result = await msalInstance.handleRedirectPromise();
-    if (result) {
-      msalInstance.setActiveAccount(result.account);
-      mostrarCargando('Cargando datos...');
-      await cargarDatos();
-      return;
-    }
-    var accounts = msalInstance.getAllAccounts();
-    if (accounts.length > 0) {
-      msalInstance.setActiveAccount(accounts[0]);
-      mostrarCargando('Restaurando sesión...');
-      await cargarDatos();
-    }
-  } catch(e) {
-    console.error('Init error:', e);
-  }
+    var result=await msalInstance.handleRedirectPromise();
+    if(result){msalInstance.setActiveAccount(result.account);mostrarCargando('Cargando datos...');await cargarDatos();return;}
+    var accounts=msalInstance.getAllAccounts();
+    if(accounts.length>0){msalInstance.setActiveAccount(accounts[0]);mostrarCargando('Restaurando sesión...');await cargarDatos();}
+  }catch(e){console.error('Init error:',e);}
 })();
 </script>
 </body>
