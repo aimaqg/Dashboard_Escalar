@@ -387,7 +387,16 @@ function formatFecha(f) {
 }
 
 function poblarFiltros() {
-  const asignados = [...new Set(todosLosDatos.map(t => t.Asignado_Nombre).filter(Boolean))].sort();
+  // Split multiple assignees separated by semicolons
+  const asignadosSet = new Set();
+  todosLosDatos.forEach(t => {
+    if (t.Asignado_Nombre) {
+      t.Asignado_Nombre.split(';').map(n => n.trim()).filter(Boolean).forEach(n => {
+        asignadosSet.add(n.split(' ').slice(0,3).join(' '));
+      });
+    }
+  });
+  const asignados = [...asignadosSet].sort();
   const buckets = [...new Set(todosLosDatos.map(t => t.Bucket).filter(Boolean))].sort();
   const prioridades = [...new Set(todosLosDatos.map(t => t.Prioridad).filter(Boolean))];
   const selA = document.getElementById('fAsignado');
@@ -407,7 +416,7 @@ function aplicarFiltros() {
   const e = document.getElementById('fEstado').value;
   const p = document.getElementById('fPrioridad').value;
   datosFiltrados = todosLosDatos.filter(t =>
-    (!a || t.Asignado_Nombre === a) &&
+    (!a || (t.Asignado_Nombre && t.Asignado_Nombre.split(';').map(n=>n.trim()).some(n=>n.split(' ').slice(0,3).join(' ')===a))) &&
     (!b || t.Bucket === b) &&
     (!e || String(parsearEstado(t.Estado)) === e) &&
     (!p || t.Prioridad === p)
