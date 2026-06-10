@@ -240,12 +240,19 @@ tbody td{padding:9px 10px;color:#ddd;font-size:12px}
   <div class="tab-panel" id="panel-infografia">
     <div class="info-shell">
       <div class="info-controls">
-        <span class="info-controls-label">&#9670; Generar infografía con los datos filtrados:</span>
+        <span class="info-controls-label">&#9670; Generar infografía:</span>
         <div class="filter-group">
           <label class="info-controls-label">Estilo</label>
           <select class="info-select" id="infoEstilo">
             <option value="resumen">Resumen general</option>
             <option value="buckets">Detalle por copropiedad</option>
+          </select>
+        </div>
+        <div class="filter-sep" style="background:#C9A84C22;height:20px"></div>
+        <div class="filter-group">
+          <label class="info-controls-label">Copropiedad</label>
+          <select class="info-select" id="infoCopropiedad">
+            <option value="">Todas</option>
           </select>
         </div>
         <div class="filter-group">
@@ -379,10 +386,10 @@ function poblarFiltros(){
   var asignados=Object.values(asignadosMap).sort(function(a,b){return a.localeCompare(b,'es');});
   var bucketsSet={},buckets=[];todosLosDatos.forEach(function(t){if(t.Bucket&&!bucketsSet[t.Bucket]){bucketsSet[t.Bucket]=1;buckets.push(t.Bucket);}});buckets.sort();
   var prioridadesSet={},prioridades=[];todosLosDatos.forEach(function(t){if(t.Prioridad&&!prioridadesSet[t.Prioridad]){prioridadesSet[t.Prioridad]=1;prioridades.push(t.Prioridad);}});
-  var selA=document.getElementById('fAsignado'),selB=document.getElementById('fBucket'),selP=document.getElementById('fPrioridad');
-  selA.innerHTML='<option value="">Todos</option>';selB.innerHTML='<option value="">Todos</option>';selP.innerHTML='<option value="">Todas</option>';
+  var selA=document.getElementById('fAsignado'),selB=document.getElementById('fBucket'),selP=document.getElementById('fPrioridad'),selIC=document.getElementById('infoCopropiedad');
+  selA.innerHTML='<option value="">Todos</option>';selB.innerHTML='<option value="">Todos</option>';selP.innerHTML='<option value="">Todas</option>';selIC.innerHTML='<option value="">Todas</option>';
   asignados.forEach(function(a){var o=document.createElement('option');o.value=a;o.textContent=a;selA.appendChild(o);});
-  buckets.forEach(function(b){var o=document.createElement('option');o.value=b;o.textContent=b;selB.appendChild(o);});
+  buckets.forEach(function(b){var o=document.createElement('option');o.value=b;o.textContent=b;selB.appendChild(o);var o2=document.createElement('option');o2.value=b;o2.textContent=b;selIC.appendChild(o2);});
   prioridades.forEach(function(p){var o=document.createElement('option');o.value=p;o.textContent=p;selP.appendChild(o);});
 }
 function aplicarFiltros(){
@@ -527,16 +534,21 @@ function renderNds(){
 
 // ── INFOGRAFÍA (Canvas) ───────────────────────────────────────────────────────
 
-function obtenerContextoFiltros(){
-  var a=document.getElementById('fAsignado').value,b=document.getElementById('fBucket').value;
+// Datos usados por la infografía
+var datosInfografia=[];
+
+function obtenerContextoInfografia(){
+  var ic=document.getElementById('infoCopropiedad').value;
+  var a=document.getElementById('fAsignado').value;
   var fD=document.getElementById('fFechaDesde').value,fH=document.getElementById('fFechaHasta').value;
   var cD=document.getElementById('fCreacionDesde').value,cH=document.getElementById('fCreacionHasta').value;
   var partes=[];
-  if(b) partes.push('Copropiedad: '+b);
+  if(ic) partes.push('Copropiedad: '+ic);
+  else if(document.getElementById('fBucket').value) partes.push('Copropiedad: '+document.getElementById('fBucket').value);
   if(a) partes.push('Asignado: '+a);
-  if(fD||fH) partes.push('Vence: '+(fD||'…')+' → '+(fH||'…'));
-  if(cD||cH) partes.push('Creación: '+(cD||'…')+' → '+(cH||'…'));
-  return partes.length?partes.join(' · '):'Todos los datos';
+  if(fD||fH) partes.push('Vence: '+(fD||'...')+' -> '+(fH||'...'));
+  if(cD||cH) partes.push('Creacion: '+(cD||'...')+' -> '+(cH||'...'));
+  return partes.length?partes.join(' · '):'Todas las copropiedades';
 }
 
 function canvasSize(){
@@ -566,16 +578,17 @@ function wrapText(ctx,text,x,y,maxW,lineH){
 }
 
 function generarInfografia(){
-  if(!datosFiltrados.length){alert('No hay datos para generar la infografía. Ajusta los filtros.');return;}
+  // Aplicar filtro propio de copropiedad de la infografía sobre datosFiltrados
+  var ic=document.getElementById('infoCopropiedad').value;
+  datosInfografia=ic?datosFiltrados.filter(function(t){return t.Bucket===ic;}):datosFiltrados.slice();
+  if(!datosInfografia.length){alert('No hay datos para la copropiedad seleccionada. Ajusta el filtro.');return;}
   var estilo=document.getElementById('infoEstilo').value;
   var sz=canvasSize();
-  // Eliminar canvas anterior
   var wrap=document.getElementById('infoCanvasWrap');wrap.innerHTML='';
   var canvas=document.createElement('canvas');canvas.width=sz.w;canvas.height=sz.h;canvas.style.width='100%';canvas.style.maxHeight='80vh';canvas.style.objectFit='contain';
   wrap.appendChild(canvas);infografiaCanvas=canvas;
   var ctx=canvas.getContext('2d');
   if(estilo==='resumen') dibujarResumen(ctx,sz);
-  else if(estilo==='buckets') dibujarBuckets(ctx,sz);
   else dibujarBuckets(ctx,sz);
   document.getElementById('btnDescargar').style.display='inline-block';
 }
@@ -637,16 +650,16 @@ function pieSimple(ctx,cx,cy,r,segmentos){
 function dibujarResumen(ctx,sz){
   var w=sz.w,h=sz.h,P=50;
   fondoBase(ctx,w,h);
-  var total=datosFiltrados.length;
-  var comp=datosFiltrados.filter(function(t){return parsearEstado(t.Estado)===100;}).length;
-  var prog=datosFiltrados.filter(function(t){return parsearEstado(t.Estado)===50;}).length;
-  var sin=datosFiltrados.filter(function(t){return parsearEstado(t.Estado)===0;}).length;
-  var venc=datosFiltrados.filter(function(t){if(parsearEstado(t.Estado)===100) return false;var d=diasRestantes(t.Fecha_vencimiento);return d!==null&&d<0;}).length;
-  var medibles=datosFiltrados.filter(function(t){if(parsearEstado(t.Estado)!==100) return false;var h=calcularHoras(t.Fecha_Creacion,t.Completada);return h!==null;}).length;
-  var enTiempo=datosFiltrados.filter(function(t){if(parsearEstado(t.Estado)!==100) return false;var h=calcularHoras(t.Fecha_Creacion,t.Completada);return h!==null&&h<=72;}).length;
+  var total=datosInfografia.length;
+  var comp=datosInfografia.filter(function(t){return parsearEstado(t.Estado)===100;}).length;
+  var prog=datosInfografia.filter(function(t){return parsearEstado(t.Estado)===50;}).length;
+  var sin=datosInfografia.filter(function(t){return parsearEstado(t.Estado)===0;}).length;
+  var venc=datosInfografia.filter(function(t){if(parsearEstado(t.Estado)===100) return false;var d=diasRestantes(t.Fecha_vencimiento);return d!==null&&d<0;}).length;
+  var medibles=datosInfografia.filter(function(t){if(parsearEstado(t.Estado)!==100) return false;var h=calcularHoras(t.Fecha_Creacion,t.Completada);return h!==null;}).length;
+  var enTiempo=datosInfografia.filter(function(t){if(parsearEstado(t.Estado)!==100) return false;var h=calcularHoras(t.Fecha_Creacion,t.Completada);return h!==null&&h<=72;}).length;
   var nds=medibles>0?Math.round(enTiempo/medibles*100):0;
   var pctComp=total?Math.round(comp/total*100):0;
-  var contexto=obtenerContextoFiltros();
+  var contexto=obtenerContextoInfografia();
 
   var yy=cabecera(ctx,w,'Reporte de Gestión de Tareas','Resumen General',contexto,P);
 
@@ -695,7 +708,7 @@ function dibujarResumen(ctx,sz){
     ctx.fillStyle=it.c;ctx.font='bold 16px -apple-system,sans-serif';ctx.fillText(it.v,lx+16,ly+20);
   });
   // Prioridad
-  var prioConteo={};datosFiltrados.forEach(function(t){if(t.Prioridad) prioConteo[t.Prioridad]=(prioConteo[t.Prioridad]||0)+1;});
+  var prioConteo={};datosInfografia.forEach(function(t){if(t.Prioridad) prioConteo[t.Prioridad]=(prioConteo[t.Prioridad]||0)+1;});
   var prioColors={urgente:'#E53935',urgent:'#E53935',importante:'#FFA726',important:'#FFA726',media:'#42A5F5',medium:'#42A5F5',baja:'#78909C',low:'#78909C'};
   var prioItems=Object.keys(prioConteo).map(function(k){return{l:k,v:prioConteo[k],c:prioColors[k.toLowerCase()]||'#888'};}).sort(function(a,b){return b.v-a.v;});
   var rx=P+halfW+kg;
@@ -711,7 +724,7 @@ function dibujarResumen(ctx,sz){
   yy+=220+24;
 
   // Buckets
-  var bucketConteo={};datosFiltrados.forEach(function(t){if(t.Bucket) bucketConteo[t.Bucket]=(bucketConteo[t.Bucket]||0)+1;});
+  var bucketConteo={};datosInfografia.forEach(function(t){if(t.Bucket) bucketConteo[t.Bucket]=(bucketConteo[t.Bucket]||0)+1;});
   var bucketItems=Object.keys(bucketConteo).map(function(k,i){return{l:k,v:bucketConteo[k],c:PALETA[i%PALETA.length]};}).sort(function(a,b){return b.v-a.v;});
   if(bucketItems.length&&yy+160<=h-P){
     roundRect(ctx,P,yy,w-2*P,Math.min(180,h-P-yy-10),10,'rgba(22,33,62,0.9)','rgba(201,168,76,0.1)');
@@ -737,11 +750,11 @@ function dibujarResumen(ctx,sz){
 function dibujarBuckets(ctx,sz){
   var w=sz.w,h=sz.h,P=50;
   fondoBase(ctx,w,h);
-  var contexto=obtenerContextoFiltros();
+  var contexto=obtenerContextoInfografia();
   var yy=cabecera(ctx,w,'Detalle por Copropiedad','Estado de tareas agrupadas por copropiedad',contexto,P);
 
   var bucketMap={};
-  datosFiltrados.forEach(function(t){
+  datosInfografia.forEach(function(t){
     var b=t.Bucket||'Sin copropiedad';
     if(!bucketMap[b]) bucketMap[b]={nombre:b,total:0,comp:0,prog:0,sin:0,venc:0,tareas:[]};
     var m=bucketMap[b];m.total++;m.tareas.push(t);
@@ -798,11 +811,11 @@ function dibujarBuckets(ctx,sz){
 function dibujarAsignados(ctx,sz){
   var w=sz.w,h=sz.h,P=50;
   fondoBase(ctx,w,h);
-  var contexto=obtenerContextoFiltros();
+  var contexto=obtenerContextoInfografia();
   var yy=cabecera(ctx,w,'Detalle por Asignado','Carga de trabajo y NDS individual',contexto,P);
 
   var asigMap={};
-  datosFiltrados.forEach(function(t){
+  datosInfografia.forEach(function(t){
     splitAsignados(t.Asignado_Nombre).forEach(function(n){
       var key=normalizarNombre(n);if(!key) return;
       if(!asigMap[key]){asigMap[key]={nombre:n.trim().replace(/\s+/g,' '),total:0,comp:0,prog:0,sin:0,venc:0,enTiempo:0,fuera:0,medibles:0};}
