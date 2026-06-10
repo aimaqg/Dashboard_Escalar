@@ -237,34 +237,63 @@ function parsearEstado(v) {
   return 0;
 }
 
-function fechaValida(f) {
-  if (!f || f === '' || f === 0 || f === '0') return false;
+function parsearFecha(f) {
+  if (!f || f === '' || f === 0 || f === '0') return null;
   try {
-    var d = new Date(f);
-    return !isNaN(d) && d.getFullYear() >= 2000;
-  } catch(e) { return false; }
+    // Already a Date object
+    if (f instanceof Date) return isNaN(f) ? null : f;
+    var s = String(f).trim();
+    // ISO format: 2026-01-14 or 2026-01-14T...
+    if (/^\d{4}-\d{2}-\d{2}/.test(s)) {
+      var d = new Date(s);
+      return (!isNaN(d) && d.getFullYear() >= 2000) ? d : null;
+    }
+    // dd/mm/yyyy or d/m/yyyy (Colombian format)
+    if (/^\d{1,2}\/\d{1,2}\/\d{4}/.test(s)) {
+      var parts = s.split('/');
+      var d = new Date(parseInt(parts[2]), parseInt(parts[1])-1, parseInt(parts[0]));
+      return (!isNaN(d) && d.getFullYear() >= 2000) ? d : null;
+    }
+    // dd-mm-yyyy
+    if (/^\d{1,2}-\d{1,2}-\d{4}/.test(s)) {
+      var parts = s.split('-');
+      var d = new Date(parseInt(parts[2]), parseInt(parts[1])-1, parseInt(parts[0]));
+      return (!isNaN(d) && d.getFullYear() >= 2000) ? d : null;
+    }
+    // Try generic parse as last resort
+    var d = new Date(s);
+    return (!isNaN(d) && d.getFullYear() >= 2000) ? d : null;
+  } catch(e) { return null; }
+}
+
+function fechaValida(f) {
+  return parsearFecha(f) !== null;
 }
 
 function formatFecha(f) {
-  if (!fechaValida(f)) return '—';
+  var d = parsearFecha(f);
+  if (!d) return '—';
   try {
-    return new Date(f).toLocaleDateString('es-CO', {day:'2-digit', month:'short', year:'numeric'});
+    return d.toLocaleDateString('es-CO', {day:'2-digit', month:'short', year:'numeric'});
   } catch(e) { return '—'; }
 }
 
 function diasRestantes(fecha) {
-  if (!fechaValida(fecha)) return null;
+  var d = parsearFecha(fecha);
+  if (!d) return null;
   try {
-    var d = new Date(fecha); d.setHours(0,0,0,0);
+    d.setHours(0,0,0,0);
     var h = new Date(); h.setHours(0,0,0,0);
     return Math.round((d - h) / (1000*60*60*24));
   } catch(e) { return null; }
 }
 
 function calcularHoras(f1, f2) {
-  if (!fechaValida(f1) || !fechaValida(f2)) return null;
+  var d1 = parsearFecha(f1);
+  var d2 = parsearFecha(f2);
+  if (!d1 || !d2) return null;
   try {
-    return (new Date(f2) - new Date(f1)) / (1000 * 60 * 60);
+    return (d2 - d1) / (1000 * 60 * 60);
   } catch(e) { return null; }
 }
 
