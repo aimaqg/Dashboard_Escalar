@@ -33,12 +33,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .topbar-right{display:flex;align-items:center;gap:16px}
 .user-info{color:#C9A84C88;font-size:12px;text-align:right}
 .user-name{color:#C9A84C;font-size:13px;font-weight:500}
-.btn-refresh{background:#C9A84C22;border:1px solid #C9A84C44;color:#C9A84C;padding:6px 14px;border-radius:6px;font-size:12px;cursor:pointer;transition:all 0.2s}
+.btn-refresh{background:#C9A84C22;border:1px solid #C9A84C44;color:#C9A84C;padding:6px 14px;border-radius:6px;font-size:12px;cursor:pointer}
 .btn-refresh:hover{background:#C9A84C33}
 .btn-logout{background:none;border:1px solid #C9A84C22;color:#C9A84C66;padding:6px 12px;border-radius:6px;font-size:11px;cursor:pointer}
 .btn-logout:hover{border-color:#C9A84C44;color:#C9A84C88}
 .filters{background:#16213e;border-bottom:1px solid #C9A84C22;padding:10px 24px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.filters label{color:#C9A84C88;font-size:11px;letter-spacing:0.5px}
+.filters label{color:#C9A84C88;font-size:11px}
 .filters select{background:#1a1a2e;border:1px solid #C9A84C33;color:#C9A84C;font-size:12px;padding:5px 10px;border-radius:6px;cursor:pointer;outline:none}
 .filters select:hover{border-color:#C9A84C}
 .btn-clear{background:none;border:1px solid #C9A84C33;color:#C9A84C66;font-size:11px;padding:5px 12px;border-radius:6px;cursor:pointer}
@@ -58,20 +58,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .progress-fill{height:100%;border-radius:3px;background:#C9A84C;transition:width 0.8s ease}
 .charts-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px}
 .card{background:#16213e;border:1px solid #C9A84C22;border-radius:10px;padding:16px}
-.card-title{color:#C9A84C;font-size:13px;font-weight:500;margin-bottom:14px;display:flex;align-items:center;gap:6px}
+.card-title{color:#C9A84C;font-size:13px;font-weight:500;margin-bottom:14px}
 .legend{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
 .legend-item{display:flex;align-items:center;gap:4px;font-size:11px;color:#C9A84C88}
 .legend-dot{width:10px;height:10px;border-radius:2px;flex-shrink:0}
 .assignee-bar{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-.assignee-name{color:#e0e0e0;font-size:12px;min-width:120px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.assignee-name{color:#e0e0e0;font-size:12px;min-width:130px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .assignee-track{flex:1;background:#ffffff0d;border-radius:3px;height:8px;overflow:hidden}
-.assignee-fill{height:100%;border-radius:3px;background:#C9A84C;transition:width 0.6s ease}
+.assignee-fill{height:100%;border-radius:3px;background:#C9A84C}
 .assignee-count{color:#C9A84C;font-size:12px;font-weight:500;min-width:24px;text-align:right}
 .table-wrap{overflow-x:auto}
 table{width:100%;border-collapse:collapse;font-size:12px}
 thead tr{border-bottom:1px solid #C9A84C33}
 thead th{color:#C9A84C88;font-weight:500;padding:8px 10px;text-align:left;font-size:11px;letter-spacing:0.5px;white-space:nowrap}
-tbody tr{border-bottom:1px solid #C9A84C0d;transition:background 0.15s;cursor:default}
+tbody tr{border-bottom:1px solid #C9A84C0d;transition:background 0.15s}
 tbody tr:hover{background:#C9A84C08}
 tbody td{padding:9px 10px;color:#ddd;font-size:12px}
 .badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap}
@@ -80,44 +80,37 @@ tbody td{padding:9px 10px;color:#ddd;font-size:12px}
 .b-orange{background:#FFA72622;color:#FFB74D}
 .b-blue{background:#42A5F522;color:#90CAF9}
 .b-gray{background:#ffffff11;color:#aaa}
-.b-gold{background:#C9A84C22;color:#C9A84C}
 .sem{width:9px;height:9px;border-radius:50%;display:inline-block;flex-shrink:0}
 .sem-g{background:#4CAF50}
 .sem-o{background:#FFA726}
 .sem-r{background:#E53935}
-.sem-x{background:#555}
+.sem-x{background:#444}
 .empty-state{color:#C9A84C44;text-align:center;padding:24px;font-size:13px}
 .sync-bar{background:#C9A84C11;border-bottom:1px solid #C9A84C22;padding:6px 24px;font-size:11px;color:#C9A84C88;display:none;align-items:center;gap:8px}
 .sync-dot{width:6px;height:6px;border-radius:50%;background:#4CAF50;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
-@media(max-width:640px){.charts-row{grid-template-columns:1fr}.topbar{flex-direction:column;align-items:flex-start}}
+@media(max-width:640px){.charts-row{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
 <div class="login-screen" id="loginScreen">
   <div class="login-card">
     <div class="logo-hex"><div class="logo-inner"></div></div>
     <div class="login-title">ESCALAR</div>
     <div class="login-sub">GESTOR DE TAREAS</div>
     <p class="login-desc">Accede con tu cuenta corporativa de Microsoft para ver el dashboard de tareas en tiempo real.</p>
-    <button class="btn-login" id="btnLogin" onclick="iniciarLogin()">
-      Ingresar con cuenta Microsoft
-    </button>
+    <button class="btn-login" id="btnLogin" onclick="iniciarLogin()">Ingresar con cuenta Microsoft</button>
     <div class="login-error" id="loginError"></div>
   </div>
 </div>
 
-<!-- LOADING -->
 <div class="loading-screen" id="loadingScreen" style="display:none">
   <div class="spinner"></div>
   <div class="loading-txt" id="loadingTxt">Autenticando...</div>
 </div>
 
-<!-- DASHBOARD -->
 <div class="dash" id="dashboard">
-
   <div class="topbar">
     <div class="brand">
       <div class="logo-sm"></div>
@@ -165,7 +158,7 @@ tbody td{padding:9px 10px;color:#ddd;font-size:12px}
       <div class="card">
         <div class="card-title">&#9685; Distribución por estado</div>
         <div class="legend" id="legendEstado"></div>
-        <div style="position:relative;height:200px"><canvas id="chartEstado" role="img" aria-label="Distribución de tareas por estado"></canvas></div>
+        <div style="position:relative;height:200px"><canvas id="chartEstado" role="img" aria-label="Estado de tareas"></canvas></div>
       </div>
     </div>
     <div class="charts-row">
@@ -177,28 +170,32 @@ tbody td{padding:9px 10px;color:#ddd;font-size:12px}
       <div class="card">
         <div class="card-title">&#9873; Distribución por prioridad</div>
         <div class="legend" id="legendPrioridad"></div>
-        <div style="position:relative;height:220px"><canvas id="chartPrioridad" role="img" aria-label="Distribución por prioridad"></canvas></div>
+        <div style="position:relative;height:220px"><canvas id="chartPrioridad" role="img" aria-label="Prioridad de tareas"></canvas></div>
       </div>
     </div>
     <div class="card" style="margin-bottom:16px">
       <div class="card-title">&#9888; Tareas vencidas o próximas a vencer</div>
       <div class="table-wrap">
-        <table><thead><tr><th></th><th>Tarea</th><th>Asignado</th><th>Bucket</th><th>Vencimiento</th><th>Días</th><th>Prioridad</th><th>Estado</th></tr></thead>
-        <tbody id="tbodyVencidas"></tbody></table>
+        <table>
+          <thead><tr><th></th><th>Tarea</th><th>Asignado</th><th>Bucket</th><th>Vencimiento</th><th>Días</th><th>Prioridad</th><th>Estado</th></tr></thead>
+          <tbody id="tbodyVencidas"></tbody>
+        </table>
       </div>
     </div>
     <div class="card">
       <div class="card-title">&#9776; Todas las tareas <span id="contadorTareas" style="color:#C9A84C66;font-size:12px;font-weight:400;margin-left:6px"></span></div>
       <div class="table-wrap">
-        <table><thead><tr><th></th><th>Tarea</th><th>Asignado</th><th>Bucket</th><th>Estado</th><th>Prioridad</th><th>Vencimiento</th><th>Canal</th></tr></thead>
-        <tbody id="tbodyTodas"></tbody></table>
+        <table>
+          <thead><tr><th></th><th>Tarea</th><th>Asignado</th><th>Bucket</th><th>Estado</th><th>Prioridad</th><th>Vencimiento</th><th>Completada</th><th>NDS</th></tr></thead>
+          <tbody id="tbodyTodas"></tbody>
+        </table>
       </div>
     </div>
   </div>
 </div>
 
 <script>
-const CONFIG = {
+var CONFIG = {
   clientId: 'c6bcbc9c-c266-46e4-a307-0fb902b6306c',
   tenantId: '68c8479a-6d32-4a07-92aa-9165f551c776',
   siteHostname: 'escalarasesorias.sharepoint.com',
@@ -209,7 +206,7 @@ const CONFIG = {
   redirectUri: window.location.href.split('?')[0].split('#')[0]
 };
 
-const msalConfig = {
+var msalConfig = {
   auth: {
     clientId: CONFIG.clientId,
     authority: 'https://login.microsoftonline.com/' + CONFIG.tenantId,
@@ -218,153 +215,56 @@ const msalConfig = {
   cache: { cacheLocation: 'sessionStorage' }
 };
 
-const msalInstance = new msal.PublicClientApplication(msalConfig);
-const scopes = ['https://graph.microsoft.com/Files.Read.All','https://graph.microsoft.com/Sites.Read.All','https://graph.microsoft.com/User.Read'];
+var msalInstance = new msal.PublicClientApplication(msalConfig);
+var scopes = ['https://graph.microsoft.com/Files.Read.All','https://graph.microsoft.com/Sites.Read.All','https://graph.microsoft.com/User.Read'];
 
-let accessToken = null;
-let todosLosDatos = [];
-let datosFiltrados = [];
-let chartEstadoInst = null, chartBucketInst = null, chartPrioridadInst = null;
-
-const PALETA = ['#C9A84C','#E8C97A','#A07830','#42A5F5','#81C784','#EF9A9A','#FFB74D','#CE93D8','#80DEEA','#F48FB1','#FFCC80','#B0BEC5','#80CBC4'];
-
-async function iniciarLogin() {
-  document.getElementById('btnLogin').disabled = true;
-  document.getElementById('btnLogin').textContent = 'Conectando...';
-  document.getElementById('loginError').style.display = 'none';
-  try {
-    await msalInstance.initialize();
-    const resp = await msalInstance.loginPopup({ scopes });
-    msalInstance.setActiveAccount(resp.account);
-    mostrarCargando('Obteniendo datos de Excel...');
-    await cargarDatos();
-  } catch(e) {
-    document.getElementById('btnLogin').disabled = false;
-    document.getElementById('btnLogin').textContent = 'Ingresar con cuenta Microsoft';
-    const err = document.getElementById('loginError');
-    err.textContent = 'Error al iniciar sesión: ' + (e.message || 'Intenta de nuevo');
-    err.style.display = 'block';
-  }
-}
-
-function mostrarCargando(txt) {
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('loadingScreen').style.display = 'flex';
-  document.getElementById('loadingTxt').textContent = txt || 'Cargando...';
-}
-
-async function getToken() {
-  const account = msalInstance.getActiveAccount();
-  if (!account) throw new Error('No hay sesión activa');
-  const result = await msalInstance.acquireTokenSilent({ scopes, account });
-  return result.accessToken;
-}
-
-async function cargarDatos() {
-  try {
-    mostrarCargando('Conectando con SharePoint...');
-    accessToken = await getToken();
-
-    const account = msalInstance.getActiveAccount();
-    document.getElementById('userName').textContent = account.name || account.username;
-
-    mostrarCargando('Buscando archivo Excel...');
-    const siteResp = await fetch(
-      `https://graph.microsoft.com/v1.0/sites/${CONFIG.siteHostname}:${CONFIG.sitePath}`,
-      { headers: { Authorization: 'Bearer ' + accessToken } }
-    );
-    const siteData = await siteResp.json();
-    if (!siteData.id) throw new Error('No se encontró el sitio de SharePoint');
-    const siteId = siteData.id;
-
-    const drivesResp = await fetch(
-      `https://graph.microsoft.com/v1.0/sites/${siteId}/drives`,
-      { headers: { Authorization: 'Bearer ' + accessToken } }
-    );
-    const drivesData = await drivesResp.json();
-    const drive = drivesData.value.find(d => d.name === 'Documentos compartidos' || d.name === 'Shared Documents' || d.name === 'Documentos' || d.name === 'Documents') || drivesData.value[0];
-    const driveId = drive.id;
-
-    const fileResp = await fetch(
-      `https://graph.microsoft.com/v1.0/drives/${driveId}/root:/${CONFIG.driveFolder}/${CONFIG.fileName}`,
-      { headers: { Authorization: 'Bearer ' + accessToken } }
-    );
-    const fileData = await fileResp.json();
-    if (!fileData.id) throw new Error('No se encontró el archivo Excel');
-    const fileId = fileData.id;
-
-    mostrarCargando('Leyendo tabla de tareas...');
-    const tableResp = await fetch(
-      `https://graph.microsoft.com/v1.0/drives/${driveId}/items/${fileId}/workbook/tables/${CONFIG.tableName}/rows`,
-      { headers: { Authorization: 'Bearer ' + accessToken } }
-    );
-    const tableData = await tableResp.json();
-    if (!tableData.value) throw new Error('No se pudo leer la tabla ' + CONFIG.tableName);
-
-    const headerResp = await fetch(
-      `https://graph.microsoft.com/v1.0/drives/${driveId}/items/${fileId}/workbook/tables/${CONFIG.tableName}/columns`,
-      { headers: { Authorization: 'Bearer ' + accessToken } }
-    );
-    const headerData = await headerResp.json();
-    const columnas = headerData.value.map(c => c.name);
-
-    todosLosDatos = tableData.value.map(row => {
-      const vals = row.values[0];
-      const obj = {};
-      columnas.forEach((col, i) => { obj[col] = vals[i] !== null && vals[i] !== undefined ? vals[i] : ''; });
-      return obj;
-    }).filter(r => r.Titulo_Tarea || r.ID_Tarea);
-
-    datosFiltrados = [...todosLosDatos];
-    poblarFiltros();
-    renderTodo();
-
-    document.getElementById('loadingScreen').style.display = 'none';
-    document.getElementById('dashboard').style.display = 'block';
-    const sb = document.getElementById('syncBar');
-    sb.style.display = 'flex';
-    document.getElementById('lastUpdate').textContent = 'Actualizado: ' + new Date().toLocaleTimeString('es-CO');
-
-  } catch(e) {
-    document.getElementById('loadingScreen').style.display = 'none';
-    document.getElementById('loginScreen').style.display = 'flex';
-    document.getElementById('btnLogin').disabled = false;
-    document.getElementById('btnLogin').textContent = 'Ingresar con cuenta Microsoft';
-    const err = document.getElementById('loginError');
-    err.textContent = 'Error: ' + (e.message || 'No se pudo cargar la información');
-    err.style.display = 'block';
-  }
-}
-
-function cerrarSesion() {
-  msalInstance.logoutPopup();
-  document.getElementById('dashboard').style.display = 'none';
-  document.getElementById('loginScreen').style.display = 'flex';
-  document.getElementById('btnLogin').disabled = false;
-  document.getElementById('btnLogin').textContent = 'Ingresar con cuenta Microsoft';
-}
+var accessToken = null;
+var todosLosDatos = [];
+var datosFiltrados = [];
+var chartEstadoInst = null, chartBucketInst = null, chartPrioridadInst = null;
+var PALETA = ['#C9A84C','#E8C97A','#A07830','#42A5F5','#81C784','#EF9A9A','#FFB74D','#CE93D8','#80DEEA','#F48FB1','#FFCC80','#B0BEC5','#80CBC4'];
 
 function parsearEstado(v) {
-  if (!v && v !== 0) return 0;
-  const s = String(v).toLowerCase().trim();
-  if (s === 'completed' || s === 'completada' || s === 'completado') return 100;
-  if (s === 'in progress' || s === 'en progreso' || s === 'inprogress') return 50;
-  if (s === 'not started' || s === 'sin iniciar') return 0;
-  const n = parseInt(v);
+  if (v === null || v === undefined || v === '') return 0;
+  var s = String(v).toLowerCase().trim();
+  if (s === 'completed' || s === 'completada' || s === 'completado' || s === '100') return 100;
+  if (s === 'in progress' || s === 'en progreso' || s === 'inprogress' || s === '50') return 50;
+  if (s === 'not started' || s === 'sin iniciar' || s === '0') return 0;
+  var n = parseInt(v);
   if (n === 100) return 100;
   if (n === 50) return 50;
   if (!isNaN(n) && n > 0 && n < 100) return 50;
   return 0;
 }
 
-function diasRestantes(fecha) {
-  if (!fecha || fecha === '' || fecha === 0 || fecha === '0') return null;
+function fechaValida(f) {
+  if (!f || f === '' || f === 0 || f === '0') return false;
   try {
-    const d = new Date(fecha);
-    if (isNaN(d) || d.getFullYear() < 2000) return null;
-    d.setHours(0,0,0,0);
-    const h = new Date(); h.setHours(0,0,0,0);
+    var d = new Date(f);
+    return !isNaN(d) && d.getFullYear() >= 2000;
+  } catch(e) { return false; }
+}
+
+function formatFecha(f) {
+  if (!fechaValida(f)) return '—';
+  try {
+    return new Date(f).toLocaleDateString('es-CO', {day:'2-digit', month:'short', year:'numeric'});
+  } catch(e) { return '—'; }
+}
+
+function diasRestantes(fecha) {
+  if (!fechaValida(fecha)) return null;
+  try {
+    var d = new Date(fecha); d.setHours(0,0,0,0);
+    var h = new Date(); h.setHours(0,0,0,0);
     return Math.round((d - h) / (1000*60*60*24));
+  } catch(e) { return null; }
+}
+
+function calcularHoras(f1, f2) {
+  if (!fechaValida(f1) || !fechaValida(f2)) return null;
+  try {
+    return (new Date(f2) - new Date(f1)) / (1000 * 60 * 60);
   } catch(e) { return null; }
 }
 
@@ -377,268 +277,373 @@ function semaforo(dias, estado) {
 }
 
 function estadoLabel(v) {
-  const p = parsearEstado(v);
+  var p = parsearEstado(v);
   if (p === 100) return {txt:'Completada', cls:'b-green'};
   if (p === 50) return {txt:'En progreso', cls:'b-blue'};
   return {txt:'Sin iniciar', cls:'b-gray'};
 }
 
 function prioridadBadge(p) {
-  const m = {Urgente:'b-red', Importante:'b-orange', Media:'b-blue', Baja:'b-gray', urgente:'b-red', importante:'b-orange', media:'b-blue', baja:'b-gray'};
-  return m[p] || 'b-gray';
+  var m = {urgente:'b-red', urgent:'b-red', importante:'b-orange', important:'b-orange', media:'b-blue', medium:'b-blue', baja:'b-gray', low:'b-gray'};
+  return m[(p||'').toLowerCase()] || 'b-gray';
 }
 
-function formatFecha(f) {
-  if (!f || f === '' || f === 0 || f === '0') return '—';
+function splitAsignados(nombre) {
+  if (!nombre) return [];
+  return String(nombre).split(';').map(function(n){ return n.trim(); }).filter(Boolean);
+}
+
+function nombreCorto(nombre) {
+  return String(nombre||'').split(' ').slice(0,3).join(' ');
+}
+
+function mostrarCargando(txt) {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('loadingScreen').style.display = 'flex';
+  document.getElementById('loadingTxt').textContent = txt || 'Cargando...';
+}
+
+async function getToken() {
+  var account = msalInstance.getActiveAccount();
+  if (!account) throw new Error('No hay sesión activa');
+  var result = await msalInstance.acquireTokenSilent({ scopes: scopes, account: account });
+  return result.accessToken;
+}
+
+async function iniciarLogin() {
+  document.getElementById('btnLogin').disabled = true;
+  document.getElementById('btnLogin').textContent = 'Conectando...';
+  document.getElementById('loginError').style.display = 'none';
   try {
-    const d = new Date(f);
-    if (isNaN(d)) return '—';
-    if (d.getFullYear() < 2000) return '—';
-    return d.toLocaleDateString('es-CO', {day:'2-digit', month:'short', year:'numeric'});
-  } catch(e) { return '—'; }
+    await msalInstance.initialize();
+    var resp = await msalInstance.loginPopup({ scopes: scopes });
+    msalInstance.setActiveAccount(resp.account);
+    mostrarCargando('Obteniendo datos de Excel...');
+    await cargarDatos();
+  } catch(e) {
+    document.getElementById('btnLogin').disabled = false;
+    document.getElementById('btnLogin').textContent = 'Ingresar con cuenta Microsoft';
+    var err = document.getElementById('loginError');
+    err.textContent = 'Error: ' + (e.message || 'Intenta de nuevo');
+    err.style.display = 'block';
+  }
+}
+
+async function cargarDatos() {
+  try {
+    mostrarCargando('Conectando con SharePoint...');
+    accessToken = await getToken();
+    var account = msalInstance.getActiveAccount();
+    document.getElementById('userName').textContent = account.name || account.username;
+
+    mostrarCargando('Buscando sitio SharePoint...');
+    var siteResp = await fetch('https://graph.microsoft.com/v1.0/sites/' + CONFIG.siteHostname + ':' + CONFIG.sitePath, { headers: { Authorization: 'Bearer ' + accessToken } });
+    var siteData = await siteResp.json();
+    if (!siteData.id) throw new Error('No se encontró el sitio de SharePoint');
+    var siteId = siteData.id;
+
+    var drivesResp = await fetch('https://graph.microsoft.com/v1.0/sites/' + siteId + '/drives', { headers: { Authorization: 'Bearer ' + accessToken } });
+    var drivesData = await drivesResp.json();
+    var drive = drivesData.value.find(function(d){ return d.name === 'Documentos compartidos' || d.name === 'Shared Documents' || d.name === 'Documentos' || d.name === 'Documents'; }) || drivesData.value[0];
+    var driveId = drive.id;
+
+    mostrarCargando('Buscando archivo Excel...');
+    var fileResp = await fetch('https://graph.microsoft.com/v1.0/drives/' + driveId + '/root:/' + CONFIG.driveFolder + '/' + CONFIG.fileName, { headers: { Authorization: 'Bearer ' + accessToken } });
+    var fileData = await fileResp.json();
+    if (!fileData.id) throw new Error('No se encontró el archivo Excel');
+    var fileId = fileData.id;
+
+    mostrarCargando('Leyendo tabla de tareas...');
+    var headerResp = await fetch('https://graph.microsoft.com/v1.0/drives/' + driveId + '/items/' + fileId + '/workbook/tables/' + CONFIG.tableName + '/columns', { headers: { Authorization: 'Bearer ' + accessToken } });
+    var headerData = await headerResp.json();
+    var columnas = headerData.value.map(function(c){ return c.name; });
+
+    var tableResp = await fetch('https://graph.microsoft.com/v1.0/drives/' + driveId + '/items/' + fileId + '/workbook/tables/' + CONFIG.tableName + '/rows', { headers: { Authorization: 'Bearer ' + accessToken } });
+    var tableData = await tableResp.json();
+    if (!tableData.value) throw new Error('No se pudo leer la tabla ' + CONFIG.tableName);
+
+    todosLosDatos = tableData.value.map(function(row) {
+      var vals = row.values[0];
+      var obj = {};
+      columnas.forEach(function(col, i){ obj[col] = (vals[i] !== null && vals[i] !== undefined) ? vals[i] : ''; });
+      return obj;
+    }).filter(function(r){ return r.Titulo_Tarea || r.ID_Tarea; });
+
+    datosFiltrados = todosLosDatos.slice();
+    poblarFiltros();
+    renderTodo();
+
+    document.getElementById('loadingScreen').style.display = 'none';
+    document.getElementById('dashboard').style.display = 'block';
+    var sb = document.getElementById('syncBar');
+    sb.style.display = 'flex';
+    document.getElementById('lastUpdate').textContent = 'Actualizado: ' + new Date().toLocaleTimeString('es-CO');
+
+  } catch(e) {
+    document.getElementById('loadingScreen').style.display = 'none';
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('btnLogin').disabled = false;
+    document.getElementById('btnLogin').textContent = 'Ingresar con cuenta Microsoft';
+    var err = document.getElementById('loginError');
+    err.textContent = 'Error: ' + (e.message || 'No se pudo cargar');
+    err.style.display = 'block';
+  }
+}
+
+function cerrarSesion() {
+  msalInstance.logoutPopup();
+  document.getElementById('dashboard').style.display = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('btnLogin').disabled = false;
+  document.getElementById('btnLogin').textContent = 'Ingresar con cuenta Microsoft';
 }
 
 function poblarFiltros() {
-  // Split multiple assignees separated by semicolons
-  const asignadosSet = new Set();
-  todosLosDatos.forEach(t => {
-    if (t.Asignado_Nombre) {
-      t.Asignado_Nombre.split(';').map(n => n.trim()).filter(Boolean).forEach(n => {
-        asignadosSet.add(n.split(' ').slice(0,3).join(' '));
-      });
-    }
+  var asignadosSet = {};
+  todosLosDatos.forEach(function(t) {
+    splitAsignados(t.Asignado_Nombre).forEach(function(n){ asignadosSet[nombreCorto(n)] = 1; });
   });
-  const asignados = [...asignadosSet].sort();
-  const buckets = [...new Set(todosLosDatos.map(t => t.Bucket).filter(Boolean))].sort();
-  const prioridades = [...new Set(todosLosDatos.map(t => t.Prioridad).filter(Boolean))];
-  const selA = document.getElementById('fAsignado');
-  const selB = document.getElementById('fBucket');
-  const selP = document.getElementById('fPrioridad');
+  var asignados = Object.keys(asignadosSet).sort();
+  var buckets = [];
+  var bucketsSet = {};
+  todosLosDatos.forEach(function(t){ if(t.Bucket && !bucketsSet[t.Bucket]){ bucketsSet[t.Bucket]=1; buckets.push(t.Bucket); } });
+  buckets.sort();
+  var prioridadesSet = {};
+  var prioridades = [];
+  todosLosDatos.forEach(function(t){ if(t.Prioridad && !prioridadesSet[t.Prioridad]){ prioridadesSet[t.Prioridad]=1; prioridades.push(t.Prioridad); } });
+
+  var selA = document.getElementById('fAsignado');
+  var selB = document.getElementById('fBucket');
+  var selP = document.getElementById('fPrioridad');
   selA.innerHTML = '<option value="">Todos los asignados</option>';
   selB.innerHTML = '<option value="">Todos los buckets</option>';
   selP.innerHTML = '<option value="">Todas las prioridades</option>';
-  asignados.forEach(a => { const o = document.createElement('option'); o.value = a; o.textContent = a; selA.appendChild(o); });
-  buckets.forEach(b => { const o = document.createElement('option'); o.value = b; o.textContent = b; selB.appendChild(o); });
-  prioridades.forEach(p => { const o = document.createElement('option'); o.value = p; o.textContent = p; selP.appendChild(o); });
+  asignados.forEach(function(a){ var o = document.createElement('option'); o.value = a; o.textContent = a; selA.appendChild(o); });
+  buckets.forEach(function(b){ var o = document.createElement('option'); o.value = b; o.textContent = b; selB.appendChild(o); });
+  prioridades.forEach(function(p){ var o = document.createElement('option'); o.value = p; o.textContent = p; selP.appendChild(o); });
 }
 
 function aplicarFiltros() {
-  const a = document.getElementById('fAsignado').value;
-  const b = document.getElementById('fBucket').value;
-  const e = document.getElementById('fEstado').value;
-  const p = document.getElementById('fPrioridad').value;
-  datosFiltrados = todosLosDatos.filter(t =>
-    (!a || (t.Asignado_Nombre && t.Asignado_Nombre.split(';').map(n=>n.trim()).some(n=>n.split(' ').slice(0,3).join(' ')===a))) &&
-    (!b || t.Bucket === b) &&
-    (!e || String(parsearEstado(t.Estado)) === e) &&
-    (!p || t.Prioridad === p)
-  );
+  var a = document.getElementById('fAsignado').value;
+  var b = document.getElementById('fBucket').value;
+  var e = document.getElementById('fEstado').value;
+  var p = document.getElementById('fPrioridad').value;
+  datosFiltrados = todosLosDatos.filter(function(t) {
+    var matchA = !a || splitAsignados(t.Asignado_Nombre).some(function(n){ return nombreCorto(n) === a; });
+    var matchB = !b || t.Bucket === b;
+    var matchE = !e || String(parsearEstado(t.Estado)) === e;
+    var matchP = !p || t.Prioridad === p;
+    return matchA && matchB && matchE && matchP;
+  });
   renderTodo();
 }
 
 function limpiarFiltros() {
-  ['fAsignado','fBucket','fEstado','fPrioridad'].forEach(id => document.getElementById(id).value = '');
-  datosFiltrados = [...todosLosDatos];
+  ['fAsignado','fBucket','fEstado','fPrioridad'].forEach(function(id){ document.getElementById(id).value = ''; });
+  datosFiltrados = todosLosDatos.slice();
   renderTodo();
 }
 
 function renderKPIs() {
-  const total = datosFiltrados.length;
-  const completadas = datosFiltrados.filter(t => parsearEstado(t.Estado) === 100).length;
-  const enProgreso = datosFiltrados.filter(t => parsearEstado(t.Estado) === 50).length;
-  const sinIniciar = datosFiltrados.filter(t => parsearEstado(t.Estado) === 0).length;
-  const vencidas = datosFiltrados.filter(t => {
+  var total = datosFiltrados.length;
+  var completadas = datosFiltrados.filter(function(t){ return parsearEstado(t.Estado) === 100; }).length;
+  var enProgreso = datosFiltrados.filter(function(t){ return parsearEstado(t.Estado) === 50; }).length;
+  var sinIniciar = datosFiltrados.filter(function(t){ return parsearEstado(t.Estado) === 0; }).length;
+  var vencidas = datosFiltrados.filter(function(t){
     if (parsearEstado(t.Estado) === 100) return false;
-    const dias = diasRestantes(t.Fecha_vencimiento);
+    var dias = diasRestantes(t.Fecha_vencimiento);
     return dias !== null && dias < 0;
   }).length;
-  const pct = total ? Math.round(completadas / total * 100) : 0;
-  
-  // NDS: tareas completadas en <= 72 horas (Completada - Fecha_Creacion) / total tareas
-  const ndsCompletadas72 = datosFiltrados.filter(t => {
+  var pct = total ? Math.round(completadas / total * 100) : 0;
+
+  var ndsCount = datosFiltrados.filter(function(t) {
     if (parsearEstado(t.Estado) !== 100) return false;
-    if (!t.Fecha_Creacion || !t.Completada) return false;
-    try {
-      const creacion = new Date(t.Fecha_Creacion);
-      const completada = new Date(t.Completada);
-      if (isNaN(creacion) || isNaN(completada)) return false;
-      if (creacion.getFullYear() < 2000 || completada.getFullYear() < 2000) return false;
-      const horasDiff = (completada - creacion) / (1000 * 60 * 60);
-      return horasDiff <= 72;
-    } catch(e) { return false; }
+    var horas = calcularHoras(t.Fecha_Creacion, t.Completada);
+    return horas !== null && horas <= 72;
   }).length;
-  const nds = total ? Math.round(ndsCompletadas72 / total * 100) : 0;
-  const ndsColor = nds >= 90 ? '#4CAF50' : nds >= 70 ? '#FFA726' : '#E53935';
-  document.getElementById('kpis').innerHTML = `
-    <div class="kpi gold">
-      <div class="kpi-label">TOTAL TAREAS</div>
-      <div class="kpi-value">${total}</div>
-      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
-      <div class="kpi-sub" style="color:#C9A84C88">${pct}% completado</div>
-    </div>
-    <div class="kpi green">
-      <div class="kpi-label">COMPLETADAS</div>
-      <div class="kpi-value" style="color:#81C784">${completadas}</div>
-      <div class="kpi-sub" style="color:#4CAF5066">${total ? Math.round(completadas/total*100) : 0}% del total</div>
-    </div>
-    <div class="kpi blue">
-      <div class="kpi-label">EN PROGRESO</div>
-      <div class="kpi-value" style="color:#90CAF9">${enProgreso}</div>
-      <div class="kpi-sub" style="color:#42A5F566">${total ? Math.round(enProgreso/total*100) : 0}% del total</div>
-    </div>
-    <div class="kpi orange">
-      <div class="kpi-label">SIN INICIAR</div>
-      <div class="kpi-value" style="color:#FFB74D">${sinIniciar}</div>
-      <div class="kpi-sub" style="color:#FFA72666">${total ? Math.round(sinIniciar/total*100) : 0}% del total</div>
-    </div>
-    <div class="kpi red">
-      <div class="kpi-label">VENCIDAS</div>
-      <div class="kpi-value" style="color:#EF9A9A">${vencidas}</div>
-      <div class="kpi-sub" style="color:#E5393566">requieren atención</div>
-    </div>
-    <div class="kpi" style="border-top-color:#C9A84C;grid-column:span 2">
-      <div class="kpi-label">NDS — NIVEL DE SERVICIO (meta: 72 hrs)</div>
-      <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
-        <div class="kpi-value" style="color:${ndsColor}">${nds}%</div>
-        <div style="font-size:13px;color:#aaa">${ndsCompletadas72} de ${total} tareas completadas en ≤72 hrs</div>
-      </div>
-      <div class="progress-bar" style="margin-top:8px;height:8px">
-        <div class="progress-fill" style="width:${nds}%;background:${ndsColor}"></div>
-      </div>
-      <div style="display:flex;justify-content:space-between;margin-top:4px">
-        <div style="font-size:11px;color:#C9A84C88">0%</div>
-        <div style="font-size:11px;color:#C9A84C88">Meta 100% en ≤72 hrs</div>
-      </div>
-    </div>`;
+  var nds = total ? Math.round(ndsCount / total * 100) : 0;
+  var ndsColor = nds >= 90 ? '#4CAF50' : nds >= 70 ? '#FFA726' : '#E53935';
+
+  document.getElementById('kpis').innerHTML =
+    '<div class="kpi gold">' +
+      '<div class="kpi-label">TOTAL TAREAS</div>' +
+      '<div class="kpi-value">' + total + '</div>' +
+      '<div class="progress-bar"><div class="progress-fill" style="width:' + pct + '%"></div></div>' +
+      '<div class="kpi-sub" style="color:#C9A84C88">' + pct + '% completado</div>' +
+    '</div>' +
+    '<div class="kpi green">' +
+      '<div class="kpi-label">COMPLETADAS</div>' +
+      '<div class="kpi-value" style="color:#81C784">' + completadas + '</div>' +
+      '<div class="kpi-sub" style="color:#4CAF5066">' + (total ? Math.round(completadas/total*100) : 0) + '% del total</div>' +
+    '</div>' +
+    '<div class="kpi blue">' +
+      '<div class="kpi-label">EN PROGRESO</div>' +
+      '<div class="kpi-value" style="color:#90CAF9">' + enProgreso + '</div>' +
+      '<div class="kpi-sub" style="color:#42A5F566">' + (total ? Math.round(enProgreso/total*100) : 0) + '% del total</div>' +
+    '</div>' +
+    '<div class="kpi orange">' +
+      '<div class="kpi-label">SIN INICIAR</div>' +
+      '<div class="kpi-value" style="color:#FFB74D">' + sinIniciar + '</div>' +
+      '<div class="kpi-sub" style="color:#FFA72666">' + (total ? Math.round(sinIniciar/total*100) : 0) + '% del total</div>' +
+    '</div>' +
+    '<div class="kpi red">' +
+      '<div class="kpi-label">VENCIDAS</div>' +
+      '<div class="kpi-value" style="color:#EF9A9A">' + vencidas + '</div>' +
+      '<div class="kpi-sub" style="color:#E5393566">requieren atención</div>' +
+    '</div>' +
+    '<div class="kpi" style="border-top-color:' + ndsColor + ';grid-column:span 2">' +
+      '<div class="kpi-label">NDS — NIVEL DE SERVICIO (meta: 72 hrs)</div>' +
+      '<div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">' +
+        '<div class="kpi-value" style="color:' + ndsColor + '">' + nds + '%</div>' +
+        '<div style="font-size:13px;color:#aaa">' + ndsCount + ' de ' + total + ' tareas completadas en 72 hrs</div>' +
+      '</div>' +
+      '<div class="progress-bar" style="margin-top:8px;height:8px">' +
+        '<div class="progress-fill" style="width:' + nds + '%;background:' + ndsColor + '"></div>' +
+      '</div>' +
+      '<div style="display:flex;justify-content:space-between;margin-top:4px">' +
+        '<div style="font-size:11px;color:#C9A84C88">0%</div>' +
+        '<div style="font-size:11px;color:#C9A84C88">Meta 100% en 72 hrs</div>' +
+      '</div>' +
+    '</div>';
 }
 
 function renderAsignados() {
-  const conteo = {};
-  datosFiltrados.forEach(t => { if(t.Asignado_Nombre) conteo[t.Asignado_Nombre] = (conteo[t.Asignado_Nombre]||0)+1; });
-  const sorted = Object.entries(conteo).sort((a,b) => b[1]-a[1]);
-  const max = sorted[0] ? sorted[0][1] : 1;
+  var conteo = {};
+  datosFiltrados.forEach(function(t) {
+    splitAsignados(t.Asignado_Nombre).forEach(function(n) {
+      var nc = nombreCorto(n);
+      conteo[nc] = (conteo[nc] || 0) + 1;
+    });
+  });
+  var sorted = Object.keys(conteo).map(function(k){ return [k, conteo[k]]; }).sort(function(a,b){ return b[1]-a[1]; });
+  var max = sorted.length ? sorted[0][1] : 1;
   document.getElementById('chartAsignados').innerHTML = sorted.length
-    ? sorted.map(([n,c]) => `
-      <div class="assignee-bar">
-        <div class="assignee-name">${n.split(' ').slice(0,2).join(' ')}</div>
-        <div class="assignee-track"><div class="assignee-fill" style="width:${Math.round(c/max*100)}%"></div></div>
-        <div class="assignee-count">${c}</div>
-      </div>`).join('')
+    ? sorted.map(function(item) {
+        return '<div class="assignee-bar">' +
+          '<div class="assignee-name">' + item[0] + '</div>' +
+          '<div class="assignee-track"><div class="assignee-fill" style="width:' + Math.round(item[1]/max*100) + '%"></div></div>' +
+          '<div class="assignee-count">' + item[1] + '</div>' +
+        '</div>';
+      }).join('')
     : '<div class="empty-state">Sin datos</div>';
 }
 
 function renderChartEstado() {
-  const conteo = {0:0, 50:0, 100:0};
-  datosFiltrados.forEach(t => { const e = parsearEstado(t.Estado); conteo[e] = (conteo[e]||0)+1; });
-  const labels = ['Sin iniciar','En progreso','Completada'];
-  const data = [conteo[0], conteo[50], conteo[100]];
-  const colors = ['#666','#42A5F5','#4CAF50'];
-  document.getElementById('legendEstado').innerHTML = labels.map((l,i) =>
-    `<span class="legend-item"><span class="legend-dot" style="background:${colors[i]}"></span>${l} (${data[i]})</span>`).join('');
+  var c0=0, c50=0, c100=0;
+  datosFiltrados.forEach(function(t){ var e=parsearEstado(t.Estado); if(e===100)c100++; else if(e===50)c50++; else c0++; });
+  var labels = ['Sin iniciar','En progreso','Completada'];
+  var data = [c0, c50, c100];
+  var colors = ['#666','#42A5F5','#4CAF50'];
+  document.getElementById('legendEstado').innerHTML = labels.map(function(l,i){
+    return '<span class="legend-item"><span class="legend-dot" style="background:' + colors[i] + '"></span>' + l + ' (' + data[i] + ')</span>';
+  }).join('');
   if (chartEstadoInst) chartEstadoInst.destroy();
   chartEstadoInst = new Chart(document.getElementById('chartEstado'), {
     type: 'doughnut',
-    data: { labels, datasets: [{ data, backgroundColor: colors, borderColor: '#16213e', borderWidth: 3 }] },
+    data: { labels: labels, datasets: [{ data: data, backgroundColor: colors, borderColor: '#16213e', borderWidth: 3 }] },
     options: { responsive:true, maintainAspectRatio:false, plugins:{ legend:{display:false} } }
   });
 }
 
 function renderChartBucket() {
-  const conteo = {};
-  datosFiltrados.forEach(t => { if(t.Bucket) conteo[t.Bucket] = (conteo[t.Bucket]||0)+1; });
-  const sorted = Object.entries(conteo).sort((a,b) => b[1]-a[1]);
-  const labels = sorted.map(e => e[0]);
-  const data = sorted.map(e => e[1]);
-  document.getElementById('legendBucket').innerHTML = labels.map((l,i) =>
-    `<span class="legend-item"><span class="legend-dot" style="background:${PALETA[i%PALETA.length]}"></span>${l}</span>`).join('');
+  var conteo = {};
+  datosFiltrados.forEach(function(t){ if(t.Bucket) conteo[t.Bucket] = (conteo[t.Bucket]||0)+1; });
+  var sorted = Object.keys(conteo).map(function(k){ return [k,conteo[k]]; }).sort(function(a,b){ return b[1]-a[1]; });
+  var labels = sorted.map(function(e){ return e[0]; });
+  var data = sorted.map(function(e){ return e[1]; });
+  document.getElementById('legendBucket').innerHTML = labels.map(function(l,i){
+    return '<span class="legend-item"><span class="legend-dot" style="background:' + PALETA[i%PALETA.length] + '"></span>' + l + '</span>';
+  }).join('');
   if (chartBucketInst) chartBucketInst.destroy();
   chartBucketInst = new Chart(document.getElementById('chartBucket'), {
     type: 'bar',
-    data: { labels, datasets: [{ data, backgroundColor: labels.map((_,i) => PALETA[i%PALETA.length]), borderRadius:4, borderSkipped:false }] },
+    data: { labels: labels, datasets: [{ data: data, backgroundColor: labels.map(function(_,i){ return PALETA[i%PALETA.length]; }), borderRadius:4, borderSkipped:false }] },
     options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
-      scales: { x:{ticks:{color:'#C9A84C88',font:{size:11},maxRotation:45},grid:{color:'#ffffff08'}},
-                y:{ticks:{color:'#C9A84C88',font:{size:11},stepSize:1},grid:{color:'#ffffff08'}} } }
+      scales:{ x:{ticks:{color:'#C9A84C88',font:{size:11},maxRotation:45},grid:{color:'#ffffff08'}}, y:{ticks:{color:'#C9A84C88',font:{size:11},stepSize:1},grid:{color:'#ffffff08'}} } }
   });
 }
 
 function renderChartPrioridad() {
-  const orden = ['Urgente','Importante','Media','Baja'];
-  const conteo = {};
-  datosFiltrados.forEach(t => { if(t.Prioridad) conteo[t.Prioridad] = (conteo[t.Prioridad]||0)+1; });
-  const labels = [...new Set([...orden.filter(p => conteo[p]), ...Object.keys(conteo)])];
-  const data = labels.map(p => conteo[p]||0);
-  const colors = {Urgente:'#E53935',Importante:'#FFA726',Media:'#42A5F5',Baja:'#78909C'};
-  document.getElementById('legendPrioridad').innerHTML = labels.map((l,i) =>
-    `<span class="legend-item"><span class="legend-dot" style="background:${colors[l]||PALETA[i]}"></span>${l} (${data[i]})</span>`).join('');
+  var conteo = {};
+  datosFiltrados.forEach(function(t){ if(t.Prioridad) conteo[t.Prioridad] = (conteo[t.Prioridad]||0)+1; });
+  var labels = Object.keys(conteo);
+  var data = labels.map(function(p){ return conteo[p]; });
+  var colors = {urgente:'#E53935',urgent:'#E53935',importante:'#FFA726',important:'#FFA726',media:'#42A5F5',medium:'#42A5F5',baja:'#78909C',low:'#78909C'};
+  document.getElementById('legendPrioridad').innerHTML = labels.map(function(l,i){
+    return '<span class="legend-item"><span class="legend-dot" style="background:' + (colors[l.toLowerCase()]||PALETA[i]) + '"></span>' + l + ' (' + data[i] + ')</span>';
+  }).join('');
   if (chartPrioridadInst) chartPrioridadInst.destroy();
   chartPrioridadInst = new Chart(document.getElementById('chartPrioridad'), {
     type: 'doughnut',
-    data: { labels, datasets: [{ data, backgroundColor: labels.map(l => colors[l]||'#888'), borderColor:'#16213e', borderWidth:3 }] },
+    data: { labels: labels, datasets: [{ data: data, backgroundColor: labels.map(function(l){ return colors[l.toLowerCase()]||'#888'; }), borderColor:'#16213e', borderWidth:3 }] },
     options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}} }
   });
 }
 
 function renderTablaVencidas() {
-  const lista = datosFiltrados
-    .filter(t => parsearEstado(t.Estado) !== 100 && diasRestantes(t.Fecha_vencimiento) !== null && diasRestantes(t.Fecha_vencimiento) <= 5)
-    .sort((a,b) => diasRestantes(a.Fecha_vencimiento) - diasRestantes(b.Fecha_vencimiento));
-  const tbody = document.getElementById('tbodyVencidas');
-  if (!lista.length) { tbody.innerHTML = '<tr><td colspan="8" class="empty-state">Sin tareas urgentes — todo bajo control</td></tr>'; return; }
-  tbody.innerHTML = lista.map(t => {
-    const dias = diasRestantes(t.Fecha_vencimiento);
-    const sem = semaforo(dias, parsearEstado(t.Estado));
-    const diasTxt = dias < 0
-      ? `<span style="color:#EF9A9A">${Math.abs(dias)}d vencida</span>`
-      : dias === 0 ? `<span style="color:#FFA726">Hoy</span>`
-      : `<span style="color:#FFB74D">${dias}d</span>`;
-    const est = estadoLabel(parsearEstado(t.Estado));
-    return `<tr>
-      <td><span class="sem sem-${sem}"></span></td>
-      <td style="color:#fff;font-weight:500;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.Titulo_Tarea||'—'}</td>
-      <td>${(t.Asignado_Nombre||'—').split(' ').slice(0,2).join(' ')}</td>
-      <td><span class="badge b-gray">${t.Bucket||'—'}</span></td>
-      <td>${formatFecha(t.Fecha_vencimiento)}</td>
-      <td>${diasTxt}</td>
-      <td><span class="badge ${prioridadBadge(t.Prioridad)}">${t.Prioridad||'—'}</span></td>
-      <td><span class="badge ${est.cls}">${est.txt}</span></td>
-    </tr>`;
+  var lista = datosFiltrados.filter(function(t){
+    if (parsearEstado(t.Estado) === 100) return false;
+    var dias = diasRestantes(t.Fecha_vencimiento);
+    return dias !== null && dias <= 5;
+  }).sort(function(a,b){ return diasRestantes(a.Fecha_vencimiento) - diasRestantes(b.Fecha_vencimiento); });
+
+  var tbody = document.getElementById('tbodyVencidas');
+  if (!lista.length) { tbody.innerHTML = '<tr><td colspan="8" class="empty-state">Sin tareas urgentes</td></tr>'; return; }
+  tbody.innerHTML = lista.map(function(t) {
+    var dias = diasRestantes(t.Fecha_vencimiento);
+    var sem = semaforo(dias, parsearEstado(t.Estado));
+    var diasTxt = dias < 0
+      ? '<span style="color:#EF9A9A">' + Math.abs(dias) + 'd vencida</span>'
+      : dias === 0 ? '<span style="color:#FFA726">Hoy</span>'
+      : '<span style="color:#FFB74D">' + dias + 'd</span>';
+    var est = estadoLabel(t.Estado);
+    var asig = splitAsignados(t.Asignado_Nombre)[0] || '—';
+    return '<tr>' +
+      '<td><span class="sem sem-' + sem + '"></span></td>' +
+      '<td style="color:#fff;font-weight:500">' + (t.Titulo_Tarea||'—') + '</td>' +
+      '<td>' + nombreCorto(asig) + '</td>' +
+      '<td><span class="badge b-gray">' + (t.Bucket||'—') + '</span></td>' +
+      '<td>' + formatFecha(t.Fecha_vencimiento) + '</td>' +
+      '<td>' + diasTxt + '</td>' +
+      '<td><span class="badge ' + prioridadBadge(t.Prioridad) + '">' + (t.Prioridad||'—') + '</span></td>' +
+      '<td><span class="badge ' + est.cls + '">' + est.txt + '</span></td>' +
+    '</tr>';
   }).join('');
 }
 
 function renderTablaTodas() {
-  document.getElementById('contadorTareas').textContent = `(${datosFiltrados.length})`;
-  const tbody = document.getElementById('tbodyTodas');
-  if (!datosFiltrados.length) { tbody.innerHTML = '<tr><td colspan="8" class="empty-state">Sin resultados con los filtros aplicados</td></tr>'; return; }
-  tbody.innerHTML = datosFiltrados.map(t => {
-    const dias = diasRestantes(t.Fecha_vencimiento);
-    const est = estadoLabel(parsearEstado(t.Estado));
-    const sem = semaforo(dias, parsearEstado(t.Estado));
-    const sinFecha = !t.Fecha_vencimiento || formatFecha(t.Fecha_vencimiento) === '—';
-    const fechaTxt = sinFecha
-      ? '<span style="color:#C9A84C66;font-style:italic;font-size:11px">Sin fecha</span>'
-      : `<span style="color:${dias!==null&&dias<0?'#EF9A9A':dias!==null&&dias<=3?'#FFB74D':'#aaa'}">${formatFecha(t.Fecha_vencimiento)}</span>`;
-    // NDS individual: completada en <= 72 hrs
-    let ndsTag = '';
-    if (parsearEstado(t.Estado) === 100 && t.Fecha_Creacion && t.Completada) {
-      try {
-        const hrs = (new Date(t.Completada) - new Date(t.Fecha_Creacion)) / (1000*60*60);
-        if (new Date(t.Completada).getFullYear() >= 2000 && new Date(t.Fecha_Creacion).getFullYear() >= 2000) {
-          ndsTag = hrs <= 72
-            ? '<span class="badge b-green" style="font-size:10px;margin-left:4px">&#10003; 72h</span>'
-            : '<span class="badge b-red" style="font-size:10px;margin-left:4px">+72h</span>';
-        }
-      } catch(e) {}
+  document.getElementById('contadorTareas').textContent = '(' + datosFiltrados.length + ')';
+  var tbody = document.getElementById('tbodyTodas');
+  if (!datosFiltrados.length) { tbody.innerHTML = '<tr><td colspan="9" class="empty-state">Sin resultados</td></tr>'; return; }
+  tbody.innerHTML = datosFiltrados.map(function(t) {
+    var dias = diasRestantes(t.Fecha_vencimiento);
+    var est = estadoLabel(t.Estado);
+    var sem = semaforo(dias, parsearEstado(t.Estado));
+    var sinFecha = !fechaValida(t.Fecha_vencimiento);
+    var fechaTxt = sinFecha
+      ? '<span style="color:#C9A84C55;font-style:italic;font-size:11px">Sin fecha</span>'
+      : '<span style="color:' + (dias<0?'#EF9A9A':dias<=3?'#FFB74D':'#aaa') + '">' + formatFecha(t.Fecha_vencimiento) + '</span>';
+    var asig = splitAsignados(t.Asignado_Nombre)[0] || '—';
+    var ndsTxt = '—';
+    if (parsearEstado(t.Estado) === 100) {
+      var horas = calcularHoras(t.Fecha_Creacion, t.Completada);
+      if (horas !== null) {
+        ndsTxt = horas <= 72
+          ? '<span class="badge b-green" style="font-size:10px">&#10003; ' + Math.round(horas) + 'h</span>'
+          : '<span class="badge b-red" style="font-size:10px">+72h (' + Math.round(horas) + 'h)</span>';
+      }
     }
-    return \`<tr>
-      <td><span class="sem sem-\${sem}"></span></td>
-      <td style="color:#fff;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">\${t.Titulo_Tarea||'—'}\${ndsTag}</td>
-      <td>\${(t.Asignado_Nombre||'—').split(';')[0].trim().split(' ').slice(0,3).join(' ')}</td>
-      <td><span class="badge b-gray">\${t.Bucket||'—'}</span></td>
-      <td><span class="badge \${est.cls}">\${est.txt}</span></td>
-      <td><span class="badge \${prioridadBadge(t.Prioridad)}">\${t.Prioridad||'—'}</span></td>
-      <td>\${fechaTxt}</td>
-      <td style="color:#C9A84C66">\${t.Canal_teams||'—'}</td>
-    </tr>\`;
+    return '<tr>' +
+      '<td><span class="sem sem-' + sem + '"></span></td>' +
+      '<td style="color:#fff;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + (t.Titulo_Tarea||'—') + '</td>' +
+      '<td>' + nombreCorto(asig) + '</td>' +
+      '<td><span class="badge b-gray">' + (t.Bucket||'—') + '</span></td>' +
+      '<td><span class="badge ' + est.cls + '">' + est.txt + '</span></td>' +
+      '<td><span class="badge ' + prioridadBadge(t.Prioridad) + '">' + (t.Prioridad||'—') + '</span></td>' +
+      '<td>' + fechaTxt + '</td>' +
+      '<td style="color:#aaa">' + formatFecha(t.Completada) + '</td>' +
+      '<td>' + ndsTxt + '</td>' +
+    '</tr>';
   }).join('');
 }
 
@@ -653,19 +658,23 @@ function renderTodo() {
 }
 
 (async function init() {
-  await msalInstance.initialize();
-  const result = await msalInstance.handleRedirectPromise();
-  if (result) {
-    msalInstance.setActiveAccount(result.account);
-    mostrarCargando('Cargando datos...');
-    await cargarDatos();
-    return;
-  }
-  const accounts = msalInstance.getAllAccounts();
-  if (accounts.length > 0) {
-    msalInstance.setActiveAccount(accounts[0]);
-    mostrarCargando('Restaurando sesión...');
-    await cargarDatos();
+  try {
+    await msalInstance.initialize();
+    var result = await msalInstance.handleRedirectPromise();
+    if (result) {
+      msalInstance.setActiveAccount(result.account);
+      mostrarCargando('Cargando datos...');
+      await cargarDatos();
+      return;
+    }
+    var accounts = msalInstance.getAllAccounts();
+    if (accounts.length > 0) {
+      msalInstance.setActiveAccount(accounts[0]);
+      mostrarCargando('Restaurando sesión...');
+      await cargarDatos();
+    }
+  } catch(e) {
+    console.error('Init error:', e);
   }
 })();
 </script>
