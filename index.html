@@ -647,6 +647,25 @@ function pieSimple(ctx,cx,cy,r,segmentos){
 }
 
 // ── Estilo: RESUMEN GENERAL ──────────────────────────────────────────────────
+function cabeceraConNombreCopropiedad(ctx,w,titulo,contexto,copropiedadNombre,yStart,P){
+  // Logo + marca
+  dibujarHexLogo(ctx,P+20,yStart+28,22);
+  ctx.fillStyle='#C9A84C';ctx.font='bold 18px -apple-system,sans-serif';ctx.textAlign='left';ctx.fillText('ESCALAR',P+52,yStart+24);
+  ctx.fillStyle='rgba(201,168,76,0.5)';ctx.font='10px -apple-system,sans-serif';ctx.fillText('GESTOR DE TAREAS',P+52,yStart+38);
+  ctx.fillStyle='rgba(201,168,76,0.4)';ctx.font='11px -apple-system,sans-serif';ctx.textAlign='right';ctx.fillText(new Date().toLocaleDateString('es-CO',{day:'2-digit',month:'long',year:'numeric'}),w-P,yStart+28);
+  ctx.strokeStyle='rgba(201,168,76,0.2)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(P,yStart+52);ctx.lineTo(w-P,yStart+52);ctx.stroke();
+  // Título
+  ctx.fillStyle='#ffffff';ctx.font='bold 36px -apple-system,sans-serif';ctx.textAlign='center';ctx.fillText(titulo,w/2,yStart+95);
+  // Nombre copropiedad destacado
+  if(copropiedadNombre){
+    ctx.fillStyle='#C9A84C';ctx.font='bold 22px -apple-system,sans-serif';ctx.textAlign='center';ctx.fillText(copropiedadNombre,w/2,yStart+126);
+  }
+  // Contexto filtros
+  var ctxY=copropiedadNombre?yStart+148:yStart+122;
+  if(contexto){roundRect(ctx,w/2-280,ctxY-14,560,26,13,'rgba(201,168,76,0.1)','rgba(201,168,76,0.2)');ctx.fillStyle='rgba(201,168,76,0.8)';ctx.font='11px -apple-system,sans-serif';ctx.textAlign='center';ctx.fillText(contexto,w/2,ctxY+3);}
+  return(copropiedadNombre?yStart+180:yStart+148);
+}
+
 function dibujarResumen(ctx,sz){
   var w=sz.w,h=sz.h,P=50;
   fondoBase(ctx,w,h);
@@ -661,10 +680,21 @@ function dibujarResumen(ctx,sz){
   var pctComp=total?Math.round(comp/total*100):0;
   var contexto=obtenerContextoInfografia();
 
-  var yy=cabecera(ctx,w,'Reporte de Gestión de Tareas','Resumen General',contexto,P);
+  // Tiempo medio de resolución (solo tareas completadas con ambas fechas)
+  var horasArr=datosInfografia.filter(function(t){
+    if(parsearEstado(t.Estado)!==100) return false;
+    var h=calcularHoras(t.Fecha_Creacion,t.Completada);return h!==null&&h>=0;
+  }).map(function(t){return calcularHoras(t.Fecha_Creacion,t.Completada);});
+  var tmrHoras=horasArr.length?Math.round(horasArr.reduce(function(a,b){return a+b;},0)/horasArr.length):null;
+  var tmrTxt=tmrHoras===null?'—':tmrHoras<24?(tmrHoras+'h'):(Math.round(tmrHoras/24*10)/10+'d');
+
+  // Nombre copropiedad seleccionada
+  var copropiedadNombre=document.getElementById('infoCopropiedad').value||'';
+
+  var yy=cabeceraConNombreCopropiedad(ctx,w,'Reporte de Gestión de Tareas',contexto,copropiedadNombre,P,P);
 
   // KPIs fila 1
-  var kw,kh=100,kg=16,cols,startX;
+  var kw,kh=100,kg=14,cols,startX;
   if(sz.w>=1500){cols=5;kw=Math.floor((w-2*P-kg*(cols-1))/cols);startX=P;}
   else if(sz.w>=900){cols=3;kw=Math.floor((w-2*P-kg*2)/3);startX=P;}
   else{cols=2;kw=Math.floor((w-2*P-kg)/2);startX=P;}
@@ -679,68 +709,110 @@ function dibujarResumen(ctx,sz){
     var col=i%cols,row=Math.floor(i/cols);
     kpiBox(ctx,startX+col*(kw+kg),yy+row*(kh+kg),kw,kh,k.v,k.l,k.s,k.c);
   });
-  var kRows=Math.ceil(kpis.length/cols);yy+=kRows*(kh+kg)+24;
+  var kRows=Math.ceil(kpis.length/cols);yy+=kRows*(kh+kg)+16;
 
-  // NDS grande
+  // Fila: NDS + Tiempo Medio Resolución
+  var ndsW=Math.floor((w-2*P)*0.68),tmrW=w-2*P-ndsW-kg;
   var nc=ndsColor(nds);
-  roundRect(ctx,P,yy,w-2*P,88,10,'rgba(22,33,62,0.9)','rgba(201,168,76,0.15)');
-  ctx.fillStyle=nc;ctx.fillRect(P,yy,w-2*P,4);
+
+  // NDS
+  roundRect(ctx,P,yy,ndsW,88,10,'rgba(22,33,62,0.9)','rgba(201,168,76,0.15)');
+  ctx.fillStyle=nc;ctx.fillRect(P,yy,ndsW,4);
   ctx.fillStyle=nc;ctx.font='bold 44px -apple-system,sans-serif';ctx.textAlign='left';ctx.fillText(nds+'%',P+20,yy+56);
-  ctx.fillStyle='rgba(255,255,255,0.7)';ctx.font='bold 14px -apple-system,sans-serif';ctx.fillText('NDS — NIVEL DE SERVICIO',P+120,yy+35);
-  ctx.fillStyle='rgba(201,168,76,0.5)';ctx.font='12px -apple-system,sans-serif';ctx.fillText('Meta: '+CONFIG.NDS_META+'%  ·  '+enTiempo+' de '+medibles+' completadas en 72 hrs',P+120,yy+56);
-  barraHorizontal(ctx,P+120,yy+65,w-2*P-140,10,nds,nc,'rgba(255,255,255,0.06)');
-  // Marcador de meta
-  var metaX=P+120+(w-2*P-140)*CONFIG.NDS_META/100;
-  ctx.strokeStyle='rgba(201,168,76,0.6)';ctx.lineWidth=2;ctx.setLineDash([4,3]);ctx.beginPath();ctx.moveTo(metaX,yy+62);ctx.lineTo(metaX,yy+78);ctx.stroke();ctx.setLineDash([]);
-  yy+=88+24;
+  ctx.fillStyle='rgba(255,255,255,0.7)';ctx.font='bold 14px -apple-system,sans-serif';ctx.fillText('NDS — NIVEL DE SERVICIO',P+120,yy+30);
+  ctx.fillStyle='rgba(201,168,76,0.5)';ctx.font='12px -apple-system,sans-serif';ctx.fillText('Meta: '+CONFIG.NDS_META+'%  ·  '+enTiempo+' de '+medibles+' completadas en 72 hrs',P+120,yy+50);
+  barraHorizontal(ctx,P+120,yy+60,ndsW-130,10,nds,nc,'rgba(255,255,255,0.06)');
+  var metaX=P+120+(ndsW-130)*CONFIG.NDS_META/100;
+  ctx.strokeStyle='rgba(201,168,76,0.6)';ctx.lineWidth=2;ctx.setLineDash([4,3]);ctx.beginPath();ctx.moveTo(metaX,yy+57);ctx.lineTo(metaX,yy+73);ctx.stroke();ctx.setLineDash([]);
+
+  // TMR
+  var tmrColor=tmrHoras===null?'#555':tmrHoras<=72?'#4CAF50':tmrHoras<=120?'#FFA726':'#E53935';
+  roundRect(ctx,P+ndsW+kg,yy,tmrW,88,10,'rgba(22,33,62,0.9)','rgba(201,168,76,0.15)');
+  ctx.fillStyle=tmrColor;ctx.fillRect(P+ndsW+kg,yy,tmrW,4);
+  ctx.fillStyle=tmrColor;ctx.font='bold 40px -apple-system,sans-serif';ctx.textAlign='center';ctx.fillText(tmrTxt,P+ndsW+kg+tmrW/2,yy+54);
+  ctx.fillStyle='rgba(201,168,76,0.6)';ctx.font='bold 10px -apple-system,sans-serif';ctx.fillText('TIEMPO MEDIO RESOLUCIÓN',P+ndsW+kg+tmrW/2,yy+72);
+  ctx.fillStyle='rgba(255,255,255,0.25)';ctx.font='10px -apple-system,sans-serif';ctx.fillText(horasArr.length+' tarea'+(horasArr.length!==1?'s':''),P+ndsW+kg+tmrW/2,yy+84);
+  ctx.textAlign='left';
+  yy+=88+16;
 
   // Sección estado + prioridad
   var halfW=Math.floor((w-2*P-kg)/2);
-  // Pie estado
-  roundRect(ctx,P,yy,halfW,220,10,'rgba(22,33,62,0.9)','rgba(201,168,76,0.1)');
+  roundRect(ctx,P,yy,halfW,200,10,'rgba(22,33,62,0.9)','rgba(201,168,76,0.1)');
   ctx.fillStyle='rgba(201,168,76,0.7)';ctx.font='bold 12px -apple-system,sans-serif';ctx.textAlign='left';ctx.fillText('DISTRIBUCIÓN POR ESTADO',P+16,yy+24);
-  pieSimple(ctx,P+110,yy+120,80,[{valor:comp,color:'#4CAF50'},{valor:prog,color:'#42A5F5'},{valor:sin,color:'#666'}]);
-  var estadoItems=[{l:'Completadas',v:comp,c:'#4CAF50'},{l:'En progreso',v:prog,c:'#42A5F5'},{l:'Sin iniciar',v:sin,c:'#666'}];
-  estadoItems.forEach(function(it,i){
-    var lx=P+210,ly=yy+70+i*38;
+  pieSimple(ctx,P+100,yy+110,70,[{valor:comp,color:'#4CAF50'},{valor:prog,color:'#42A5F5'},{valor:sin,color:'#666'}]);
+  [{l:'Completadas',v:comp,c:'#4CAF50'},{l:'En progreso',v:prog,c:'#42A5F5'},{l:'Sin iniciar',v:sin,c:'#666'}].forEach(function(it,i){
+    var lx=P+190,ly=yy+60+i*38;
     ctx.fillStyle=it.c;ctx.beginPath();ctx.arc(lx,ly,7,0,2*Math.PI);ctx.fill();
     ctx.fillStyle='#fff';ctx.font='13px -apple-system,sans-serif';ctx.textAlign='left';ctx.fillText(it.l,lx+16,ly+4);
     ctx.fillStyle=it.c;ctx.font='bold 16px -apple-system,sans-serif';ctx.fillText(it.v,lx+16,ly+20);
   });
-  // Prioridad
   var prioConteo={};datosInfografia.forEach(function(t){if(t.Prioridad) prioConteo[t.Prioridad]=(prioConteo[t.Prioridad]||0)+1;});
   var prioColors={urgente:'#E53935',urgent:'#E53935',importante:'#FFA726',important:'#FFA726',media:'#42A5F5',medium:'#42A5F5',baja:'#78909C',low:'#78909C'};
   var prioItems=Object.keys(prioConteo).map(function(k){return{l:k,v:prioConteo[k],c:prioColors[k.toLowerCase()]||'#888'};}).sort(function(a,b){return b.v-a.v;});
   var rx=P+halfW+kg;
-  roundRect(ctx,rx,yy,halfW,220,10,'rgba(22,33,62,0.9)','rgba(201,168,76,0.1)');
+  roundRect(ctx,rx,yy,halfW,200,10,'rgba(22,33,62,0.9)','rgba(201,168,76,0.1)');
   ctx.fillStyle='rgba(201,168,76,0.7)';ctx.font='bold 12px -apple-system,sans-serif';ctx.textAlign='left';ctx.fillText('DISTRIBUCIÓN POR PRIORIDAD',rx+16,yy+24);
   var maxPrio=prioItems.length?prioItems[0].v:1;
   prioItems.forEach(function(it,i){
-    var by=yy+50+i*46;if(by+36>yy+210) return;
+    var by=yy+46+i*42;if(by+32>yy+192) return;
     ctx.fillStyle='rgba(255,255,255,0.5)';ctx.font='11px -apple-system,sans-serif';ctx.textAlign='left';ctx.fillText(it.l.toUpperCase(),rx+16,by+12);
-    barraHorizontal(ctx,rx+16,by+18,halfW-32,16,it.v/maxPrio*100,it.c+'99','rgba(255,255,255,0.05)');
-    ctx.fillStyle=it.c;ctx.font='bold 12px -apple-system,sans-serif';ctx.textAlign='right';ctx.fillText(it.v,rx+halfW-20,by+30);
+    barraHorizontal(ctx,rx+16,by+18,halfW-90,14,it.v/maxPrio*100,it.c+'99','rgba(255,255,255,0.05)');
+    ctx.fillStyle=it.c;ctx.font='bold 13px -apple-system,sans-serif';ctx.textAlign='right';ctx.fillText(it.v,rx+halfW-20,by+30);
   });
-  yy+=220+24;
+  yy+=200+16;
 
-  // Buckets
-  var bucketConteo={};datosInfografia.forEach(function(t){if(t.Bucket) bucketConteo[t.Bucket]=(bucketConteo[t.Bucket]||0)+1;});
-  var bucketItems=Object.keys(bucketConteo).map(function(k,i){return{l:k,v:bucketConteo[k],c:PALETA[i%PALETA.length]};}).sort(function(a,b){return b.v-a.v;});
-  if(bucketItems.length&&yy+160<=h-P){
-    roundRect(ctx,P,yy,w-2*P,Math.min(180,h-P-yy-10),10,'rgba(22,33,62,0.9)','rgba(201,168,76,0.1)');
-    ctx.fillStyle='rgba(201,168,76,0.7)';ctx.font='bold 12px -apple-system,sans-serif';ctx.textAlign='left';ctx.fillText('TAREAS POR COPROPIEDAD',P+16,yy+24);
-    var bMaxV=bucketItems[0].v,bW=Math.floor((w-2*P-32-(bucketItems.length-1)*10)/Math.min(bucketItems.length,8));
-    bucketItems.slice(0,8).forEach(function(it,i){
-      var bx=P+16+i*(bW+10),barH=Math.min(80,(it.v/bMaxV)*80),topY=yy+140-barH;
-      roundRect(ctx,bx,topY,bW,barH,4,it.c+'cc');
-      ctx.fillStyle='rgba(255,255,255,0.6)';ctx.font='10px -apple-system,sans-serif';ctx.textAlign='center';
-      var label=it.l.length>10?it.l.substring(0,9)+'…':it.l;ctx.fillText(label,bx+bW/2,yy+155);
-      ctx.fillStyle=it.c;ctx.font='bold 12px -apple-system,sans-serif';ctx.fillText(it.v,bx+bW/2,topY-6);
+  // ── LISTADO DE TAREAS ────────────────────────────────────────────────────────
+  var rowH=34,headerH=32,maxRows=Math.floor((h-P-yy-headerH-30)/rowH);
+  var tareasAMostrar=datosInfografia.slice(0,Math.max(0,maxRows));
+  if(tareasAMostrar.length>0){
+    var listaH=headerH+tareasAMostrar.length*rowH+8;
+    roundRect(ctx,P,yy,w-2*P,listaH,10,'rgba(22,33,62,0.9)','rgba(201,168,76,0.1)');
+    // Cabecera lista
+    roundRect(ctx,P,yy,w-2*P,headerH,10,'rgba(201,168,76,0.08)');
+    ctx.fillStyle='rgba(201,168,76,0.7)';ctx.font='bold 11px -apple-system,sans-serif';ctx.textAlign='left';
+    var cTarea=P+16,cAsig=Math.floor(w*0.42),cEstado=Math.floor(w*0.62),cPrio=Math.floor(w*0.74),cVenc=Math.floor(w*0.85);
+    ctx.fillText('TAREA',cTarea,yy+20);ctx.fillText('ASIGNADO',cAsig,yy+20);ctx.fillText('ESTADO',cEstado,yy+20);ctx.fillText('PRIORIDAD',cPrio,yy+20);ctx.fillText('VENCIMIENTO',cVenc,yy+20);
+    // Filas
+    tareasAMostrar.forEach(function(t,i){
+      var ry=yy+headerH+i*rowH;
+      if(i%2===0) roundRect(ctx,P,ry,w-2*P,rowH,0,'rgba(255,255,255,0.018)');
+      var est=estadoLabel(t.Estado);
+      var dias=diasRestantes(t.Fecha_vencimiento);
+      var sem=semaforo(dias,parsearEstado(t.Estado));
+      var semColors={'g':'#4CAF50','o':'#FFA726','r':'#E53935','x':'#444'};
+      // Semáforo
+      ctx.fillStyle=semColors[sem]||'#444';ctx.beginPath();ctx.arc(P+8,ry+rowH/2,5,0,2*Math.PI);ctx.fill();
+      // Título tarea
+      var titulo=String(t.Titulo_Tarea||'—');if(titulo.length>42) titulo=titulo.substring(0,41)+'…';
+      ctx.fillStyle='#e8e8e8';ctx.font='12px -apple-system,sans-serif';ctx.textAlign='left';ctx.fillText(titulo,cTarea,ry+rowH/2+4);
+      // Asignado
+      var asig=splitAsignados(t.Asignado_Nombre).map(function(n){return displayNombre(n);}).join(', ')||'—';
+      if(asig.length>22) asig=asig.substring(0,21)+'…';
+      ctx.fillStyle='rgba(255,255,255,0.45)';ctx.font='11px -apple-system,sans-serif';ctx.fillText(asig,cAsig,ry+rowH/2+4);
+      // Estado badge color
+      var estColor={'Completada':'#4CAF50','En progreso':'#42A5F5','Sin iniciar':'#888'}[est.txt]||'#888';
+      roundRect(ctx,cEstado,ry+rowH/2-9,78,18,9,estColor+'22');
+      ctx.fillStyle=estColor;ctx.font='bold 10px -apple-system,sans-serif';ctx.textAlign='center';ctx.fillText(est.txt,cEstado+39,ry+rowH/2+3);ctx.textAlign='left';
+      // Prioridad
+      var prioColors2={urgente:'#E53935',urgent:'#E53935',importante:'#FFA726',important:'#FFA726',media:'#42A5F5',medium:'#42A5F5',baja:'#78909C',low:'#78909C'};
+      var prioC=prioColors2[(t.Prioridad||'').toLowerCase()]||'#666';
+      ctx.fillStyle=prioC;ctx.font='11px -apple-system,sans-serif';ctx.fillText(t.Prioridad||'—',cPrio,ry+rowH/2+4);
+      // Vencimiento
+      var fvTxt=fechaValida(t.Fecha_vencimiento)?formatFecha(t.Fecha_vencimiento):'Sin fecha';
+      var fvColor=dias===null?'rgba(255,255,255,0.25)':dias<0?'#EF9A9A':dias<=3?'#FFB74D':'rgba(255,255,255,0.45)';
+      ctx.fillStyle=fvColor;ctx.font='11px -apple-system,sans-serif';ctx.fillText(fvTxt,cVenc,ry+rowH/2+4);
+      // Separador fila
+      ctx.strokeStyle='rgba(201,168,76,0.05)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(P,ry+rowH);ctx.lineTo(w-P,ry+rowH);ctx.stroke();
     });
-    yy+=180+16;
+    // Nota si hay más tareas
+    if(datosInfografia.length>tareasAMostrar.length){
+      ctx.fillStyle='rgba(201,168,76,0.35)';ctx.font='10px -apple-system,sans-serif';ctx.textAlign='center';
+      ctx.fillText('+ '+(datosInfografia.length-tareasAMostrar.length)+' tareas adicionales no mostradas',w/2,yy+listaH+14);
+    }
+    yy+=listaH+20;
   }
 
-  // Pie de infografía
+  // Footer
   var footerY=h-P-4;
   ctx.strokeStyle='rgba(201,168,76,0.15)';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(P,footerY-18);ctx.lineTo(w-P,footerY-18);ctx.stroke();
   ctx.fillStyle='rgba(201,168,76,0.3)';ctx.font='10px -apple-system,sans-serif';ctx.textAlign='center';ctx.fillText('Escalar Asesorías · Generado '+new Date().toLocaleString('es-CO'),w/2,footerY);
