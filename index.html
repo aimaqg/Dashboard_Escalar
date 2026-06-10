@@ -345,17 +345,27 @@ function cerrarSesion() {
 }
 
 function parsearEstado(v) {
+  if (!v && v !== 0) return 0;
+  const s = String(v).toLowerCase().trim();
+  if (s === 'completed' || s === 'completada' || s === 'completado') return 100;
+  if (s === 'in progress' || s === 'en progreso' || s === 'inprogress') return 50;
+  if (s === 'not started' || s === 'sin iniciar') return 0;
   const n = parseInt(v);
   if (n === 100) return 100;
   if (n === 50) return 50;
+  if (!isNaN(n) && n > 0 && n < 100) return 50;
   return 0;
 }
 
 function diasRestantes(fecha) {
-  if (!fecha) return null;
-  const d = new Date(fecha); d.setHours(0,0,0,0);
-  const h = new Date(); h.setHours(0,0,0,0);
-  return Math.round((d - h) / (1000*60*60*24));
+  if (!fecha || fecha === '' || fecha === 0 || fecha === '0') return null;
+  try {
+    const d = new Date(fecha);
+    if (isNaN(d) || d.getFullYear() < 2000) return null;
+    d.setHours(0,0,0,0);
+    const h = new Date(); h.setHours(0,0,0,0);
+    return Math.round((d - h) / (1000*60*60*24));
+  } catch(e) { return null; }
 }
 
 function semaforo(dias, estado) {
@@ -367,8 +377,9 @@ function semaforo(dias, estado) {
 }
 
 function estadoLabel(v) {
-  if (v === 100) return {txt:'Completada', cls:'b-green'};
-  if (v === 50) return {txt:'En progreso', cls:'b-blue'};
+  const p = parsearEstado(v);
+  if (p === 100) return {txt:'Completada', cls:'b-green'};
+  if (p === 50) return {txt:'En progreso', cls:'b-blue'};
   return {txt:'Sin iniciar', cls:'b-gray'};
 }
 
@@ -378,12 +389,13 @@ function prioridadBadge(p) {
 }
 
 function formatFecha(f) {
-  if (!f) return '—';
+  if (!f || f === '' || f === 0 || f === '0') return '—';
   try {
     const d = new Date(f);
-    if (isNaN(d)) return String(f).slice(0,10);
+    if (isNaN(d)) return '—';
+    if (d.getFullYear() < 2000) return '—';
     return d.toLocaleDateString('es-CO', {day:'2-digit', month:'short', year:'numeric'});
-  } catch(e) { return String(f).slice(0,10); }
+  } catch(e) { return '—'; }
 }
 
 function poblarFiltros() {
@@ -435,17 +447,23 @@ function renderKPIs() {
   const completadas = datosFiltrados.filter(t => parsearEstado(t.Estado) === 100).length;
   const enProgreso = datosFiltrados.filter(t => parsearEstado(t.Estado) === 50).length;
   const sinIniciar = datosFiltrados.filter(t => parsearEstado(t.Estado) === 0).length;
-  const vencidas = datosFiltrados.filter(t => parsearEstado(t.Estado) !== 100 && diasRestantes(t.Fecha_vencimiento) !== null && diasRestantes(t.Fecha_vencimiento) < 0).length;
+  const vencidas = datosFiltrados.filter(t => {
+    if (parsearEstado(t.Estado) === 100) return false;
+    const dias = diasRestantes(t.Fecha_vencimiento);
+    return dias !== null && dias < 0;
+  }).length;
   const pct = total ? Math.round(completadas / total * 100) : 0;
   
-  // NDS: tareas completadas en <= 72 horas desde creación / total tareas
+  // NDS: tareas completadas en <= 72 horas (Completada - Fecha_Creacion) / total tareas
   const ndsCompletadas72 = datosFiltrados.filter(t => {
     if (parsearEstado(t.Estado) !== 100) return false;
-    if (!t.Fecha_Creacion || !t.Fecha_vencimiento) return false;
+    if (!t.Fecha_Creacion || !t.Completada) return false;
     try {
       const creacion = new Date(t.Fecha_Creacion);
-      const vencimiento = new Date(t.Fecha_vencimiento);
-      const horasDiff = (vencimiento - creacion) / (1000 * 60 * 60);
+      const completada = new Date(t.Completada);
+      if (isNaN(creacion) || isNaN(completada)) return false;
+      if (creacion.getFullYear() < 2000 || completada.getFullYear() < 2000) return false;
+      const horasDiff = (completada - creacion) / (1000 * 60 * 60);
       return horasDiff <= 72;
     } catch(e) { return false; }
   }).length;
@@ -595,16 +613,32 @@ function renderTablaTodas() {
     const dias = diasRestantes(t.Fecha_vencimiento);
     const est = estadoLabel(parsearEstado(t.Estado));
     const sem = semaforo(dias, parsearEstado(t.Estado));
-    return `<tr>
-      <td><span class="sem sem-${sem}"></span></td>
-      <td style="color:#fff;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.Titulo_Tarea||'—'}</td>
-      <td>${(t.Asignado_Nombre||'—').split(' ').slice(0,2).join(' ')}</td>
-      <td><span class="badge b-gray">${t.Bucket||'—'}</span></td>
-      <td><span class="badge ${est.cls}">${est.txt}</span></td>
-      <td><span class="badge ${prioridadBadge(t.Prioridad)}">${t.Prioridad||'—'}</span></td>
-      <td style="color:${dias!==null&&dias<0?'#EF9A9A':dias!==null&&dias<=3?'#FFB74D':'#aaa'}">${formatFecha(t.Fecha_vencimiento)}</td>
-      <td style="color:#C9A84C66">${t.Canal_teams||'—'}</td>
-    </tr>`;
+    const sinFecha = !t.Fecha_vencimiento || formatFecha(t.Fecha_vencimiento) === '—';
+    const fechaTxt = sinFecha
+      ? '<span style="color:#C9A84C66;font-style:italic;font-size:11px">Sin fecha</span>'
+      : `<span style="color:${dias!==null&&dias<0?'#EF9A9A':dias!==null&&dias<=3?'#FFB74D':'#aaa'}">${formatFecha(t.Fecha_vencimiento)}</span>`;
+    // NDS individual: completada en <= 72 hrs
+    let ndsTag = '';
+    if (parsearEstado(t.Estado) === 100 && t.Fecha_Creacion && t.Completada) {
+      try {
+        const hrs = (new Date(t.Completada) - new Date(t.Fecha_Creacion)) / (1000*60*60);
+        if (new Date(t.Completada).getFullYear() >= 2000 && new Date(t.Fecha_Creacion).getFullYear() >= 2000) {
+          ndsTag = hrs <= 72
+            ? '<span class="badge b-green" style="font-size:10px;margin-left:4px">&#10003; 72h</span>'
+            : '<span class="badge b-red" style="font-size:10px;margin-left:4px">+72h</span>';
+        }
+      } catch(e) {}
+    }
+    return \`<tr>
+      <td><span class="sem sem-\${sem}"></span></td>
+      <td style="color:#fff;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">\${t.Titulo_Tarea||'—'}\${ndsTag}</td>
+      <td>\${(t.Asignado_Nombre||'—').split(';')[0].trim().split(' ').slice(0,3).join(' ')}</td>
+      <td><span class="badge b-gray">\${t.Bucket||'—'}</span></td>
+      <td><span class="badge \${est.cls}">\${est.txt}</span></td>
+      <td><span class="badge \${prioridadBadge(t.Prioridad)}">\${t.Prioridad||'—'}</span></td>
+      <td>\${fechaTxt}</td>
+      <td style="color:#C9A84C66">\${t.Canal_teams||'—'}</td>
+    </tr>\`;
   }).join('');
 }
 
