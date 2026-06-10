@@ -240,29 +240,37 @@ function parsearEstado(v) {
 function parsearFecha(f) {
   if (!f || f === '' || f === 0 || f === '0') return null;
   try {
-    // Already a Date object
     if (f instanceof Date) return isNaN(f) ? null : f;
+    // Excel serial number (e.g. 45678) — most common from Graph API
+    var num = typeof f === 'number' ? f : parseFloat(String(f).trim());
+    if (!isNaN(num) && num > 1000 && num < 100000) {
+      // Excel epoch: Dec 30, 1899 (with leap year bug correction)
+      var d = new Date(Date.UTC(1899, 11, 30) + num * 86400000);
+      return (!isNaN(d) && d.getFullYear() >= 2000 && d.getFullYear() <= 2100) ? d : null;
+    }
     var s = String(f).trim();
     // ISO format: 2026-01-14 or 2026-01-14T...
-    if (/^\d{4}-\d{2}-\d{2}/.test(s)) {
+    if (/^[0-9]{4}-[0-9]{2}-[0-9]{2}/.test(s)) {
       var d = new Date(s);
-      return (!isNaN(d) && d.getFullYear() >= 2000) ? d : null;
+      return (!isNaN(d) && d.getFullYear() >= 2000 && d.getFullYear() <= 2100) ? d : null;
     }
-    // dd/mm/yyyy or d/m/yyyy (Colombian format)
-    if (/^\d{1,2}\/\d{1,2}\/\d{4}/.test(s)) {
+    // dd/mm/yyyy Colombian format
+    if (/^[0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4}/.test(s)) {
       var parts = s.split('/');
       var d = new Date(parseInt(parts[2]), parseInt(parts[1])-1, parseInt(parts[0]));
-      return (!isNaN(d) && d.getFullYear() >= 2000) ? d : null;
+      return (!isNaN(d) && d.getFullYear() >= 2000 && d.getFullYear() <= 2100) ? d : null;
     }
     // dd-mm-yyyy
-    if (/^\d{1,2}-\d{1,2}-\d{4}/.test(s)) {
+    if (/^[0-9]{1,2}-[0-9]{1,2}-[0-9]{4}/.test(s)) {
       var parts = s.split('-');
-      var d = new Date(parseInt(parts[2]), parseInt(parts[1])-1, parseInt(parts[0]));
-      return (!isNaN(d) && d.getFullYear() >= 2000) ? d : null;
+      if (parseInt(parts[2]) > 2000) {
+        var d = new Date(parseInt(parts[2]), parseInt(parts[1])-1, parseInt(parts[0]));
+        return (!isNaN(d) && d.getFullYear() >= 2000 && d.getFullYear() <= 2100) ? d : null;
+      }
     }
-    // Try generic parse as last resort
+    // Generic ISO fallback
     var d = new Date(s);
-    return (!isNaN(d) && d.getFullYear() >= 2000) ? d : null;
+    return (!isNaN(d) && d.getFullYear() >= 2000 && d.getFullYear() <= 2100) ? d : null;
   } catch(e) { return null; }
 }
 
