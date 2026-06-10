@@ -428,6 +428,20 @@ function renderKPIs() {
   const sinIniciar = datosFiltrados.filter(t => parsearEstado(t.Estado) === 0).length;
   const vencidas = datosFiltrados.filter(t => parsearEstado(t.Estado) !== 100 && diasRestantes(t.Fecha_vencimiento) !== null && diasRestantes(t.Fecha_vencimiento) < 0).length;
   const pct = total ? Math.round(completadas / total * 100) : 0;
+  
+  // NDS: tareas completadas en <= 72 horas desde creación / total tareas
+  const ndsCompletadas72 = datosFiltrados.filter(t => {
+    if (parsearEstado(t.Estado) !== 100) return false;
+    if (!t.Fecha_Creacion || !t.Fecha_vencimiento) return false;
+    try {
+      const creacion = new Date(t.Fecha_Creacion);
+      const vencimiento = new Date(t.Fecha_vencimiento);
+      const horasDiff = (vencimiento - creacion) / (1000 * 60 * 60);
+      return horasDiff <= 72;
+    } catch(e) { return false; }
+  }).length;
+  const nds = total ? Math.round(ndsCompletadas72 / total * 100) : 0;
+  const ndsColor = nds >= 90 ? '#4CAF50' : nds >= 70 ? '#FFA726' : '#E53935';
   document.getElementById('kpis').innerHTML = `
     <div class="kpi gold">
       <div class="kpi-label">TOTAL TAREAS</div>
@@ -454,6 +468,20 @@ function renderKPIs() {
       <div class="kpi-label">VENCIDAS</div>
       <div class="kpi-value" style="color:#EF9A9A">${vencidas}</div>
       <div class="kpi-sub" style="color:#E5393566">requieren atención</div>
+    </div>
+    <div class="kpi" style="border-top-color:#C9A84C;grid-column:span 2">
+      <div class="kpi-label">NDS — NIVEL DE SERVICIO (meta: 72 hrs)</div>
+      <div style="display:flex;align-items:baseline;gap:12px;flex-wrap:wrap">
+        <div class="kpi-value" style="color:${ndsColor}">${nds}%</div>
+        <div style="font-size:13px;color:#aaa">${ndsCompletadas72} de ${total} tareas completadas en ≤72 hrs</div>
+      </div>
+      <div class="progress-bar" style="margin-top:8px;height:8px">
+        <div class="progress-fill" style="width:${nds}%;background:${ndsColor}"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:4px">
+        <div style="font-size:11px;color:#C9A84C88">0%</div>
+        <div style="font-size:11px;color:#C9A84C88">Meta 100% en ≤72 hrs</div>
+      </div>
     </div>`;
 }
 
