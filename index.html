@@ -38,9 +38,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .btn-logout{background:none;border:1px solid #C9A84C22;color:#C9A84C66;padding:6px 12px;border-radius:6px;font-size:11px;cursor:pointer}
 .btn-logout:hover{border-color:#C9A84C44;color:#C9A84C88}
 .filters{background:#16213e;border-bottom:1px solid #C9A84C22;padding:10px 24px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.filters label{color:#C9A84C88;font-size:11px}
+.filters label{color:#C9A84C88;font-size:11px;white-space:nowrap}
 .filters select{background:#1a1a2e;border:1px solid #C9A84C33;color:#C9A84C;font-size:12px;padding:5px 10px;border-radius:6px;cursor:pointer;outline:none}
 .filters select:hover{border-color:#C9A84C}
+.filters input[type="date"]{background:#1a1a2e;border:1px solid #C9A84C33;color:#C9A84C;font-size:12px;padding:5px 10px;border-radius:6px;cursor:pointer;outline:none;font-family:inherit}
+.filters input[type="date"]:hover{border-color:#C9A84C}
+.filters input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(70%) sepia(50%) saturate(400%) hue-rotate(5deg);cursor:pointer}
+.filter-sep{width:1px;height:20px;background:#C9A84C22;flex-shrink:0}
+.filter-group{display:flex;align-items:center;gap:6px}
 .btn-clear{background:none;border:1px solid #C9A84C33;color:#C9A84C66;font-size:11px;padding:5px 12px;border-radius:6px;cursor:pointer}
 .btn-clear:hover{border-color:#C9A84C;color:#C9A84C}
 .content{padding:20px 24px}
@@ -89,7 +94,9 @@ tbody td{padding:9px 10px;color:#ddd;font-size:12px}
 .sync-bar{background:#C9A84C11;border-bottom:1px solid #C9A84C22;padding:6px 24px;font-size:11px;color:#C9A84C88;display:none;align-items:center;gap:8px}
 .sync-dot{width:6px;height:6px;border-radius:50%;background:#4CAF50;animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
-@media(max-width:640px){.charts-row{grid-template-columns:1fr}}
+.active-filters-bar{background:#C9A84C0a;border-bottom:1px solid #C9A84C11;padding:5px 24px;font-size:11px;color:#C9A84C88;display:none;align-items:center;gap:6px;flex-wrap:wrap}
+.active-filter-tag{background:#C9A84C22;color:#C9A84C;padding:2px 8px;border-radius:10px;font-size:10px}
+@media(max-width:640px){.charts-row{grid-template-columns:1fr}.filters{gap:6px}}
 </style>
 </head>
 <body>
@@ -134,19 +141,70 @@ tbody td{padding:9px 10px;color:#ddd;font-size:12px}
     Conectado a Excel · escalarasesorias.sharepoint.com
   </div>
 
+  <!-- FILTROS -->
   <div class="filters">
     <label>Filtrar:</label>
-    <select id="fAsignado" onchange="aplicarFiltros()"><option value="">Todos los asignados</option></select>
-    <select id="fBucket" onchange="aplicarFiltros()"><option value="">Todos los buckets</option></select>
-    <select id="fEstado" onchange="aplicarFiltros()">
-      <option value="">Todos los estados</option>
-      <option value="0">Sin iniciar</option>
-      <option value="50">En progreso</option>
-      <option value="100">Completadas</option>
-    </select>
-    <select id="fPrioridad" onchange="aplicarFiltros()"><option value="">Todas las prioridades</option></select>
-    <button class="btn-clear" onclick="limpiarFiltros()">&#10005; Limpiar</button>
+
+    <div class="filter-group">
+      <label>Asignado</label>
+      <select id="fAsignado" onchange="aplicarFiltros()"><option value="">Todos</option></select>
+    </div>
+
+    <div class="filter-sep"></div>
+
+    <div class="filter-group">
+      <label>Bucket</label>
+      <select id="fBucket" onchange="aplicarFiltros()"><option value="">Todos</option></select>
+    </div>
+
+    <div class="filter-sep"></div>
+
+    <div class="filter-group">
+      <label>Estado</label>
+      <select id="fEstado" onchange="aplicarFiltros()">
+        <option value="">Todos</option>
+        <option value="0">Sin iniciar</option>
+        <option value="50">En progreso</option>
+        <option value="100">Completadas</option>
+      </select>
+    </div>
+
+    <div class="filter-sep"></div>
+
+    <div class="filter-group">
+      <label>Prioridad</label>
+      <select id="fPrioridad" onchange="aplicarFiltros()"><option value="">Todas</option></select>
+    </div>
+
+    <div class="filter-sep"></div>
+
+    <div class="filter-group">
+      <label>Vencimiento desde</label>
+      <input type="date" id="fFechaDesde" onchange="aplicarFiltros()" title="Filtrar por fecha de vencimiento desde"/>
+    </div>
+
+    <div class="filter-group">
+      <label>hasta</label>
+      <input type="date" id="fFechaHasta" onchange="aplicarFiltros()" title="Filtrar por fecha de vencimiento hasta"/>
+    </div>
+
+    <div class="filter-sep"></div>
+
+    <div class="filter-group">
+      <label>Creación desde</label>
+      <input type="date" id="fCreacionDesde" onchange="aplicarFiltros()" title="Filtrar por fecha de creación desde"/>
+    </div>
+
+    <div class="filter-group">
+      <label>hasta</label>
+      <input type="date" id="fCreacionHasta" onchange="aplicarFiltros()" title="Filtrar por fecha de creación hasta"/>
+    </div>
+
+    <button class="btn-clear" onclick="limpiarFiltros()">&#10005; Limpiar filtros</button>
   </div>
+
+  <!-- BARRA DE FILTROS ACTIVOS -->
+  <div class="active-filters-bar" id="activeFiltersBar"></div>
 
   <div class="content">
     <div class="kpi-grid" id="kpis"></div>
@@ -224,6 +282,19 @@ var datosFiltrados = [];
 var chartEstadoInst = null, chartBucketInst = null, chartPrioridadInst = null;
 var PALETA = ['#C9A84C','#E8C97A','#A07830','#42A5F5','#81C784','#EF9A9A','#FFB74D','#CE93D8','#80DEEA','#F48FB1','#FFCC80','#B0BEC5','#80CBC4'];
 
+// ─── UTILIDADES DE NOMBRE ────────────────────────────────────────────────────
+
+function normalizarNombre(nombre) {
+  return String(nombre || '').trim().replace(/\s+/g, ' ').toLowerCase();
+}
+
+function splitAsignados(nombre) {
+  if (!nombre) return [];
+  return String(nombre).split(';').map(function(n){ return n.trim(); }).filter(Boolean);
+}
+
+// ─── PARSERS ─────────────────────────────────────────────────────────────────
+
 function parsearEstado(v) {
   if (v === null || v === undefined || v === '') return 0;
   var s = String(v).toLowerCase().trim();
@@ -241,26 +312,21 @@ function parsearFecha(f) {
   if (!f || f === '' || f === 0 || f === '0') return null;
   try {
     if (f instanceof Date) return isNaN(f) ? null : f;
-    // Excel serial number (e.g. 45678) — most common from Graph API
     var num = typeof f === 'number' ? f : parseFloat(String(f).trim());
     if (!isNaN(num) && num > 1000 && num < 100000) {
-      // Excel epoch: Dec 30, 1899 (with leap year bug correction)
       var d = new Date(Date.UTC(1899, 11, 30) + num * 86400000);
       return (!isNaN(d) && d.getFullYear() >= 2000 && d.getFullYear() <= 2100) ? d : null;
     }
     var s = String(f).trim();
-    // ISO format: 2026-01-14 or 2026-01-14T...
     if (/^[0-9]{4}-[0-9]{2}-[0-9]{2}/.test(s)) {
       var d = new Date(s);
       return (!isNaN(d) && d.getFullYear() >= 2000 && d.getFullYear() <= 2100) ? d : null;
     }
-    // dd/mm/yyyy Colombian format
     if (/^[0-9]{1,2}\/[0-9]{1,2}\/[0-9]{4}/.test(s)) {
       var parts = s.split('/');
       var d = new Date(parseInt(parts[2]), parseInt(parts[1])-1, parseInt(parts[0]));
       return (!isNaN(d) && d.getFullYear() >= 2000 && d.getFullYear() <= 2100) ? d : null;
     }
-    // dd-mm-yyyy
     if (/^[0-9]{1,2}-[0-9]{1,2}-[0-9]{4}/.test(s)) {
       var parts = s.split('-');
       if (parseInt(parts[2]) > 2000) {
@@ -268,15 +334,20 @@ function parsearFecha(f) {
         return (!isNaN(d) && d.getFullYear() >= 2000 && d.getFullYear() <= 2100) ? d : null;
       }
     }
-    // Generic ISO fallback
     var d = new Date(s);
     return (!isNaN(d) && d.getFullYear() >= 2000 && d.getFullYear() <= 2100) ? d : null;
   } catch(e) { return null; }
 }
 
-function fechaValida(f) {
-  return parsearFecha(f) !== null;
+// Convierte string "YYYY-MM-DD" del input[type=date] a Date local
+function parsearFechaInput(s) {
+  if (!s) return null;
+  var parts = s.split('-');
+  if (parts.length !== 3) return null;
+  return new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]));
 }
+
+function fechaValida(f) { return parsearFecha(f) !== null; }
 
 function formatFecha(f) {
   var d = parsearFecha(f);
@@ -284,6 +355,13 @@ function formatFecha(f) {
   try {
     return d.toLocaleDateString('es-CO', {day:'2-digit', month:'short', year:'numeric'});
   } catch(e) { return '—'; }
+}
+
+function soloFecha(d) {
+  // Devuelve Date sin hora para comparación de rangos
+  var c = new Date(d);
+  c.setHours(0,0,0,0);
+  return c;
 }
 
 function diasRestantes(fecha) {
@@ -300,9 +378,7 @@ function calcularHoras(f1, f2) {
   var d1 = parsearFecha(f1);
   var d2 = parsearFecha(f2);
   if (!d1 || !d2) return null;
-  try {
-    return (d2 - d1) / (1000 * 60 * 60);
-  } catch(e) { return null; }
+  try { return (d2 - d1) / (1000 * 60 * 60); } catch(e) { return null; }
 }
 
 function semaforo(dias, estado) {
@@ -325,20 +401,15 @@ function prioridadBadge(p) {
   return m[(p||'').toLowerCase()] || 'b-gray';
 }
 
-function splitAsignados(nombre) {
-  if (!nombre) return [];
-  return String(nombre).split(';').map(function(n){ return n.trim(); }).filter(Boolean);
-}
-
-function nombreCorto(nombre) {
-  return String(nombre||'').split(' ').slice(0,3).join(' ');
-}
+// ─── UI HELPERS ──────────────────────────────────────────────────────────────
 
 function mostrarCargando(txt) {
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('loadingScreen').style.display = 'flex';
   document.getElementById('loadingTxt').textContent = txt || 'Cargando...';
 }
+
+// ─── AUTH ────────────────────────────────────────────────────────────────────
 
 async function getToken() {
   var account = msalInstance.getActiveAccount();
@@ -412,8 +483,7 @@ async function cargarDatos() {
 
     document.getElementById('loadingScreen').style.display = 'none';
     document.getElementById('dashboard').style.display = 'block';
-    var sb = document.getElementById('syncBar');
-    sb.style.display = 'flex';
+    document.getElementById('syncBar').style.display = 'flex';
     document.getElementById('lastUpdate').textContent = 'Actualizado: ' + new Date().toLocaleTimeString('es-CO');
 
   } catch(e) {
@@ -435,16 +505,24 @@ function cerrarSesion() {
   document.getElementById('btnLogin').textContent = 'Ingresar con cuenta Microsoft';
 }
 
+// ─── FILTROS ─────────────────────────────────────────────────────────────────
+
 function poblarFiltros() {
-  var asignadosSet = {};
+  // ASIGNADOS: normalizar nombres para evitar duplicados por espacios
+  var asignadosMap = {};
   todosLosDatos.forEach(function(t) {
-    splitAsignados(t.Asignado_Nombre).forEach(function(n){ asignadosSet[nombreCorto(n)] = 1; });
+    splitAsignados(t.Asignado_Nombre).forEach(function(n) {
+      var nombre = n.trim().replace(/\s+/g, ' ');
+      if (nombre) asignadosMap[normalizarNombre(nombre)] = nombre; // key=normalizado, val=original limpio
+    });
   });
-  var asignados = Object.keys(asignadosSet).sort();
+  var asignados = Object.values(asignadosMap).sort(function(a,b){ return a.localeCompare(b,'es'); });
+
   var buckets = [];
   var bucketsSet = {};
   todosLosDatos.forEach(function(t){ if(t.Bucket && !bucketsSet[t.Bucket]){ bucketsSet[t.Bucket]=1; buckets.push(t.Bucket); } });
   buckets.sort();
+
   var prioridadesSet = {};
   var prioridades = [];
   todosLosDatos.forEach(function(t){ if(t.Prioridad && !prioridadesSet[t.Prioridad]){ prioridadesSet[t.Prioridad]=1; prioridades.push(t.Prioridad); } });
@@ -452,41 +530,139 @@ function poblarFiltros() {
   var selA = document.getElementById('fAsignado');
   var selB = document.getElementById('fBucket');
   var selP = document.getElementById('fPrioridad');
-  selA.innerHTML = '<option value="">Todos los asignados</option>';
-  selB.innerHTML = '<option value="">Todos los buckets</option>';
-  selP.innerHTML = '<option value="">Todas las prioridades</option>';
-  asignados.forEach(function(a){ var o = document.createElement('option'); o.value = a; o.textContent = a; selA.appendChild(o); });
-  buckets.forEach(function(b){ var o = document.createElement('option'); o.value = b; o.textContent = b; selB.appendChild(o); });
-  prioridades.forEach(function(p){ var o = document.createElement('option'); o.value = p; o.textContent = p; selP.appendChild(o); });
+
+  selA.innerHTML = '<option value="">Todos</option>';
+  selB.innerHTML = '<option value="">Todos</option>';
+  selP.innerHTML = '<option value="">Todas</option>';
+
+  asignados.forEach(function(a){
+    var o = document.createElement('option');
+    o.value = a;
+    o.textContent = a;
+    selA.appendChild(o);
+  });
+  buckets.forEach(function(b){
+    var o = document.createElement('option');
+    o.value = b;
+    o.textContent = b;
+    selB.appendChild(o);
+  });
+  prioridades.forEach(function(p){
+    var o = document.createElement('option');
+    o.value = p;
+    o.textContent = p;
+    selP.appendChild(o);
+  });
 }
 
 function aplicarFiltros() {
-  var a = document.getElementById('fAsignado').value;
-  var b = document.getElementById('fBucket').value;
-  var e = document.getElementById('fEstado').value;
-  var p = document.getElementById('fPrioridad').value;
+  var a         = document.getElementById('fAsignado').value;
+  var b         = document.getElementById('fBucket').value;
+  var e         = document.getElementById('fEstado').value;
+  var p         = document.getElementById('fPrioridad').value;
+  var fDesde    = parsearFechaInput(document.getElementById('fFechaDesde').value);
+  var fHasta    = parsearFechaInput(document.getElementById('fFechaHasta').value);
+  var cDesde    = parsearFechaInput(document.getElementById('fCreacionDesde').value);
+  var cHasta    = parsearFechaInput(document.getElementById('fCreacionHasta').value);
+
+  if (fHasta) fHasta.setHours(23,59,59,999);
+  if (cHasta) cHasta.setHours(23,59,59,999);
+
   datosFiltrados = todosLosDatos.filter(function(t) {
-    var matchA = !a || splitAsignados(t.Asignado_Nombre).some(function(n){ return nombreCorto(n) === a; });
+    // ── Asignado: comparación normalizada ──
+    var matchA = !a || splitAsignados(t.Asignado_Nombre).some(function(n) {
+      return normalizarNombre(n) === normalizarNombre(a);
+    });
+
+    // ── Bucket ──
     var matchB = !b || t.Bucket === b;
+
+    // ── Estado ──
     var matchE = !e || String(parsearEstado(t.Estado)) === e;
+
+    // ── Prioridad ──
     var matchP = !p || t.Prioridad === p;
-    return matchA && matchB && matchE && matchP;
+
+    // ── Rango de fecha de vencimiento ──
+    var matchFV = true;
+    if (fDesde || fHasta) {
+      var fv = parsearFecha(t.Fecha_vencimiento);
+      if (!fv) {
+        matchFV = false; // sin fecha no pasa el rango
+      } else {
+        var fvd = soloFecha(fv);
+        if (fDesde && fvd < fDesde) matchFV = false;
+        if (fHasta && fvd > fHasta) matchFV = false;
+      }
+    }
+
+    // ── Rango de fecha de creación ──
+    var matchFC = true;
+    if (cDesde || cHasta) {
+      var fc = parsearFecha(t.Fecha_Creacion);
+      if (!fc) {
+        matchFC = false;
+      } else {
+        var fcd = soloFecha(fc);
+        if (cDesde && fcd < cDesde) matchFC = false;
+        if (cHasta && fcd > cHasta) matchFC = false;
+      }
+    }
+
+    return matchA && matchB && matchE && matchP && matchFV && matchFC;
   });
+
+  actualizarBarraFiltrosActivos(a, b, e, p, fDesde, fHasta, cDesde, cHasta);
   renderTodo();
+}
+
+function actualizarBarraFiltrosActivos(a, b, e, p, fDesde, fHasta, cDesde, cHasta) {
+  var bar = document.getElementById('activeFiltersBar');
+  var tags = [];
+
+  if (a) tags.push('Asignado: ' + a);
+  if (b) tags.push('Bucket: ' + b);
+  if (e === '0') tags.push('Estado: Sin iniciar');
+  else if (e === '50') tags.push('Estado: En progreso');
+  else if (e === '100') tags.push('Estado: Completadas');
+  if (p) tags.push('Prioridad: ' + p);
+
+  var fmtInput = function(d){ return d ? d.toLocaleDateString('es-CO',{day:'2-digit',month:'short',year:'numeric'}) : null; };
+  if (fDesde && fHasta) tags.push('Vence: ' + fmtInput(fDesde) + ' → ' + fmtInput(fHasta));
+  else if (fDesde) tags.push('Vence desde: ' + fmtInput(fDesde));
+  else if (fHasta) tags.push('Vence hasta: ' + fmtInput(fHasta));
+
+  if (cDesde && cHasta) tags.push('Creación: ' + fmtInput(cDesde) + ' → ' + fmtInput(cHasta));
+  else if (cDesde) tags.push('Creación desde: ' + fmtInput(cDesde));
+  else if (cHasta) tags.push('Creación hasta: ' + fmtInput(cHasta));
+
+  if (tags.length) {
+    bar.style.display = 'flex';
+    bar.innerHTML = '<span style="color:#C9A84C88;margin-right:4px">Filtros activos:</span>' +
+      tags.map(function(t){ return '<span class="active-filter-tag">' + t + '</span>'; }).join('') +
+      ' <span style="color:#C9A84C44;margin-left:4px">— ' + datosFiltrados.length + ' resultado(s)</span>';
+  } else {
+    bar.style.display = 'none';
+    bar.innerHTML = '';
+  }
 }
 
 function limpiarFiltros() {
   ['fAsignado','fBucket','fEstado','fPrioridad'].forEach(function(id){ document.getElementById(id).value = ''; });
+  ['fFechaDesde','fFechaHasta','fCreacionDesde','fCreacionHasta'].forEach(function(id){ document.getElementById(id).value = ''; });
+  document.getElementById('activeFiltersBar').style.display = 'none';
   datosFiltrados = todosLosDatos.slice();
   renderTodo();
 }
 
+// ─── RENDER ──────────────────────────────────────────────────────────────────
+
 function renderKPIs() {
   var total = datosFiltrados.length;
   var completadas = datosFiltrados.filter(function(t){ return parsearEstado(t.Estado) === 100; }).length;
-  var enProgreso = datosFiltrados.filter(function(t){ return parsearEstado(t.Estado) === 50; }).length;
-  var sinIniciar = datosFiltrados.filter(function(t){ return parsearEstado(t.Estado) === 0; }).length;
-  var vencidas = datosFiltrados.filter(function(t){
+  var enProgreso  = datosFiltrados.filter(function(t){ return parsearEstado(t.Estado) === 50; }).length;
+  var sinIniciar  = datosFiltrados.filter(function(t){ return parsearEstado(t.Estado) === 0; }).length;
+  var vencidas    = datosFiltrados.filter(function(t){
     if (parsearEstado(t.Estado) === 100) return false;
     var dias = diasRestantes(t.Fecha_vencimiento);
     return dias !== null && dias < 0;
@@ -548,16 +724,17 @@ function renderAsignados() {
   var conteo = {};
   datosFiltrados.forEach(function(t) {
     splitAsignados(t.Asignado_Nombre).forEach(function(n) {
-      var nc = nombreCorto(n);
-      conteo[nc] = (conteo[nc] || 0) + 1;
+      var nc = n.trim().replace(/\s+/g,' ');
+      if (nc) conteo[nc] = (conteo[nc] || 0) + 1;
     });
   });
   var sorted = Object.keys(conteo).map(function(k){ return [k, conteo[k]]; }).sort(function(a,b){ return b[1]-a[1]; });
   var max = sorted.length ? sorted[0][1] : 1;
   document.getElementById('chartAsignados').innerHTML = sorted.length
     ? sorted.map(function(item) {
+        var displayName = item[0].replace(/ SAS$/i,'').replace(/ S\.A\.S\.?$/i,'').trim();
         return '<div class="assignee-bar">' +
-          '<div class="assignee-name">' + item[0] + '</div>' +
+          '<div class="assignee-name">' + displayName + '</div>' +
           '<div class="assignee-track"><div class="assignee-fill" style="width:' + Math.round(item[1]/max*100) + '%"></div></div>' +
           '<div class="assignee-count">' + item[1] + '</div>' +
         '</div>';
@@ -569,7 +746,7 @@ function renderChartEstado() {
   var c0=0, c50=0, c100=0;
   datosFiltrados.forEach(function(t){ var e=parsearEstado(t.Estado); if(e===100)c100++; else if(e===50)c50++; else c0++; });
   var labels = ['Sin iniciar','En progreso','Completada'];
-  var data = [c0, c50, c100];
+  var data   = [c0, c50, c100];
   var colors = ['#666','#42A5F5','#4CAF50'];
   document.getElementById('legendEstado').innerHTML = labels.map(function(l,i){
     return '<span class="legend-item"><span class="legend-dot" style="background:' + colors[i] + '"></span>' + l + ' (' + data[i] + ')</span>';
@@ -587,7 +764,7 @@ function renderChartBucket() {
   datosFiltrados.forEach(function(t){ if(t.Bucket) conteo[t.Bucket] = (conteo[t.Bucket]||0)+1; });
   var sorted = Object.keys(conteo).map(function(k){ return [k,conteo[k]]; }).sort(function(a,b){ return b[1]-a[1]; });
   var labels = sorted.map(function(e){ return e[0]; });
-  var data = sorted.map(function(e){ return e[1]; });
+  var data   = sorted.map(function(e){ return e[1]; });
   document.getElementById('legendBucket').innerHTML = labels.map(function(l,i){
     return '<span class="legend-item"><span class="legend-dot" style="background:' + PALETA[i%PALETA.length] + '"></span>' + l + '</span>';
   }).join('');
@@ -604,7 +781,7 @@ function renderChartPrioridad() {
   var conteo = {};
   datosFiltrados.forEach(function(t){ if(t.Prioridad) conteo[t.Prioridad] = (conteo[t.Prioridad]||0)+1; });
   var labels = Object.keys(conteo);
-  var data = labels.map(function(p){ return conteo[p]; });
+  var data   = labels.map(function(p){ return conteo[p]; });
   var colors = {urgente:'#E53935',urgent:'#E53935',importante:'#FFA726',important:'#FFA726',media:'#42A5F5',medium:'#42A5F5',baja:'#78909C',low:'#78909C'};
   document.getElementById('legendPrioridad').innerHTML = labels.map(function(l,i){
     return '<span class="legend-item"><span class="legend-dot" style="background:' + (colors[l.toLowerCase()]||PALETA[i]) + '"></span>' + l + ' (' + data[i] + ')</span>';
@@ -618,6 +795,8 @@ function renderChartPrioridad() {
 }
 
 function renderTablaVencidas() {
+  // Usa datosFiltrados (ya filtrado por asignado/bucket/estado/prioridad/fechas)
+  // y además muestra solo pendientes con vencimiento <= 5 días o ya vencidas
   var lista = datosFiltrados.filter(function(t){
     if (parsearEstado(t.Estado) === 100) return false;
     var dias = diasRestantes(t.Fecha_vencimiento);
@@ -625,20 +804,22 @@ function renderTablaVencidas() {
   }).sort(function(a,b){ return diasRestantes(a.Fecha_vencimiento) - diasRestantes(b.Fecha_vencimiento); });
 
   var tbody = document.getElementById('tbodyVencidas');
-  if (!lista.length) { tbody.innerHTML = '<tr><td colspan="8" class="empty-state">Sin tareas urgentes</td></tr>'; return; }
+  if (!lista.length) { tbody.innerHTML = '<tr><td colspan="8" class="empty-state">Sin tareas urgentes en la selección actual</td></tr>'; return; }
+
   tbody.innerHTML = lista.map(function(t) {
     var dias = diasRestantes(t.Fecha_vencimiento);
-    var sem = semaforo(dias, parsearEstado(t.Estado));
+    var sem  = semaforo(dias, parsearEstado(t.Estado));
     var diasTxt = dias < 0
       ? '<span style="color:#EF9A9A">' + Math.abs(dias) + 'd vencida</span>'
       : dias === 0 ? '<span style="color:#FFA726">Hoy</span>'
       : '<span style="color:#FFB74D">' + dias + 'd</span>';
     var est = estadoLabel(t.Estado);
-    var asig = splitAsignados(t.Asignado_Nombre)[0] || '—';
+    // Mostrar todos los asignados, no solo el primero
+    var asigs = splitAsignados(t.Asignado_Nombre).map(function(n){ return n.replace(/ SAS$/i,'').replace(/ S\.A\.S\.?$/i,'').trim(); }).join(', ') || '—';
     return '<tr>' +
       '<td><span class="sem sem-' + sem + '"></span></td>' +
       '<td style="color:#fff;font-weight:500">' + (t.Titulo_Tarea||'—') + '</td>' +
-      '<td>' + nombreCorto(asig) + '</td>' +
+      '<td>' + asigs + '</td>' +
       '<td><span class="badge b-gray">' + (t.Bucket||'—') + '</span></td>' +
       '<td>' + formatFecha(t.Fecha_vencimiento) + '</td>' +
       '<td>' + diasTxt + '</td>' +
@@ -651,16 +832,18 @@ function renderTablaVencidas() {
 function renderTablaTodas() {
   document.getElementById('contadorTareas').textContent = '(' + datosFiltrados.length + ')';
   var tbody = document.getElementById('tbodyTodas');
-  if (!datosFiltrados.length) { tbody.innerHTML = '<tr><td colspan="9" class="empty-state">Sin resultados</td></tr>'; return; }
+  if (!datosFiltrados.length) { tbody.innerHTML = '<tr><td colspan="9" class="empty-state">Sin resultados para los filtros aplicados</td></tr>'; return; }
+
   tbody.innerHTML = datosFiltrados.map(function(t) {
     var dias = diasRestantes(t.Fecha_vencimiento);
-    var est = estadoLabel(t.Estado);
-    var sem = semaforo(dias, parsearEstado(t.Estado));
+    var est  = estadoLabel(t.Estado);
+    var sem  = semaforo(dias, parsearEstado(t.Estado));
     var sinFecha = !fechaValida(t.Fecha_vencimiento);
     var fechaTxt = sinFecha
       ? '<span style="color:#C9A84C55;font-style:italic;font-size:11px">Sin fecha</span>'
       : '<span style="color:' + (dias<0?'#EF9A9A':dias<=3?'#FFB74D':'#aaa') + '">' + formatFecha(t.Fecha_vencimiento) + '</span>';
-    var asig = splitAsignados(t.Asignado_Nombre)[0] || '—';
+    // Mostrar todos los asignados
+    var asigs = splitAsignados(t.Asignado_Nombre).map(function(n){ return n.replace(/ SAS$/i,'').replace(/ S\.A\.S\.?$/i,'').trim(); }).join(', ') || '—';
     var ndsTxt = '—';
     if (parsearEstado(t.Estado) === 100) {
       var horas = calcularHoras(t.Fecha_Creacion, t.Completada);
@@ -673,7 +856,7 @@ function renderTablaTodas() {
     return '<tr>' +
       '<td><span class="sem sem-' + sem + '"></span></td>' +
       '<td style="color:#fff;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + (t.Titulo_Tarea||'—') + '</td>' +
-      '<td>' + nombreCorto(asig) + '</td>' +
+      '<td>' + asigs + '</td>' +
       '<td><span class="badge b-gray">' + (t.Bucket||'—') + '</span></td>' +
       '<td><span class="badge ' + est.cls + '">' + est.txt + '</span></td>' +
       '<td><span class="badge ' + prioridadBadge(t.Prioridad) + '">' + (t.Prioridad||'—') + '</span></td>' +
@@ -693,6 +876,8 @@ function renderTodo() {
   renderTablaVencidas();
   renderTablaTodas();
 }
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
 
 (async function init() {
   try {
