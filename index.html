@@ -285,7 +285,7 @@ var CONFIG={
   driveFolder:'Escalar',
   fileName:'Registro_Tareas_Teams.xlsx',
   tableName:'TblTareas',
-  redirectUri:'https://aimaqg.github.io/Dashboard_Escalar/',
+  redirectUri:window.location.href.split('?')[0].split('#')[0],
   NDS_META:90
 };
 var msalConfig={auth:{clientId:CONFIG.clientId,authority:'https://login.microsoftonline.com/'+CONFIG.tenantId,redirectUri:CONFIG.redirectUri},cache:{cacheLocation:'localStorage',storeAuthStateInCookie:true}};
@@ -343,20 +343,10 @@ function ndsColor(pct){return pct>=CONFIG.NDS_META?'#4CAF50':pct>=70?'#FFA726':'
 
 // ── AUTH ─────────────────────────────────────────────────────────────────────
 function mostrarCargando(txt){document.getElementById('loginScreen').style.display='none';document.getElementById('loadingScreen').style.display='flex';document.getElementById('loadingTxt').textContent=txt||'Cargando...';}
-async function getToken(){
-  var account=msalInstance.getActiveAccount();
-  if(!account) throw new Error('No hay sesión activa');
-  try{
-    var r=await msalInstance.acquireTokenSilent({scopes:scopes,account:account});
-    return r.accessToken;
-  }catch(e){
-    await msalInstance.acquireTokenRedirect({scopes:scopes,account:account});
-    return null;
-  }
-}
+async function getToken(){var account=msalInstance.getActiveAccount();if(!account) throw new Error('No hay sesión activa');var r=await msalInstance.acquireTokenSilent({scopes:scopes,account:account});return r.accessToken;}
 async function iniciarLogin(){
   document.getElementById('btnLogin').disabled=true;document.getElementById('btnLogin').textContent='Conectando...';document.getElementById('loginError').style.display='none';
-  try{await msalInstance.initialize();mostrarCargando('Redirigiendo a Microsoft...');await msalInstance.loginRedirect({scopes:scopes});}
+  try{await msalInstance.initialize();var resp=await msalInstance.loginPopup({scopes:scopes,prompt:'select_account'});msalInstance.setActiveAccount(resp.account);mostrarCargando('Obteniendo datos...');await cargarDatos();}
   catch(e){document.getElementById('btnLogin').disabled=false;document.getElementById('btnLogin').textContent='Ingresar con cuenta Microsoft';document.getElementById('loginError').textContent='Error: '+(e.message||'Intenta de nuevo');document.getElementById('loginError').style.display='block';}
 }
 async function cargarDatos(){
@@ -387,7 +377,7 @@ async function cargarDatos(){
     document.getElementById('loginError').textContent='Error: '+(e.message||'No se pudo cargar');document.getElementById('loginError').style.display='block';
   }
 }
-function cerrarSesion(){msalInstance.logoutRedirect();document.getElementById('dashboard').style.display='none';document.getElementById('loginScreen').style.display='flex';document.getElementById('btnLogin').disabled=false;document.getElementById('btnLogin').textContent='Ingresar con cuenta Microsoft';}
+function cerrarSesion(){msalInstance.logoutPopup();document.getElementById('dashboard').style.display='none';document.getElementById('loginScreen').style.display='flex';document.getElementById('btnLogin').disabled=false;document.getElementById('btnLogin').textContent='Ingresar con cuenta Microsoft';}
 
 // ── FILTROS ───────────────────────────────────────────────────────────────────
 function poblarFiltros(){
