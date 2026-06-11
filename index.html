@@ -285,7 +285,7 @@ var CONFIG={
   driveFolder:'Escalar',
   fileName:'Registro_Tareas_Teams.xlsx',
   tableName:'TblTareas',
-  redirectUri:window.location.href.split('?')[0].split('#')[0],
+  redirectUri:'https://aimaqg.github.io/Dashboard_Escalar/',
   NDS_META:90
 };
 var msalConfig={auth:{clientId:CONFIG.clientId,authority:'https://login.microsoftonline.com/'+CONFIG.tenantId,redirectUri:CONFIG.redirectUri},cache:{cacheLocation:'localStorage',storeAuthStateInCookie:true}};
@@ -343,10 +343,20 @@ function ndsColor(pct){return pct>=CONFIG.NDS_META?'#4CAF50':pct>=70?'#FFA726':'
 
 // ── AUTH ─────────────────────────────────────────────────────────────────────
 function mostrarCargando(txt){document.getElementById('loginScreen').style.display='none';document.getElementById('loadingScreen').style.display='flex';document.getElementById('loadingTxt').textContent=txt||'Cargando...';}
-async function getToken(){var account=msalInstance.getActiveAccount();if(!account) throw new Error('No hay sesión activa');var r=await msalInstance.acquireTokenSilent({scopes:scopes,account:account});return r.accessToken;}
+async function getToken(){
+  var account=msalInstance.getActiveAccount();
+  if(!account) throw new Error('No hay sesión activa');
+  try{
+    var r=await msalInstance.acquireTokenSilent({scopes:scopes,account:account});
+    return r.accessToken;
+  }catch(e){
+    await msalInstance.acquireTokenRedirect({scopes:scopes,account:account});
+    return null;
+  }
+}
 async function iniciarLogin(){
   document.getElementById('btnLogin').disabled=true;document.getElementById('btnLogin').textContent='Conectando...';document.getElementById('loginError').style.display='none';
-  try{await msalInstance.initialize();var resp=await msalInstance.loginPopup({scopes:scopes,prompt:'select_account'});msalInstance.setActiveAccount(resp.account);mostrarCargando('Obteniendo datos...');await cargarDatos();}
+  try{await msalInstance.initialize();await msalInstance.loginRedirect({scopes:scopes,prompt:'select_account'});}
   catch(e){document.getElementById('btnLogin').disabled=false;document.getElementById('btnLogin').textContent='Ingresar con cuenta Microsoft';document.getElementById('loginError').textContent='Error: '+(e.message||'Intenta de nuevo');document.getElementById('loginError').style.display='block';}
 }
 async function cargarDatos(){
@@ -377,7 +387,7 @@ async function cargarDatos(){
     document.getElementById('loginError').textContent='Error: '+(e.message||'No se pudo cargar');document.getElementById('loginError').style.display='block';
   }
 }
-function cerrarSesion(){msalInstance.logoutPopup();document.getElementById('dashboard').style.display='none';document.getElementById('loginScreen').style.display='flex';document.getElementById('btnLogin').disabled=false;document.getElementById('btnLogin').textContent='Ingresar con cuenta Microsoft';}
+function cerrarSesion(){msalInstance.logoutRedirect({postLogoutRedirectUri:'https://aimaqg.github.io/Dashboard_Escalar/'});document.getElementById('dashboard').style.display='none';document.getElementById('loginScreen').style.display='flex';document.getElementById('btnLogin').disabled=false;document.getElementById('btnLogin').textContent='Ingresar con cuenta Microsoft';}
 
 // ── FILTROS ───────────────────────────────────────────────────────────────────
 function poblarFiltros(){
@@ -963,11 +973,29 @@ function renderTodo(){
 (async function init(){
   try{
     await msalInstance.initialize();
+    mostrarCargando('Verificando sesión...');
     var result=await msalInstance.handleRedirectPromise();
-    if(result){msalInstance.setActiveAccount(result.account);mostrarCargando('Cargando datos...');await cargarDatos();return;}
+    if(result && result.account){
+      msalInstance.setActiveAccount(result.account);
+      mostrarCargando('Cargando datos...');
+      await cargarDatos();
+      return;
+    }
     var accounts=msalInstance.getAllAccounts();
-    if(accounts.length>0){msalInstance.setActiveAccount(accounts[0]);mostrarCargando('Restaurando sesión...');await cargarDatos();}
-  }catch(e){console.error('Init error:',e);}
+    if(accounts.length>0){
+      msalInstance.setActiveAccount(accounts[0]);
+      mostrarCargando('Restaurando sesión...');
+      await cargarDatos();
+      return;
+    }
+    // No session — show login screen
+    document.getElementById('loadingScreen').style.display='none';
+    document.getElementById('loginScreen').style.display='flex';
+  }catch(e){
+    console.error('Init error:',e);
+    document.getElementById('loadingScreen').style.display='none';
+    document.getElementById('loginScreen').style.display='flex';
+  }
 })();
 </script>
 </body>
