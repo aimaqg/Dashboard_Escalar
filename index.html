@@ -142,8 +142,8 @@ tbody td{padding:9px 10px;color:#ddd;font-size:12px}
     <div class="logo-hex"><div class="logo-inner"></div></div>
     <div class="login-title">ESCALAR</div>
     <div class="login-sub">GESTOR DE TAREAS</div>
-    <p class="login-desc">Accede con tu cuenta corporativa de Microsoft para ver el dashboard de tareas en tiempo real.</p>
-    <button class="btn-login" id="btnLogin" onclick="iniciarLogin()">Ingresar con cuenta Microsoft</button>
+    <p class="login-desc">Dashboard de gestión de tareas de Escalar Asesorías.</p>
+    <button class="btn-login" id="btnLogin" onclick="iniciarLogin()">Ingresar al Dashboard</button>
     <div class="login-error" id="loginError"></div>
   </div>
 </div>
@@ -344,38 +344,25 @@ function ndsColor(pct){return pct>=CONFIG.NDS_META?'#4CAF50':pct>=70?'#FFA726':'
 // ── AUTH ─────────────────────────────────────────────────────────────────────
 function mostrarCargando(txt){document.getElementById('loginScreen').style.display='none';document.getElementById('loadingScreen').style.display='flex';document.getElementById('loadingTxt').textContent=txt||'Cargando...';}
 async function getToken(){
-  var account=msalInstance.getActiveAccount();
-  if(!account) throw new Error('No hay sesión activa');
-  try{
-    var r=await msalInstance.acquireTokenSilent({scopes:scopes,account:account});
-    return r.accessToken;
-  }catch(e){
-    await msalInstance.acquireTokenRedirect({scopes:scopes,account:account});
-    return null;
-  }
+  var resp=await fetch('https://login.microsoftonline.com/'+CONFIG.tenantId+'/oauth2/v2.0/token',{
+    method:'POST',
+    headers:{'Content-Type':'application/x-www-form-urlencoded'},
+    body:'client_id='+CONFIG.clientId+'&client_secret='+encodeURIComponent(CONFIG.clientSecret)+'&scope=https%3A%2F%2Fgraph.microsoft.com%2F.default&grant_type=client_credentials'
+  });
+  var data=await resp.json();
+  if(!data.access_token) throw new Error('No se pudo obtener token: '+(data.error_description||JSON.stringify(data)));
+  return data.access_token;
 }
 async function iniciarLogin(){
-  document.getElementById('btnLogin').disabled=true;document.getElementById('btnLogin').textContent='Conectando...';document.getElementById('loginError').style.display='none';
-  try{await msalInstance.initialize();await msalInstance.loginRedirect({scopes:scopes,prompt:'select_account'});}
-  catch(e){document.getElementById('btnLogin').disabled=false;document.getElementById('btnLogin').textContent='Ingresar con cuenta Microsoft';document.getElementById('loginError').textContent='Error: '+(e.message||'Intenta de nuevo');document.getElementById('loginError').style.display='block';}
+  document.getElementById('btnLogin').disabled=true;
+  document.getElementById('btnLogin').textContent='Conectando...';
+  document.getElementById('loginError').style.display='none';
+  await cargarDatos();
 }
 async function cargarDatos(){
   try{
     mostrarCargando('Conectando con SharePoint...');accessToken=await getToken();
-    var account=msalInstance.getActiveAccount();
-    var USUARIOS_PERMITIDOS=['automatizacion@escalarsas.com','gerencia@escalarsas.com','asistentedos@escalarsas.com'];
-    var emailUsuario=(account.username||'').toLowerCase().trim();
-    if(!USUARIOS_PERMITIDOS.includes(emailUsuario)){
-      document.getElementById('loadingScreen').style.display='none';
-      document.getElementById('loginScreen').style.display='flex';
-      document.getElementById('loginError').textContent='Acceso denegado: '+emailUsuario+' no tiene permiso para usar este dashboard.';
-      document.getElementById('loginError').style.display='block';
-      document.getElementById('btnLogin').disabled=false;
-      document.getElementById('btnLogin').textContent='Ingresar con cuenta Microsoft';
-      await msalInstance.logoutRedirect({postLogoutRedirectUri:'https://aimaqg.github.io/Dashboard_Escalar/'});
-      return;
-    }
-    document.getElementById('userName').textContent=account.name||account.username;
+    document.getElementById('userName').textContent='Escalar Asesorías';
     mostrarCargando('Buscando sitio...');
     var siteResp=await fetch('https://graph.microsoft.com/v1.0/sites/'+CONFIG.siteHostname+':'+CONFIG.sitePath,{headers:{Authorization:'Bearer '+accessToken}});
     var siteData=await siteResp.json();if(!siteData.id) throw new Error('No se encontró el sitio');
@@ -400,7 +387,7 @@ async function cargarDatos(){
     document.getElementById('loginError').textContent='Error: '+(e.message||'No se pudo cargar');document.getElementById('loginError').style.display='block';
   }
 }
-function cerrarSesion(){msalInstance.logoutRedirect({postLogoutRedirectUri:'https://aimaqg.github.io/Dashboard_Escalar/'});document.getElementById('dashboard').style.display='none';document.getElementById('loginScreen').style.display='flex';document.getElementById('btnLogin').disabled=false;document.getElementById('btnLogin').textContent='Ingresar con cuenta Microsoft';}
+function cerrarSesion(){document.getElementById('dashboard').style.display='none';document.getElementById('loginScreen').style.display='flex';document.getElementById('btnLogin').disabled=false;document.getElementById('btnLogin').textContent='Ingresar con cuenta Microsoft';}
 
 // ── FILTROS ───────────────────────────────────────────────────────────────────
 function poblarFiltros(){
@@ -984,31 +971,9 @@ function renderTodo(){
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 (async function init(){
-  try{
-    await msalInstance.initialize();
-    mostrarCargando('Verificando sesión...');
-    var result=await msalInstance.handleRedirectPromise();
-    if(result && result.account){
-      msalInstance.setActiveAccount(result.account);
-      mostrarCargando('Cargando datos...');
-      await cargarDatos();
-      return;
-    }
-    var accounts=msalInstance.getAllAccounts();
-    if(accounts.length>0){
-      msalInstance.setActiveAccount(accounts[0]);
-      mostrarCargando('Restaurando sesión...');
-      await cargarDatos();
-      return;
-    }
-    // No session — show login screen
-    document.getElementById('loadingScreen').style.display='none';
-    document.getElementById('loginScreen').style.display='flex';
-  }catch(e){
-    console.error('Init error:',e);
-    document.getElementById('loadingScreen').style.display='none';
-    document.getElementById('loginScreen').style.display='flex';
-  }
+  // Auto-load on start
+  document.getElementById('loginScreen').style.display='none';
+  await cargarDatos();
 })();
 </script>
 </body>
