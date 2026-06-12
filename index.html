@@ -288,7 +288,7 @@ var CONFIG={
   redirectUri:'https://aimaqg.github.io/Dashboard_Escalar/',
   NDS_META:90
 };
-var msalConfig={auth:{clientId:CONFIG.clientId,authority:'https://login.microsoftonline.com/common',redirectUri:CONFIG.redirectUri},cache:{cacheLocation:'localStorage',storeAuthStateInCookie:true}};
+var msalConfig={auth:{clientId:CONFIG.clientId,authority:'https://login.microsoftonline.com/68c8479a-6d32-4a07-92aa-9165f551c776',redirectUri:CONFIG.redirectUri},cache:{cacheLocation:'localStorage',storeAuthStateInCookie:true}};
 var msalInstance=new msal.PublicClientApplication(msalConfig);
 var scopes=['https://graph.microsoft.com/Files.Read.All','https://graph.microsoft.com/Sites.Read.All','https://graph.microsoft.com/User.Read'];
 var accessToken=null,todosLosDatos=[],datosFiltrados=[];
