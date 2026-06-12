@@ -362,7 +362,20 @@ async function iniciarLogin(){
 async function cargarDatos(){
   try{
     mostrarCargando('Conectando con SharePoint...');accessToken=await getToken();
-    var account=msalInstance.getActiveAccount();document.getElementById('userName').textContent=account.name||account.username;
+    var account=msalInstance.getActiveAccount();
+    var USUARIOS_PERMITIDOS=['automatizacion@escalarsas.com','gerencia@escalarsas.com','asistentedos@escalarsas.com'];
+    var emailUsuario=(account.username||'').toLowerCase().trim();
+    if(!USUARIOS_PERMITIDOS.includes(emailUsuario)){
+      document.getElementById('loadingScreen').style.display='none';
+      document.getElementById('loginScreen').style.display='flex';
+      document.getElementById('loginError').textContent='Acceso denegado: '+emailUsuario+' no tiene permiso para usar este dashboard.';
+      document.getElementById('loginError').style.display='block';
+      document.getElementById('btnLogin').disabled=false;
+      document.getElementById('btnLogin').textContent='Ingresar con cuenta Microsoft';
+      await msalInstance.logoutRedirect({postLogoutRedirectUri:'https://aimaqg.github.io/Dashboard_Escalar/'});
+      return;
+    }
+    document.getElementById('userName').textContent=account.name||account.username;
     mostrarCargando('Buscando sitio...');
     var siteResp=await fetch('https://graph.microsoft.com/v1.0/sites/'+CONFIG.siteHostname+':'+CONFIG.sitePath,{headers:{Authorization:'Bearer '+accessToken}});
     var siteData=await siteResp.json();if(!siteData.id) throw new Error('No se encontró el sitio');
