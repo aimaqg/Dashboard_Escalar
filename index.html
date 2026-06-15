@@ -142,8 +142,20 @@ tbody td{padding:9px 10px;color:#ddd;font-size:12px}
     <div class="logo-hex"><div class="logo-inner"></div></div>
     <div class="login-title">ESCALAR</div>
     <div class="login-sub">GESTOR DE TAREAS</div>
-    <p class="login-desc">Dashboard de gestión de tareas de Escalar Asesorías.</p>
-    <button class="btn-login" id="btnLogin" onclick="iniciarLogin()">Ingresar al Dashboard</button>
+    <p class="login-desc">Ingresa tus credenciales para acceder al dashboard.</p>
+    <div style="margin-bottom:14px;text-align:left">
+      <label style="color:#C9A84C88;font-size:11px;letter-spacing:1px;display:block;margin-bottom:6px">USUARIO</label>
+      <input id="inputUser" type="text" placeholder="Usuario" autocomplete="username"
+        style="width:100%;background:#1a1a2e;border:1px solid #C9A84C33;color:#fff;padding:12px 14px;border-radius:8px;font-size:14px;outline:none;font-family:inherit"
+        onkeydown="if(event.key==='Enter') document.getElementById('inputPass').focus()"/>
+    </div>
+    <div style="margin-bottom:20px;text-align:left">
+      <label style="color:#C9A84C88;font-size:11px;letter-spacing:1px;display:block;margin-bottom:6px">CONTRASEÑA</label>
+      <input id="inputPass" type="password" placeholder="Contraseña" autocomplete="current-password"
+        style="width:100%;background:#1a1a2e;border:1px solid #C9A84C33;color:#fff;padding:12px 14px;border-radius:8px;font-size:14px;outline:none;font-family:inherit"
+        onkeydown="if(event.key==='Enter') iniciarLogin()"/>
+    </div>
+    <button class="btn-login" id="btnLogin" onclick="iniciarLogin()">Ingresar</button>
     <div class="login-error" id="loginError"></div>
   </div>
 </div>
@@ -353,16 +365,29 @@ async function getToken(){
   if(!data.access_token) throw new Error('No se pudo obtener token: '+(data.error_description||JSON.stringify(data)));
   return data.access_token;
 }
+var USUARIOS={
+  'gerencia':   'Yuli21esca',
+  'asistente2': 'Colombia2026*',
+  'admin':      'Colombia2026*'
+};
+var usuarioActual='';
+
 async function iniciarLogin(){
+  var user=(document.getElementById('inputUser').value||'').trim().toLowerCase();
+  var pass=document.getElementById('inputPass').value||'';
+  var err=document.getElementById('loginError');
+  if(!user||!pass){err.textContent='Ingresa usuario y contraseña.';err.style.display='block';return;}
+  if(!USUARIOS[user]||USUARIOS[user]!==pass){err.textContent='Usuario o contraseña incorrectos.';err.style.display='block';return;}
+  usuarioActual=user;
   document.getElementById('btnLogin').disabled=true;
   document.getElementById('btnLogin').textContent='Conectando...';
-  document.getElementById('loginError').style.display='none';
+  err.style.display='none';
   await cargarDatos();
 }
 async function cargarDatos(){
   try{
     mostrarCargando('Conectando con SharePoint...');accessToken=await getToken();
-    document.getElementById('userName').textContent='Escalar Asesorías';
+    document.getElementById('userName').textContent=usuarioActual.charAt(0).toUpperCase()+usuarioActual.slice(1);
     mostrarCargando('Buscando sitio...');
     var siteResp=await fetch('https://graph.microsoft.com/v1.0/sites/'+CONFIG.siteHostname+':'+CONFIG.sitePath,{headers:{Authorization:'Bearer '+accessToken}});
     var siteData=await siteResp.json();if(!siteData.id) throw new Error('No se encontró el sitio');
@@ -387,7 +412,12 @@ async function cargarDatos(){
     document.getElementById('loginError').textContent='Error: '+(e.message||'No se pudo cargar');document.getElementById('loginError').style.display='block';
   }
 }
-function cerrarSesion(){document.getElementById('dashboard').style.display='none';document.getElementById('loginScreen').style.display='flex';document.getElementById('btnLogin').disabled=false;document.getElementById('btnLogin').textContent='Ingresar con cuenta Microsoft';}
+function cerrarSesion(){
+  usuarioActual='';
+  document.getElementById('inputUser').value='';
+  document.getElementById('inputPass').value='';
+  document.getElementById('btnLogin').disabled=false;
+  document.getElementById('btnLogin').textContent='Ingresar';document.getElementById('dashboard').style.display='none';document.getElementById('loginScreen').style.display='flex';document.getElementById('btnLogin').disabled=false;document.getElementById('btnLogin').textContent='Ingresar con cuenta Microsoft';}
 
 // ── FILTROS ───────────────────────────────────────────────────────────────────
 function poblarFiltros(){
@@ -971,9 +1001,8 @@ function renderTodo(){
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 (async function init(){
-  // Auto-load on start
-  document.getElementById('loginScreen').style.display='none';
-  await cargarDatos();
+  // Show login screen on start
+  document.getElementById('loginScreen').style.display='flex';
 })();
 </script>
 </body>
