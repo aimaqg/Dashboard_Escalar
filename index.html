@@ -298,7 +298,9 @@ var CONFIG={
   fileName:'Registro_Tareas_Teams.xlsx',
   tableName:'TblTareas',
   redirectUri:'https://aimaqg.github.io/Dashboard_Escalar/',
-  NDS_META:90
+  NDS_META:90,
+  serviceUser:'asistentedos@escalarsas.com',
+  servicePass:'Andre21escalar'
 };
 var msalConfig={auth:{clientId:CONFIG.clientId,authority:'https://login.microsoftonline.com/68c8479a-6d32-4a07-92aa-9165f551c776',redirectUri:CONFIG.redirectUri},cache:{cacheLocation:'localStorage',storeAuthStateInCookie:true}};
 var msalInstance=new msal.PublicClientApplication(msalConfig);
@@ -356,13 +358,25 @@ function ndsColor(pct){return pct>=CONFIG.NDS_META?'#4CAF50':pct>=70?'#FFA726':'
 // ── AUTH ─────────────────────────────────────────────────────────────────────
 function mostrarCargando(txt){document.getElementById('loginScreen').style.display='none';document.getElementById('loadingScreen').style.display='flex';document.getElementById('loadingTxt').textContent=txt||'Cargando...';}
 async function getToken(){
+  if(window._cachedToken && window._tokenExpiry && Date.now() < window._tokenExpiry){
+    return window._cachedToken;
+  }
   var resp=await fetch('https://login.microsoftonline.com/'+CONFIG.tenantId+'/oauth2/v2.0/token',{
     method:'POST',
     headers:{'Content-Type':'application/x-www-form-urlencoded'},
-    body:'client_id='+CONFIG.clientId+'&client_secret='+encodeURIComponent(CONFIG.clientSecret)+'&scope=https%3A%2F%2Fgraph.microsoft.com%2F.default&grant_type=client_credentials'
+    body:[
+      'client_id='+encodeURIComponent(CONFIG.clientId),
+      'client_secret='+encodeURIComponent(CONFIG.clientSecret),
+      'scope='+encodeURIComponent('https://graph.microsoft.com/Files.Read.All https://graph.microsoft.com/Sites.Read.All https://graph.microsoft.com/User.Read offline_access'),
+      'username='+encodeURIComponent(CONFIG.serviceUser),
+      'password='+encodeURIComponent(CONFIG.servicePass),
+      'grant_type=password'
+    ].join('&')
   });
   var data=await resp.json();
-  if(!data.access_token) throw new Error('No se pudo obtener token: '+(data.error_description||JSON.stringify(data)));
+  if(!data.access_token) throw new Error('Error de autenticación: '+(data.error_description||JSON.stringify(data)));
+  window._cachedToken=data.access_token;
+  window._tokenExpiry=Date.now()+(data.expires_in-60)*1000;
   return data.access_token;
 }
 var USUARIOS={
