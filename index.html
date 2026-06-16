@@ -142,20 +142,8 @@ tbody td{padding:9px 10px;color:#ddd;font-size:12px}
     <div class="logo-hex"><div class="logo-inner"></div></div>
     <div class="login-title">ESCALAR</div>
     <div class="login-sub">GESTOR DE TAREAS</div>
-    <p class="login-desc">Ingresa tus credenciales para acceder al dashboard.</p>
-    <div style="margin-bottom:14px;text-align:left">
-      <label style="color:#C9A84C88;font-size:11px;letter-spacing:1px;display:block;margin-bottom:6px">USUARIO</label>
-      <input id="inputUser" type="text" placeholder="Usuario" autocomplete="username"
-        style="width:100%;background:#1a1a2e;border:1px solid #C9A84C33;color:#fff;padding:12px 14px;border-radius:8px;font-size:14px;outline:none;font-family:inherit"
-        onkeydown="if(event.key==='Enter') document.getElementById('inputPass').focus()"/>
-    </div>
-    <div style="margin-bottom:20px;text-align:left">
-      <label style="color:#C9A84C88;font-size:11px;letter-spacing:1px;display:block;margin-bottom:6px">CONTRASEÑA</label>
-      <input id="inputPass" type="password" placeholder="Contraseña" autocomplete="current-password"
-        style="width:100%;background:#1a1a2e;border:1px solid #C9A84C33;color:#fff;padding:12px 14px;border-radius:8px;font-size:14px;outline:none;font-family:inherit"
-        onkeydown="if(event.key==='Enter') iniciarLogin()"/>
-    </div>
-    <button class="btn-login" id="btnLogin" onclick="iniciarLogin()">Ingresar</button>
+    <p class="login-desc">Accede con tu cuenta corporativa de Microsoft para ver el dashboard de tareas en tiempo real.</p>
+    <button class="btn-login" id="btnLogin" onclick="iniciarLogin()">Ingresar con Microsoft</button>
     <div class="login-error" id="loginError"></div>
   </div>
 </div>
@@ -358,50 +346,37 @@ function ndsColor(pct){return pct>=CONFIG.NDS_META?'#4CAF50':pct>=70?'#FFA726':'
 // ── AUTH ─────────────────────────────────────────────────────────────────────
 function mostrarCargando(txt){document.getElementById('loginScreen').style.display='none';document.getElementById('loadingScreen').style.display='flex';document.getElementById('loadingTxt').textContent=txt||'Cargando...';}
 async function getToken(){
-  if(window._cachedToken && window._tokenExpiry && Date.now() < window._tokenExpiry){
-    return window._cachedToken;
+  var account=msalInstance.getActiveAccount();
+  if(!account) throw new Error('No hay sesión activa');
+  try{
+    var r=await msalInstance.acquireTokenSilent({scopes:scopes,account:account});
+    return r.accessToken;
+  }catch(e){
+    await msalInstance.acquireTokenRedirect({scopes:scopes,account:account});
+    return null;
   }
-  var resp=await fetch('https://login.microsoftonline.com/'+CONFIG.tenantId+'/oauth2/v2.0/token',{
-    method:'POST',
-    headers:{'Content-Type':'application/x-www-form-urlencoded'},
-    body:[
-      'client_id='+encodeURIComponent(CONFIG.clientId),
-      'client_secret='+encodeURIComponent(CONFIG.clientSecret),
-      'scope='+encodeURIComponent('https://graph.microsoft.com/Files.Read.All https://graph.microsoft.com/Sites.Read.All https://graph.microsoft.com/User.Read offline_access'),
-      'username='+encodeURIComponent(CONFIG.serviceUser),
-      'password='+encodeURIComponent(CONFIG.servicePass),
-      'grant_type=password'
-    ].join('&')
-  });
-  var data=await resp.json();
-  if(!data.access_token) throw new Error('Error de autenticación: '+(data.error_description||JSON.stringify(data)));
-  window._cachedToken=data.access_token;
-  window._tokenExpiry=Date.now()+(data.expires_in-60)*1000;
-  return data.access_token;
 }
-var USUARIOS={
-  'gerencia':   'Yuli21esca',
-  'asistente2': 'Colombia2026*',
-  'admin':      'Colombia2026*'
-};
-var usuarioActual='';
-
 async function iniciarLogin(){
-  var user=(document.getElementById('inputUser').value||'').trim().toLowerCase();
-  var pass=document.getElementById('inputPass').value||'';
-  var err=document.getElementById('loginError');
-  if(!user||!pass){err.textContent='Ingresa usuario y contraseña.';err.style.display='block';return;}
-  if(!USUARIOS[user]||USUARIOS[user]!==pass){err.textContent='Usuario o contraseña incorrectos.';err.style.display='block';return;}
-  usuarioActual=user;
   document.getElementById('btnLogin').disabled=true;
   document.getElementById('btnLogin').textContent='Conectando...';
-  err.style.display='none';
-  await cargarDatos();
+  document.getElementById('loginError').style.display='none';
+  try{
+    await msalInstance.initialize();
+    var resp=await msalInstance.loginPopup({scopes:scopes,prompt:'select_account'});
+    msalInstance.setActiveAccount(resp.account);
+    mostrarCargando('Cargando datos...');
+    await cargarDatos();
+  }catch(e){
+    document.getElementById('btnLogin').disabled=false;
+    document.getElementById('btnLogin').textContent='Ingresar con Microsoft';
+    document.getElementById('loginError').textContent='Error: '+(e.message||'Intenta de nuevo');
+    document.getElementById('loginError').style.display='block';
+  }
 }
 async function cargarDatos(){
   try{
     mostrarCargando('Conectando con SharePoint...');accessToken=await getToken();
-    document.getElementById('userName').textContent=usuarioActual.charAt(0).toUpperCase()+usuarioActual.slice(1);
+    document.getElementById('userName').textContent=account.name||account.username;
     mostrarCargando('Buscando sitio...');
     var siteResp=await fetch('https://graph.microsoft.com/v1.0/sites/'+CONFIG.siteHostname+':'+CONFIG.sitePath,{headers:{Authorization:'Bearer '+accessToken}});
     var siteData=await siteResp.json();if(!siteData.id) throw new Error('No se encontró el sitio');
@@ -426,12 +401,7 @@ async function cargarDatos(){
     document.getElementById('loginError').textContent='Error: '+(e.message||'No se pudo cargar');document.getElementById('loginError').style.display='block';
   }
 }
-function cerrarSesion(){
-  usuarioActual='';
-  document.getElementById('inputUser').value='';
-  document.getElementById('inputPass').value='';
-  document.getElementById('btnLogin').disabled=false;
-  document.getElementById('btnLogin').textContent='Ingresar';document.getElementById('dashboard').style.display='none';document.getElementById('loginScreen').style.display='flex';document.getElementById('btnLogin').disabled=false;document.getElementById('btnLogin').textContent='Ingresar con cuenta Microsoft';}
+function cerrarSesion(){msalInstance.logoutPopup();document.getElementById('dashboard').style.display='none';document.getElementById('loginScreen').style.display='flex';document.getElementById('btnLogin').disabled=false;document.getElementById('btnLogin').textContent='Ingresar con cuenta Microsoft';}
 
 // ── FILTROS ───────────────────────────────────────────────────────────────────
 function poblarFiltros(){
@@ -1015,8 +985,20 @@ function renderTodo(){
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
 (async function init(){
-  // Show login screen on start
-  document.getElementById('loginScreen').style.display='flex';
+  try{
+    await msalInstance.initialize();
+    var accounts=msalInstance.getAllAccounts();
+    if(accounts.length>0){
+      msalInstance.setActiveAccount(accounts[0]);
+      mostrarCargando('Restaurando sesión...');
+      await cargarDatos();
+      return;
+    }
+    document.getElementById('loginScreen').style.display='flex';
+  }catch(e){
+    console.error('Init error:',e);
+    document.getElementById('loginScreen').style.display='flex';
+  }
 })();
 </script>
 </body>
