@@ -376,7 +376,7 @@ async function iniciarLogin(){
 async function cargarDatos(){
   try{
     mostrarCargando('Conectando con SharePoint...');accessToken=await getToken();
-    document.getElementById('userName').textContent=account.name||account.username;
+    var _acct=msalInstance.getActiveAccount();document.getElementById('userName').textContent=_acct?(_acct.name||_acct.username):'Escalar';
     mostrarCargando('Buscando sitio...');
     var siteResp=await fetch('https://graph.microsoft.com/v1.0/sites/'+CONFIG.siteHostname+':'+CONFIG.sitePath,{headers:{Authorization:'Bearer '+accessToken}});
     var siteData=await siteResp.json();if(!siteData.id) throw new Error('No se encontró el sitio');
